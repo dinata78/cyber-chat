@@ -1,0 +1,66 @@
+@font-face {
+  font-family: "nasalization";
+  src: url(font/nasalization/nasalization.woff) format(woff),
+       url(font/nasalization/nasalization.woff2) format(woff2);
+}
+
+@font-face {
+  font-family: "xolonium";
+  src: url(font/xolonium/xolonium.woff) format(woff),
+       url(font/xolonium/xolonium.woff2) format(woff2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  background-color: black;
+  color: white;
+  --auth-size: min(calc(40vw + 40vh), 960px);
+  --auth-color: #15bfdd;
+}
+
+body {
+  margin: 0;
+  background-image: url("bg-image/bg-mid.png");
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+#auth-container {
+  width: var(--auth-size);
+  height: calc(var(--auth-size) * 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: calc(var(--auth-size) / 100);
+}
+
+#main-heading {
+  margin: 0;
+  font-size: calc(var(--auth-size) * 0.15);
+  font-family: nasalization, monospace;
+}
+
+#sign-form {
+  background-color: #000000cc;
+  width: 90%;
+  height: 80%;
+  border: 2px solid white;
+}
+
+#sign-type {
+  height: 15%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: calc(var(--auth-size) / 25);
+  font-family: xolonium;
+}
