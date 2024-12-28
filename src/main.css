@@ -136,3 +136,8 @@ body {
   font-family: inherit;
   font-size: inherit;
 }
+
+#button-container button:active {
+  color: red;
+  border: calc(var(--auth-size) / 400) solid red;
+}

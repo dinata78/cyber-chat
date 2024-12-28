@@ -1,14 +1,35 @@
 import { useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export function Auth() {
   const [signType, setSignType] = useState("in");
   const [signInData, setSignInData] = useState({email: "", password: ""});
   const [signUpData, setSignUpData] = useState({email: "", password: ""});
 
-  const onSubmit = () => {
+  const createAccount = async (email, password) => {
+    if (!email.trim() || !password.trim()) return;
     
+    await createUserWithEmailAndPassword(auth, email, password);
+  }
+
+  const logIn = async (email, password) => {
+    if (!email.trim() || !password.trim()) return;
+
+    await signInWithEmailAndPassword(auth, email, password);
+  }
+
+  const onConfirm = (e) => {
+    e.preventDefault();
+    
+    if (signType === "in") {
+      logIn(signInData.email, signInData.password);
+    }
+    else if (signType === "up") {
+      createAccount(signUpData.email, signUpData.password);
+    }
   }
 
   return (
@@ -43,7 +64,7 @@ export function Auth() {
         />
         
         <div id="button-container">
-          <button>CONFIRM</button>
+          <button type="submit" onClick={onConfirm}>CONFIRM</button>
         </div>
       </form>
     </div>
