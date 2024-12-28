@@ -17,7 +17,7 @@
 :root {
   background-color: black;
   color: white;
-  --auth-size: min(calc(40vw + 40vh), 960px);
+  --auth-size: min(calc(40vw + 40vh), 640px);
   --auth-color: #15bfdd;
 }
 
@@ -38,22 +38,24 @@ body {
   height: calc(var(--auth-size) * 0.9);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: calc(var(--auth-size) / 100);
 }
 
 #main-heading {
   margin: 0;
-  font-size: calc(var(--auth-size) * 0.15);
-  font-family: nasalization, monospace;
+  font-size: calc(var(--auth-size) * 0.1);
+  font-family: nasalization, xolonium;
 }
 
 #sign-form {
   background-color: #000000cc;
   width: 90%;
   height: 80%;
-  border: 2px solid white;
+  border: calc(var(--auth-size) / 250) solid white;
+  font-family: xolonium;
+  
 }
 
 #sign-type {
@@ -61,6 +63,76 @@ body {
   display: flex;
   justify-content: space-around;
   align-items: center;
+}
+
+#sign-type button {
+  background-color: transparent;
+  padding-bottom: calc(var(--auth-size) / 100);
+  border: none;
+  color: inherit;
+  font-family: inherit;
   font-size: calc(var(--auth-size) / 25);
-  font-family: xolonium;
+}
+
+#sign-type button.sign-selected {
+  border-bottom: 2px solid white;
+}
+
+#greeting-container {
+  height: 20%;
+  padding-inline: calc(var(--auth-size) / 40);
+  display: flex;
+  align-items: flex-end;
+  text-align: center;
+  font-size: calc(var(--auth-size) / 40);
+}
+
+#input-container {
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: calc(var(--auth-size) / 35);
+  gap: calc(var(--auth-size) / 50);
+}
+
+#input-container label {
+  display: inline-block;
+  width: calc(var(--auth-size) / 4);
+  text-align: center
+}
+
+#input-container input {
+  background-color: transparent;
+  width: calc(var(--auth-size) / 2.2);
+  height: calc(var(--auth-size) / 18);
+  padding: 0 calc(var(--auth-size) / 70);
+  border: calc(var(--auth-size) / 400) solid white;
+  border-radius: calc(var(--auth-size) / 200);
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+#input-container input:focus {
+  outline: none;
+  border-color: red;
+}
+
+#button-container {
+  height: 25%;
+  display: grid;
+  justify-content: center;
+  align-items: start;
+}
+
+#button-container button {
+  background-color: #ffffff55;
+  width: calc(var(--auth-size) / 5);
+  height: calc(var(--auth-size) / 22);
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
 }
