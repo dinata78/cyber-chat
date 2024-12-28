@@ -23,7 +23,7 @@
 
 body {
   margin: 0;
-  background-image: url("bg-image/bg-mid.png");
+  background-image: url("bg-img.webp");
   background-size: cover;
   height: 100vh;
   display: flex;
