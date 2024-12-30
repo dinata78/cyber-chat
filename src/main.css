@@ -25,12 +25,14 @@ body {
   margin: 0;
   background-image: url("bg-img.webp");
   background-size: cover;
+}
+
+#auth-page {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
 }
 
 #auth-container {
@@ -140,4 +142,12 @@ body {
 #button-container button:active {
   color: red;
   border: calc(var(--auth-size) / 400) solid red;
+}
+
+#chat-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
