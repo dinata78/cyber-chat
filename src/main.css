@@ -18,7 +18,6 @@
   background-color: black;
   color: white;
   --auth-size: min(calc(40vw + 40vh), 640px);
-  --auth-color: #15bfdd;
 }
 
 body {
@@ -150,4 +149,31 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+#loading-overlay {
+  background-color: #000000cc;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  display: grid;
+  place-content: center;
+}
+
+#loading-spinner {
+  width: max(4vw, 50px);
+  height: max(4vw, 50px);
+  border: max(0.4vw, 5px) solid white;
+  border-right-color: transparent;
+  border-radius: 100%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,8 +1,7 @@
 import { Auth } from "./Auth/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Chat } from "./Chat";
-import { auth } from "../../firebase";
-import { useEffect } from "react";
+import { createContext, useState } from "react";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +14,14 @@ const router = createBrowserRouter([
   }
 ]);
 
+export const LoadingContext = createContext({});
+
 export function App() {
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
-    <RouterProvider router={router}/>
+    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+      <RouterProvider router={router}/>
+    </LoadingContext.Provider>
   )
 }

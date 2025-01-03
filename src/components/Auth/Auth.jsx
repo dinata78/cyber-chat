@@ -1,9 +1,11 @@
-import { useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useLayoutEffect, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
 import { auth } from "../../../firebase";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { LoadingOverlay } from "../LoadingOverlay";
+import { LoadingContext } from "../App";
 
 export function Auth() {
   const [isAuth, setIsAuth] = useState(null);
@@ -12,20 +14,40 @@ export function Auth() {
   const [signInData, setSignInData] = useState({email: "", password: ""});
   const [signUpData, setSignUpData] = useState({email: "", password: ""});
 
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
+
   const navigate = useNavigate();
 
   const createAccount = async (email, password) => {
     if (!email.trim() || !password.trim()) return;
-    
-    await createUserWithEmailAndPassword(auth, email, password);
-    setIsAuth(true);
+
+    try {
+      setIsLoading(true);
+      await createUserWithEmailAndPassword(auth, email, password);
+      setIsAuth(true);  
+    }
+    catch (error) {
+      console.log("Sign Up Failed: " + error);
+    }
+    finally {
+      setIsLoading(false);
+    }
   }
 
   const logIn = async (email, password) => {
     if (!email.trim() || !password.trim()) return;
-
-    await signInWithEmailAndPassword(auth, email, password);
-    setIsAuth(true);
+   
+    try {
+      setIsLoading(true);
+      await signInWithEmailAndPassword(auth, email, password);
+      setIsAuth(true);
+    }
+    catch (error) {
+      console.error("Sign In failed: " + error)
+    }
+    finally {
+      setIsLoading(false);
+    }
   }
 
   const onConfirm = (e) => {
@@ -60,6 +82,7 @@ export function Auth() {
 
   return (
     <div id="auth-page">
+      <LoadingOverlay isLoading={isLoading} />
       <div id="auth-container">
         <h1 id="main-heading">CYBER CHAT</h1>
         
