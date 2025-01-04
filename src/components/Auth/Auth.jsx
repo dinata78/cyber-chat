@@ -113,7 +113,7 @@ export function Auth() {
             } 
           />
           
-          <div id="button-container">
+          <div id="auth-button-container">
             <button type="submit" onClick={onConfirm}>CONFIRM</button>
           </div>
         </form>

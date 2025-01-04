@@ -1,7 +1,7 @@
 
 export function AuthInput({ emailValue, passwordValue, onEmailChange, onPasswordChange }) {
   return (
-    <div id="input-container">
+    <div id="auth-input-container">
       <div id="email">
         <label htmlFor="email-input">EMAIL:</label>
         <input type="email" id="email-input" value={emailValue} onChange={onEmailChange} required/>

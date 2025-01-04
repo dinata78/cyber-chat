@@ -79,7 +79,7 @@ body {
   border-bottom: 2px solid white;
 }
 
-#greeting-container {
+#auth-greeting-container {
   height: 20%;
   padding-inline: calc(var(--auth-size) / 40);
   display: flex;
@@ -88,7 +88,7 @@ body {
   font-size: calc(var(--auth-size) / 40);
 }
 
-#input-container {
+#auth-input-container {
   height: 40%;
   display: flex;
   flex-direction: column;
@@ -98,13 +98,13 @@ body {
   gap: calc(var(--auth-size) / 50);
 }
 
-#input-container label {
+#auth-input-container label {
   display: inline-block;
   width: calc(var(--auth-size) / 4);
   text-align: center
 }
 
-#input-container input {
+#auth-input-container input {
   background-color: transparent;
   width: calc(var(--auth-size) / 2.2);
   height: calc(var(--auth-size) / 18);
@@ -116,19 +116,19 @@ body {
   font-size: inherit;
 }
 
-#input-container input:focus {
+#auth-input-container input:focus {
   outline: none;
   border-color: red;
 }
 
-#button-container {
+#auth-button-container {
   height: 25%;
   display: grid;
   justify-content: center;
   align-items: start;
 }
 
-#button-container button {
+#auth-button-container button {
   background-color: #ffffff55;
   width: calc(var(--auth-size) / 5);
   height: calc(var(--auth-size) / 22);
@@ -138,17 +138,9 @@ body {
   font-size: inherit;
 }
 
-#button-container button:active {
+#auth-button-container button:active {
   color: red;
   border: calc(var(--auth-size) / 400) solid red;
-}
-
-#chat-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 #loading-overlay {
@@ -176,4 +168,12 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+#chat-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
