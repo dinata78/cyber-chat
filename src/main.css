@@ -22,7 +22,7 @@
 
 body {
   margin: 0;
-  background-image: url("bg-img.webp");
+  background-image: url("/bg-img.webp");
   background-size: cover;
 }
 
@@ -144,7 +144,7 @@ body {
 }
 
 #loading-overlay {
-  background-color: #000000cc;
+  background-color: #000000e0;
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -170,10 +170,51 @@ body {
   }
 }
 
-#chat-page {
+#cyber-page {
+  background-color: #000000e0;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+#cyber-container {
+  background-color: #0a1016;
+  width: 95vw;
+  height: 95vh;
+  border: 1px solid white;
+  display: flex;
+}
+
+#cyber-container nav {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+#cyber-container nav > a:first-child {
+  margin-top: auto;
+}
+
+.nav-button {
+  fill: white;
+  width: 42px;
+}
+
+.nav-button:active {
+  fill: steelblue;
+}
+
+#profile-picture {
+  margin-top: auto;
+}
+
+#profile-picture > img {
+  width: 50px;
+  border: 2px solid white;
+  border-radius: 100%;
 }

@@ -1,7 +1,6 @@
 import { Auth } from "./Auth/Auth";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Cyber } from "./Cyber";
-import { createContext, useState } from "react";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { Cyber } from "./Cyber/Cyber";
 
 const router = createBrowserRouter([
   {
@@ -11,17 +10,15 @@ const router = createBrowserRouter([
   {
     path: "cyber",
     element: <Cyber />,
+  },
+  {
+    path: "cyber/:parameter",
+    element: <Cyber />
   }
 ]);
 
-export const LoadingContext = createContext({});
-
 export function App() {
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
-    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       <RouterProvider router={router}/>
-    </LoadingContext.Provider>
   )
 }

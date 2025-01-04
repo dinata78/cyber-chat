@@ -1,20 +1,18 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
 import { auth } from "../../../firebase";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { LoadingOverlay } from "../LoadingOverlay";
-import { LoadingContext } from "../App";
 
 export function Auth() {
   const [isAuth, setIsAuth] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   const [signType, setSignType] = useState("in");
   const [signInData, setSignInData] = useState({email: "", password: ""});
   const [signUpData, setSignUpData] = useState({email: "", password: ""});
-
-  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const navigate = useNavigate();
 
