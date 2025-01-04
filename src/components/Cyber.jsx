@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { LoadingContext } from "./App";
 import { LoadingOverlay } from "./LoadingOverlay";
 
-export function Chat() {
+export function Cyber() {
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const navigate = useNavigate();

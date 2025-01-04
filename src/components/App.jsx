@@ -1,6 +1,6 @@
 import { Auth } from "./Auth/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Chat } from "./Chat";
+import { Cyber } from "./Cyber";
 import { createContext, useState } from "react";
 
 const router = createBrowserRouter([
@@ -9,8 +9,8 @@ const router = createBrowserRouter([
     element: <Auth />,
   },
   {
-    path: "chats",
-    element: <Chat />,
+    path: "cyber",
+    element: <Cyber />,
   }
 ]);
 

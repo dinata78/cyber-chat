@@ -1,4 +1,4 @@
-import { useContext, useEffect, useLayoutEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
 import { auth } from "../../../firebase";
@@ -63,7 +63,7 @@ export function Auth() {
 
   useEffect(() => {
     if (isAuth) {
-      navigate("/chats");
+      navigate("/cyber");
     }
   }, [isAuth]);
 
