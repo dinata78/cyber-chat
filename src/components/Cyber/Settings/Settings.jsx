@@ -1,4 +1,4 @@
-import { InputTypeToggle } from "./InputTypeToggle";
+import { InputTypeToggle } from "../InputTypeToggle";
 
 export function Settings() {
   const onContrastToggle = () => {

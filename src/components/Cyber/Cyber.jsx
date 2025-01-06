@@ -5,7 +5,7 @@ import { SettingSVG } from "../svg/SettingSVG";
 import { ThemeSVG } from "../svg/ThemeSVG";
 import { Home } from "./Home";
 import { Chats } from "./Chats/Chats";
-import { Settings } from "./Settings";
+import { Settings } from "./Settings/Settings";
 import { Account } from "./Account";
 
 export function Cyber() {
