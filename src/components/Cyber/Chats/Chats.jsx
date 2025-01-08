@@ -27,16 +27,8 @@ export function Chats() {
 
         </div>
         <div id="friend-list">
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-          <FriendCard />
-
+          <FriendCard friendName="Global Chat" friendTitle="A global room everyone can access." />
+          <FriendCard friendName="Steven Dinata" friendTitle="Developer of CyberChat" />
         </div>
       </div>
 

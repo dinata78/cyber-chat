@@ -335,10 +335,8 @@ body {
   color: inherit;
   font-family: inherit;
   font-size: 1.2rem;
-  
 }
 
- 
 #friend-list {
   flex-grow: 1;
   padding-bottom: 2rem;
@@ -351,12 +349,45 @@ body {
   display: none;
 }
 
-#friend-list .friend-card {
+.friend-card {
   background-color: #22222f;
   width: 100%;
   height: 96px;
   margin-bottom: 12px;
   border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.friend-pfp-container {
+  min-width: 75px;
+  border-radius: 100%;
+  display: grid;
+  place-content: center;
+}
+
+.friend-pfp-container img {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+.friend-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-name {
+  width: 90%;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.friend-title {
+  width: 90%;
+  font-size: 0.8rem;
   
 }
 
