@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import { ChatSVG } from "../svg/ChatSVG";
-import { HomeSVG } from "../svg/HomeSVG";
-import { SettingSVG } from "../svg/SettingSVG";
-import { ThemeSVG } from "../svg/ThemeSVG";
+import { ChatSVG } from "../svg/nav-svg/ChatSVG";
+import { HomeSVG } from "../svg/nav-svg/HomeSVG";
+import { SettingSVG } from "../svg/nav-svg/SettingSVG";
+import { ThemeSVG } from "../svg/nav-svg/ThemeSVG";
 import { Home } from "./Home";
 import { Chats } from "./Chats/Chats";
 import { Settings } from "./Settings/Settings";
