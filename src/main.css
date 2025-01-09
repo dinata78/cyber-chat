@@ -76,7 +76,7 @@ body {
   font-size: calc(var(--auth-size) / 25);
 }
 
-#sign-type button.sign-selected {
+#sign-type button.selected {
   border-bottom: 2px solid white;
 }
 
@@ -209,7 +209,7 @@ body {
   width: 42px;
 }
 
-.nav-button.nav-selected {
+.nav-button.selected {
   fill: #0077ff;
 }
 
@@ -219,7 +219,7 @@ body {
   border-radius: 100%;
 }
 
-#nav-pfp.nav-selected {
+#nav-pfp.selected {
   border-color: #0077ff;
 }
 
@@ -360,6 +360,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.friend-card.selected {
+  background-color: #0077ff;
 }
 
 .friend-pfp-container {

@@ -29,7 +29,7 @@ export function Cyber() {
 
           <div id="bottom-nav">
             <Link to="/cyber/account">
-              <img id="nav-pfp" className={parameter === "account" ? "nav-selected" : ""} src="/empty-pfp.webp" alt="PFP" />          
+              <img id="nav-pfp" className={parameter === "account" ? "selected" : ""} src="/empty-pfp.webp" alt="PFP" />          
             </Link>
             <ThemeSVG theme="dark" />
           </div>

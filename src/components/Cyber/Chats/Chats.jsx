@@ -3,8 +3,20 @@ import { PlusIconSVG } from "../../svg/PlusIconSVG";
 import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
 import { MessageCard } from "./MessageCard";
+import { useState } from "react";
 
 export function Chats() {
+  const [currentChat, setCurrentChat] = useState(null);
+  const [currentChatData, setCurrentChatData] = useState({});
+
+  const onFriendCardClick = (friendName, friendTitle) => {
+    setCurrentChat(friendName);
+    setCurrentChatData({
+      name: friendName,
+      title: friendTitle, 
+  });
+  }
+
   return (
     <div id="cyber-chats-container">
       <div id="cyber-chats-main">
@@ -28,19 +40,19 @@ export function Chats() {
 
         </div>
         <div id="friend-list">
-          <FriendCard friendName="Global Chat" friendTitle="A global room everyone can access." />
-          <FriendCard friendName="Steven Dinata" friendTitle="Developer of CyberChat" />
+          <FriendCard friendName="Global Chat" friendTitle="A global room everyone can access." currentChat={currentChat} onFriendCardClick={onFriendCardClick} />
+          <FriendCard friendName="Steven Dinata" friendTitle="Developer of CyberChat" currentChat={currentChat} onFriendCardClick={onFriendCardClick} />
         </div>
       </div>
 
       <div id="cyber-chats-content">
         <div id="chats-content-top">
           <div id="current-chat-pfp-container">
-            <img id="current-chat-pfp" src="/globe.webp" />
+            <img id="current-chat-pfp" src="/empty-pfp.webp" />
           </div>
           <div id="current-chat-info">
-            <span id="current-chat-name">Global Chat</span>
-            <span id="current-chat-title">A global room everyone can access.</span>
+            <span id="current-chat-name">{currentChatData.name}</span>
+            <span id="current-chat-title">{currentChatData.title}</span>
           </div>
         </div>
 

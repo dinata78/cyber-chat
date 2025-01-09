@@ -86,8 +86,8 @@ export function Auth() {
         
         <form id="sign-form">
           <div id="sign-type">
-            <button type="button" id="sign-in" className={signType === "in" ? "sign-selected" : ""} onClick={() => setSignType("in")}>Sign In</button>
-            <button type="button" id="sign-up" className={signType === "up" ? "sign-selected" : ""} onClick={() => setSignType("up")}>Sign Up</button>
+            <button type="button" id="sign-in" className={signType === "in" ? "selected" : ""} onClick={() => setSignType("in")}>Sign In</button>
+            <button type="button" id="sign-up" className={signType === "up" ? "selected" : ""} onClick={() => setSignType("up")}>Sign Up</button>
           </div>
 
           <AuthGreeting signType={signType}/>
