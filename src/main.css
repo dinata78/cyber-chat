@@ -260,15 +260,16 @@ body {
 }
 
 #cyber-chats-main {
-  width: 360px;
+  background-color: #00000033;
+  min-width: 400px;
+  padding-inline: 10px;
   display: flex;
   flex-direction: column;
 }
 
 #chat-header {
   box-sizing: border-box;
-  height: 20%;
-  margin-block: 2rem;
+  min-height: 15%;
   display: flex;
   flex-direction: column;
 }
@@ -277,7 +278,7 @@ body {
   height: 50%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 }
 
 #chat-header-top h1 {
@@ -338,11 +339,14 @@ body {
 }
 
 #friend-list {
-  flex-grow: 1;
-  padding-bottom: 2rem;
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  flex-grow: 1;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 #friend-list::-webkit-scrollbar {
@@ -351,9 +355,7 @@ body {
 
 .friend-card {
   background-color: #22222f;
-  width: 100%;
-  height: 96px;
-  margin-bottom: 12px;
+  min-height: 96px;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -435,10 +437,59 @@ body {
 
 #chat-display {
   flex-grow: 1;
+  padding: 2rem;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.message-card {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.message-card.own-message {
+  justify-content: flex-end;
+}
+
+.message-info {
+  width: 600px;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-info.own-message {
+  align-items: flex-end;
+}
+
+.message-sender-name {
+  background-color: #006eff;
+  width: max-content;
+  min-height: 30px;
+  padding-inline: 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.message-sender-name.own-message {
+  justify-content: flex-end;
+}
+
+.message-content {
+  flex-grow: 1;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #006eff;
+  font-size: 1rem;
 }
 
 #chat-input {
   height: 120px;
+  padding-right: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -446,8 +497,8 @@ body {
 }
 
 #chat-input input {
+  flex-grow: 1;
   background-color: transparent;
-  width: 90%;
   height: 48px;
   padding-inline: 12px;
   border: 1px solid white;
@@ -577,12 +628,12 @@ body {
 }
 
 #cyber-account-features {
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
   overflow-y: auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 
 #cyber-account-features::-webkit-scrollbar {

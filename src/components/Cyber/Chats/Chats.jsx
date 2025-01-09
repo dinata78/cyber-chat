@@ -2,6 +2,7 @@ import { FriendCard } from "./FriendCard";
 import { PlusIconSVG } from "../../svg/PlusIconSVG";
 import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
+import { MessageCard } from "./MessageCard";
 
 export function Chats() {
   return (
@@ -44,7 +45,16 @@ export function Chats() {
         </div>
 
         <div id="chats-content-bottom">
-          <div id="chat-display"></div>
+          <div id="chat-display">
+            <MessageCard senderName="Steven Dinata" content="Test test" isOwnMessage={false} />
+            <MessageCard senderName="Anonymous" content="Test test" isOwnMessage={true} />
+            <MessageCard senderName="Anonymous 2" content="Lorem ipsum afjdaslf jasfjlkasdj fdjasklf dasl. Lf adfja fajslfaj flasjfl ajslfjdal fjlasjf ldasj f, klfadsf ladsjklf ad. Jaldfadlkfja dlfdalsf ajsdkfa fladsjflksaf dasfj lasj adfa adfas faadfff, adfjaslfjdaskl jdaf asdfljs ajdkslf jadsfa. Ladfajflak falajfal alaj fa. Adajflkasjf afajsk fjas fsakfjaskf dasjfdsak fjsad fas das." isOwnMessage={false} />
+            <MessageCard senderName="Anonymous" content="??" isOwnMessage={true} />
+            <MessageCard senderName="Anonymous" content="???" isOwnMessage={true} />
+
+          </div>
+          
+
           <div id="chat-input">
             <input type="text" placeholder="Type something.." />
             <button>
