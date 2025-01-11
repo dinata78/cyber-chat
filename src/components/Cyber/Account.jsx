@@ -1,12 +1,17 @@
-import { signOut } from "firebase/auth";
-import { auth } from "../../../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth, db } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import { EditIconSVG } from "../svg/EditIconSVG";
 import { NameIconSVG } from "../svg/NameIconSVG";
 import { BioIconSVG } from "../svg/BioIconSVG";
 import { EmailIconSVG } from "../svg/EmailIconSVG";
+import { doc, onSnapshot, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { TitleIconSVG } from "../svg/TitleIconSVG";
 
 export function Account() {
+  const [userData, setUserData] = useState({});
+
   const navigate = useNavigate();
 
   const logOut = async () => {
@@ -18,6 +23,38 @@ export function Account() {
       console.error("Log Out Failed: " + error);
     }
   }
+
+  let unsubscribeSnapshot = null;
+
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
+      if (authUser) {
+        const currentUserQuery = query(
+          doc(db, "users", authUser.uid)
+        )
+  
+        unsubscribeSnapshot = onSnapshot(
+          currentUserQuery, (docSnapshot) => {
+            setUserData(docSnapshot.data());
+          }
+        )
+      }
+
+    })
+
+    return () => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+      unsubscribeAuth();
+    }
+  }, []);
   
   return (
     <div id="cyber-account-container">
@@ -37,7 +74,19 @@ export function Account() {
             </div>
             <div className="account-info">
               <label>Name</label>
-              <span>Anonymous</span>
+              <span>{userData.name}</span>
+            </div>
+            <div className="account-info-edit-icon">
+              <EditIconSVG className="info-edit-icon" />
+            </div>
+          </div>
+          <div className="account-feature">
+            <div className="account-info-icon">
+              <TitleIconSVG />
+            </div>
+            <div className="account-info">
+              <label>Title</label>
+              <span>{userData.title}</span>
             </div>
             <div className="account-info-edit-icon">
               <EditIconSVG className="info-edit-icon" />
@@ -49,7 +98,7 @@ export function Account() {
             </div>
             <div className="account-info">
               <label>Bio</label>
-              <span>Hello world! How are you guys doing?</span>
+              <span>{userData.bio}</span>
             </div>
             <EditIconSVG className="info-edit-icon" />
           </div>
@@ -59,7 +108,7 @@ export function Account() {
             </div>
             <div className="account-info">
               <label>Email</label>
-              <span>myemail@mail.com</span>
+              <span>{userData.email}</span>
             </div>
           </div>
 

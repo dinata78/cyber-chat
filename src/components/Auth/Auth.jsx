@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
-import { auth } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { LoadingOverlay } from "../LoadingOverlay";
+import { doc, setDoc } from "firebase/firestore";
 
 export function Auth() {
   const [isAuth, setIsAuth] = useState(null);
@@ -22,7 +23,11 @@ export function Auth() {
     try {
       setIsLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
-      setIsAuth(true);  
+      setIsAuth(true);
+
+      const newDocId = auth.currentUser.uid;
+      const newDocRef = doc(db, "users", newDocId);
+      await setDoc(newDocRef, {name: "Anonymous", bio: "Hello world!", title: "-", email: auth.currentUser.email});
     }
     catch (error) {
       console.log("Sign Up Failed: " + error);
