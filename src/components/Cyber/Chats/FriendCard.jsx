@@ -1,7 +1,7 @@
 
-export function FriendCard({ friendName, friendTitle, currentChat, onFriendCardClick }) {
+export function FriendCard({ currentChat, friendName, friendTitle, friendUid, onFriendCardClick }) {
   return (
-    <div className={currentChat === friendName ? "friend-card selected" : "friend-card"} onClick={() => onFriendCardClick(friendName, friendTitle)}>
+    <div className={currentChat === friendName ? "friend-card selected" : "friend-card"} onClick={() => onFriendCardClick(friendName, friendTitle, friendUid)}>
       <div className="friend-pfp-container">
         <img className="friend-pfp" src="/empty-pfp.webp" />
       </div>
