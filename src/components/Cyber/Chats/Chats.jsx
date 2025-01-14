@@ -16,6 +16,8 @@ export function Chats() {
 
   const [usernamesMap, setUsernamesMap] = useState([]);
 
+  const messageEndRef = useRef(null);
+
   const getConversationId = (ownUid, friendUid) => {
     if (ownUid === friendUid) return ownUid;
 
@@ -97,6 +99,10 @@ export function Chats() {
     setMessageInput("");
   }
 
+  useEffect(() => {
+    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  })
+
   return (
     <div id="cyber-chats-container">
       <div id="cyber-chats-main">
@@ -158,6 +164,7 @@ export function Chats() {
                       isOwnMessage={chatContent.senderId === auth.currentUser.uid}
                    />
             })}
+            <div id="message-end-ref" ref={messageEndRef}></div>
           </div>
           
           <div id="chat-input">
