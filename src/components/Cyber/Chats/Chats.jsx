@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query } from "firebase/firestore";
 import { auth, db } from "../../../../firebase";
 
-export function Chats() {
+export function Chats({ isAsideVisible }) {
   const [currentChat, setCurrentChat] = useState(null);
   const [currentChatData, setCurrentChatData] = useState({});
   const [currentChatContent, setCurrentChatContent] = useState([]);
@@ -100,32 +100,37 @@ export function Chats() {
   }
 
   useEffect(() => {
-    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (currentChat) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   })
 
   return (
     <div id="cyber-chats-container">
-      <div id="cyber-chats-main">
-        <div id="chat-header">
 
-          <div id="chat-header-top">
+      {isAsideVisible &&
+
+      <div id="cyber-chats-aside">
+        <div id="chats-aside-top">
+
+          <div id="chats-aside-top-top">
             <h1>Chats</h1>
-            <button id="chat-add-button">
+            <button>
                 <PlusIconSVG />
             </button>
           </div>
           
-          <div id="chat-header-bottom">
-            <div id="chat-search">
-              <div id="chat-search-icon-container">
+          <div id="chats-aside-top-bottom">
+            <div id="chats-aside-search">
+              <div>
                 <SearchIconSVG />
               </div>
-              <input id="chat-search-input" type="text" placeholder="Search" />
+              <input type="text" placeholder="Search" />
             </div>
           </div>
 
         </div>
-        <div id="friend-list">
+        <div id="chats-aside-bottom">
           <FriendCard 
             currentChat={currentChat} 
             friendName="Global Chat" 
@@ -142,18 +147,21 @@ export function Chats() {
           />
         </div>
       </div>
-
+      }
+      
+      {currentChat ?
       <div id="cyber-chats-content">
+
         <div id="chats-content-top">
-          <div id="current-chat-pfp-container">
-            <img id="current-chat-pfp" src="/empty-pfp.webp" />
+          <div id="chats-content-top-pfp">
+            <img src="/empty-pfp.webp" />
           </div>
-          <div id="current-chat-info">
-            <span id="current-chat-name">{currentChatData.name}</span>
-            <span id="current-chat-title">{currentChatData.title}</span>
+          <div id="chats-content-top-info">
+            <h1>{currentChatData.name}</h1>
+            <span>{currentChatData.title}</span>
           </div>
         </div>
-
+        
         <div id="chats-content-bottom">
           <div id="chat-display">
             {currentChatContent.map((chatContent, index) => {
@@ -173,8 +181,11 @@ export function Chats() {
               <ArrowLeftIconSVG />
             </button>
           </div>
+
         </div>
       </div>
+      : null
+      }
     </div>
   )
 }

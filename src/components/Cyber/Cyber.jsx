@@ -7,15 +7,27 @@ import { Home } from "./Home";
 import { Chats } from "./Chats/Chats";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account";
+import { useState } from "react";
+import { MenuSVG } from "../svg/nav-svg/MenuSVG";
 
 export function Cyber() {
   const { parameter } = useParams();
+  const [ isAsideVisible, setIsAsideVisible ] = useState(true);
 
   return (
     <div id="cyber-page">
       <div id="cyber-container">
         <nav>
+          {
+            parameter === "chats" ?
+              <button id="toggle-chats-aside" onClick={() => setIsAsideVisible((prev) => !prev)}>
+                <MenuSVG />
+              </button> 
+            : null
+          }
+          
           <div id="top-nav">
+            
             <Link to="/cyber/home">
               <HomeSVG currentParameter={parameter} />          
             </Link>
@@ -31,13 +43,15 @@ export function Cyber() {
             <Link to="/cyber/account">
               <img id="nav-pfp" className={parameter === "account" ? "selected" : ""} src="/empty-pfp.webp" alt="PFP" />          
             </Link>
-            <ThemeSVG theme="dark" />
+            <button id="toggle-theme" >
+              <ThemeSVG theme="dark" />
+            </button>
           </div>
         </nav>
 
         {
           parameter === "home" ? <Home />
-          : parameter === "chats" ? <Chats />
+          : parameter === "chats" ? <Chats isAsideVisible={isAsideVisible} />
           : parameter === "settings" ? <Settings />
           : parameter === "account" ? <Account />
           : null
