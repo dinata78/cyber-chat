@@ -6,7 +6,7 @@ export function Settings() {
   }
 
   return (
-    <div id="cyber-settings-container">
+    <div id="cyber-settings">
       <h1>Settings</h1>
       <div id="cyber-settings-features">
         <div className="settings-feature">

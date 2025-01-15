@@ -1,14 +1,14 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "../../../firebase";
+import { auth, db } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { EditIconSVG } from "../svg/EditIconSVG";
-import { NameIconSVG } from "../svg/NameIconSVG";
-import { BioIconSVG } from "../svg/BioIconSVG";
-import { EmailIconSVG } from "../svg/EmailIconSVG";
+import { EditIconSVG } from "../../svg/EditIconSVG";
+import { NameIconSVG } from "../../svg/NameIconSVG";
+import { BioIconSVG } from "../../svg/BioIconSVG";
+import { EmailIconSVG } from "../../svg/EmailIconSVG";
 import { doc, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { TitleIconSVG } from "../svg/TitleIconSVG";
-import { AtIconSVG } from "../svg/AtIconSVG";
+import { TitleIconSVG } from "../../svg/TitleIconSVG";
+import { AtIconSVG } from "../../svg/AtIconSVG";
 
 export function Account() {
   const [userData, setUserData] = useState({});
@@ -58,7 +58,7 @@ export function Account() {
   }, []);
   
   return (
-    <div id="cyber-account-container">
+    <div id="cyber-account">
       <div id="cyber-account-pfp">
         <div id="account-pfp">
           <img src="/empty-pfp.webp" />

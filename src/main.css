@@ -182,7 +182,7 @@ body {
 }
 
 #cyber-container {
-  background-color: #0a1016;
+  background-color: #0a101650;
   width: 90vw;
   height: 90vh;
   border: 1px solid white;
@@ -228,59 +228,35 @@ button#toggle-theme {
   border: none;
 }
 
-#cyber-home-container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--cyber-size) / 3);
-}
-
-#cyber-home-container h1 {
-  margin: 0;
-  font-size: var(--cyber-size);
-}
-
-#cyber-home-links {
-  display: flex;
-  gap: calc(var(--cyber-size) / 2);
-}
-
-#cyber-home-links a {
-  text-decoration: none;
-  background-color: transparent;
-  padding: calc(var(--cyber-size) / 7) calc(var(--cyber-size) / 2);
-  border: calc(var(--cyber-size) / 20) solid white;
-  border-radius: calc(var(--cyber-size));
-  color: inherit;
-  font-family: inherit;
-  font-size: calc(var(--cyber-size) / 2);
-}
-
-#cyber-chats-container {
+#cyber-chats {
   flex-grow: 1;
   display: flex;
   gap: 24px;
   position: relative;
 }
 
-button#toggle-chats-aside {
+#toggle-chats-aside {
+  height: 48px;
+  display: grid;
+  place-content: center;
+}
+
+#toggle-chats-aside button {
   background-color: transparent;
+  padding: 0;
   border: none;
 }
 
-button#toggle-chats-aside svg {
+#toggle-chats-aside svg {
   fill: white;
   width: 42px;
 }
 
-button#toggle-chats-aside svg:active {
+#toggle-chats-aside button svg:active {
   fill: #0077ff;
 }
 
 #cyber-chats-aside {
-  background-color: #00000033;
   min-width: 400px;
   padding-inline: 10px;
   display: flex;
@@ -483,7 +459,7 @@ button#toggle-chats-aside svg:active {
 }
 
 .message-sender-name {
-  background-color: #006eff;
+  background-color: #0099bb;
   width: max-content;
   min-height: 30px;
   padding-inline: 12px;
@@ -501,12 +477,12 @@ button#toggle-chats-aside svg:active {
   flex-grow: 1;
   width: 100%;
   padding: 12px;
-  border: 1px solid #006eff;
+  border: 1px solid #0099bb;
   font-size: 1rem;
 }
 
 #chat-input {
-  height: 120px;
+  min-height: 120px;
   padding-right: 1rem;
   display: flex;
   justify-content: center;
@@ -543,17 +519,17 @@ button#toggle-chats-aside svg:active {
   width: 24px;
 }
 
-#cyber-settings-container {
+#cyber-settings {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-#cyber-settings-container h1 {
+#cyber-settings h1 {
+  min-height: 15%;
   margin: 0;
-  height: 15%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -609,7 +585,7 @@ button#toggle-chats-aside svg:active {
   justify-content: flex-end;
 }
 
-#cyber-account-container {
+#cyber-account {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -735,3 +711,23 @@ hr#account-pfp-features-border {
   font-size: 1.8rem;
 }
 
+#cyber-contacts {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#cyber-contacts-nav {
+  min-height: 15%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#cyber-contacts-nav h1 {
+  margin: 0;
+}
+
+#cyber-contacts-features {
+  flex-grow: 1;
+}

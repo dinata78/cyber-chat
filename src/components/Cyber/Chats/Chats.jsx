@@ -1,5 +1,4 @@
 import { FriendCard } from "./FriendCard";
-import { PlusIconSVG } from "../../svg/PlusIconSVG";
 import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
 import { MessageCard } from "./MessageCard";
@@ -105,7 +104,7 @@ export function Chats({ isAsideVisible }) {
   })
 
   return (
-    <div id="cyber-chats-container">
+    <div id="cyber-chats">
 
       {isAsideVisible &&
 
