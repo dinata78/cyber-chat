@@ -4,11 +4,10 @@ import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
-import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { auth, db } from "../../../../firebase";
 
 export function Chats({ isAsideVisible }) {
-  const [currentChat, setCurrentChat] = useState(null);
   const [currentChatData, setCurrentChatData] = useState({});
   const [currentChatContent, setCurrentChatContent] = useState([]);
 
@@ -42,7 +41,6 @@ export function Chats({ isAsideVisible }) {
   const unsubscribeSnapshot = useRef(null);
 
   const onFriendCardClick = (friendName, friendTitle, friendUid) => {
-    setCurrentChat(friendName);
     setCurrentChatData({
       name: friendName,
       title: friendTitle,
@@ -58,24 +56,25 @@ export function Chats({ isAsideVisible }) {
     const messageQuery = query(
       collection(db, "conversations", conversationId, "messages"),
       orderBy("timeCreated", "asc"),
+      limit(50),
     );
 
     const unsubscribe = onSnapshot(messageQuery, async (snapshot) => {
       const messages = snapshot.docs.map((doc) => {return {...doc.data()}});
 
-      const uniqueSenderIds = Array.from(new Set(messages.map((msg) => msg.senderId)));
-    const fetchMissingUsernames = uniqueSenderIds.filter((id) => !usernamesMap[id]);
+      const uniqueSenderIds = Array.from(new Set(messages.map((message) => message.senderId)));
+      const missingUsernames = uniqueSenderIds.filter((id) => !usernamesMap[id]);
 
-    if (fetchMissingUsernames.length > 0) {
-      const fetchedNames = {};
-      for (const senderId of fetchMissingUsernames) {
-        const userDoc = await getDoc(doc(db, "users", senderId));
-        if (userDoc.exists()) {
-          fetchedNames[senderId] = userDoc.data().name;
+      if (missingUsernames.length > 0) {
+        const fetchedNames = {};
+        for (const senderId of missingUsernames) {
+          const userDoc = await getDoc(doc(db, "users", senderId));
+          if (userDoc.exists()) {
+            fetchedNames[senderId] = userDoc.data().name;
+          }
         }
+        setUsernamesMap((prev) => ({...prev, ...fetchedNames}));
       }
-      setUsernamesMap((prev) => ({ ...prev, ...fetchedNames }));
-    }
 
 
       setCurrentChatContent(messages);
@@ -100,7 +99,7 @@ export function Chats({ isAsideVisible }) {
   }
 
   useEffect(() => {
-    if (currentChat) {
+    if (currentChatData.name) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   })
@@ -132,14 +131,14 @@ export function Chats({ isAsideVisible }) {
         </div>
         <div id="chats-aside-bottom">
           <FriendCard 
-            currentChat={currentChat} 
+            currentChatName={currentChatData.name} 
             friendName="Global Chat" 
             friendTitle="A global room everyone can access." 
             friendUid="GlobalChat" 
             onFriendCardClick={onFriendCardClick} 
           />
           <FriendCard 
-            currentChat={currentChat} 
+            currentChatName={currentChatData.name} 
             friendName="Steven Dinata" 
             friendTitle="Developer of CyberChat" 
             friendUid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
@@ -149,7 +148,7 @@ export function Chats({ isAsideVisible }) {
       </div>
       }
       
-      {currentChat ?
+      {currentChatData.name ?
       <div id="cyber-chats-content">
 
         <div id="chats-content-top">

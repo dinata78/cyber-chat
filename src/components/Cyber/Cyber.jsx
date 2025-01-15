@@ -1,9 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { ChatSVG } from "../svg/nav-svg/ChatSVG";
-import { HomeSVG } from "../svg/nav-svg/HomeSVG";
 import { SettingSVG } from "../svg/nav-svg/SettingSVG";
 import { ThemeSVG } from "../svg/nav-svg/ThemeSVG";
-import { Home } from "./Home";
 import { Chats } from "./Chats/Chats";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account";
@@ -28,9 +26,6 @@ export function Cyber() {
           
           <div id="top-nav">
             
-            <Link to="/cyber/home">
-              <HomeSVG currentParameter={parameter} />          
-            </Link>
             <Link to="/cyber/chats">
               <ChatSVG currentParameter={parameter} />          
             </Link>
@@ -50,8 +45,7 @@ export function Cyber() {
         </nav>
 
         {
-          parameter === "home" ? <Home />
-          : parameter === "chats" ? <Chats isAsideVisible={isAsideVisible} />
+          parameter === "chats" ? <Chats isAsideVisible={isAsideVisible} />
           : parameter === "settings" ? <Settings />
           : parameter === "account" ? <Account />
           : null
