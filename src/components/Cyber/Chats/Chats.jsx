@@ -110,13 +110,10 @@ export function Chats({ isAsideVisible }) {
       {isAsideVisible &&
 
       <div id="cyber-chats-aside">
+        
         <div id="chats-aside-top">
-
           <div id="chats-aside-top-top">
             <h1>Chats</h1>
-            <button>
-                <PlusIconSVG />
-            </button>
           </div>
           
           <div id="chats-aside-top-bottom">

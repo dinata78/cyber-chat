@@ -303,24 +303,7 @@ button#toggle-chats-aside svg:active {
 
 #chats-aside-top-top h1 {
   margin-block: 0;
-  margin-inline: auto;
 }
-
-#chats-aside-top-top button {
-  background-color: #22222f;
-  height: 42px;
-  width: 42px;
-  border: none;
-  border-radius: 100%;
-  display: grid;
-  place-content: center;
-}
-
-#chats-aside-top-top svg {
-  fill: white;
-  width: 2rem;
-}
-
 #chats-aside-top-bottom {
   height: 50%;
   display: flex;
@@ -638,17 +621,17 @@ button#toggle-chats-aside svg:active {
   place-content: center;
 }
 
-#account-pfp-container {
+#account-pfp {
   position: relative;
 }
 
-#account-pfp {
+#account-pfp img {
   width: 220px;
   border: 12px solid #333;
   border-radius: 100%;
 }
 
-#pfp-edit-icon-container {
+#account-pfp-edit {
   background-color: #2f2f2f;
   width: 70px;
   height: 70px;
@@ -660,27 +643,36 @@ button#toggle-chats-aside svg:active {
   right: 5px;
 }
 
-.pfp-edit-icon {
+#account-pfp-edit svg {
   fill: gray;
   width: 50px;
 }
 
+hr#account-pfp-features-border {
+  width: 640px;
+}
+
 #cyber-account-features {
   overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   flex-grow: 1;
   display: flex;
   justify-content: center;
 }
 
-#cyber-account-features::-webkit-scrollbar {
+#account-features-container {
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  width: 640px;
+  padding-bottom: 1rem;
+}
+
+#cyber-account-features-container::-webkit-scrollbar {
   display: none;
 }
 
-#account-feature-container {
-  height: 100%;
-  width: 35rem;
+#cyber-account-features hr {
+  margin: 12p;
 }
 
 .account-feature {
@@ -689,13 +681,16 @@ button#toggle-chats-aside svg:active {
   gap: 1rem;
 }
 
-.account-info-icon {
+.account-feature .info-icon {
+  height: 60px;
+  padding-top: 10px;
   width: 50px;
-  display: grid;
-  place-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.account-info-icon svg {
+.account-feature .info-icon svg {
   fill: #777;
   width: 40px;
 }
@@ -709,23 +704,23 @@ button#toggle-chats-aside svg:active {
   align-items: flex-start;
 }
 
-.account-info label {
+.account-feature label {
   color: #777;
   font-size: 1.2rem;
 }
 
-.account-info span {
+.account-feature span {
   width: 80%;
   color: white;
   font-size: 1.7rem;
 }
 
-.account-info-edit-icon {
+.account-feature .edit-icon {
   display: grid;
   place-content: center;
 }
 
-.info-edit-icon {
+.account-feature .edit-icon svg {
   fill: white;
   width: 30px;
 }

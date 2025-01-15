@@ -8,6 +8,7 @@ import { EmailIconSVG } from "../svg/EmailIconSVG";
 import { doc, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { TitleIconSVG } from "../svg/TitleIconSVG";
+import { AtIconSVG } from "../svg/AtIconSVG";
 
 export function Account() {
   const [userData, setUserData] = useState({});
@@ -59,51 +60,70 @@ export function Account() {
   return (
     <div id="cyber-account-container">
       <div id="cyber-account-pfp">
-        <div id="account-pfp-container">
-          <img id="account-pfp" src="/empty-pfp.webp" />
-          <div id="pfp-edit-icon-container">
-            <EditIconSVG className="pfp-edit-icon" />
+        <div id="account-pfp">
+          <img src="/empty-pfp.webp" />
+          <div id="account-pfp-edit">
+            <EditIconSVG />
           </div>
         </div>
       </div>
+      <hr id="account-pfp-features-border"/>
       <div id="cyber-account-features">
-        <div id="account-feature-container">
+        <div id="account-features-container">
           <div className="account-feature">
-            <div className="account-info-icon">
+            <div className="info-icon">
+              <AtIconSVG />
+            </div>
+            <div className="account-info">
+              <label>Username</label>
+              <span>{userData.username}</span>
+            </div>
+            <div className="edit-icon">
+              <EditIconSVG />
+            </div>
+          </div>
+          <hr />
+          <div className="account-feature">
+            <div className="info-icon">
               <NameIconSVG />
             </div>
             <div className="account-info">
-              <label>Name</label>
+              <label>Display Name</label>
               <span>{userData.name}</span>
             </div>
-            <div className="account-info-edit-icon">
-              <EditIconSVG className="info-edit-icon" />
+            <div className="edit-icon">
+              <EditIconSVG />
             </div>
           </div>
+          <hr />
           <div className="account-feature">
-            <div className="account-info-icon">
+            <div className="info-icon">
               <TitleIconSVG />
             </div>
             <div className="account-info">
               <label>Title</label>
               <span>{userData.title}</span>
             </div>
-            <div className="account-info-edit-icon">
-              <EditIconSVG className="info-edit-icon" />
+            <div className="edit-icon">
+              <EditIconSVG />
             </div>
           </div>
+          <hr />
           <div className="account-feature">
-            <div className="account-info-icon">
+            <div className="info-icon">
               <BioIconSVG />
             </div>
             <div className="account-info">
               <label>Bio</label>
               <span>{userData.bio}</span>
             </div>
-            <EditIconSVG className="info-edit-icon" />
+            <div className="edit-icon">
+              <EditIconSVG />
+            </div>
           </div>
+          <hr />
           <div className="account-feature">
-            <div className="account-info-icon">
+            <div className="info-icon">
               <EmailIconSVG />
             </div>
             <div className="account-info">
@@ -111,7 +131,7 @@ export function Account() {
               <span>{userData.email}</span>
             </div>
           </div>
-
+          <hr />
           <div className="account-feature">
             <button>Reset Password</button>
           </div>
@@ -121,6 +141,7 @@ export function Account() {
           <div className="account-feature">
             <button>Delete Account</button>
           </div>
+          <hr />
         </div>
       </div>
     </div>
