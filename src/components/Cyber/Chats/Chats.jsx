@@ -54,7 +54,7 @@ export function Chats({ isAsideVisible }) {
 
     const messageQuery = query(
       collection(db, "conversations", conversationId, "messages"),
-      orderBy("timeCreated", "asc"),
+      orderBy("timeCreated", "desc"),
       limit(50),
     );
 
@@ -76,7 +76,7 @@ export function Chats({ isAsideVisible }) {
       }
 
 
-      setCurrentChatContent(messages);
+      setCurrentChatContent(messages.reverse());
     });
 
     unsubscribeSnapshot.current = unsubscribe;
