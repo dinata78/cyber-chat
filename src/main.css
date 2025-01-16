@@ -711,23 +711,39 @@ hr#account-pfp-features-border {
   font-size: 1.8rem;
 }
 
-#cyber-contacts {
+#cyber-friends {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-#cyber-contacts-nav {
+#cyber-friends-nav {
   min-height: 15%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
 
-#cyber-contacts-nav h1 {
+#cyber-friends-nav h1 {
   margin: 0;
 }
 
-#cyber-contacts-features {
+.divider {
+  background-color: #777;
+  width: 2px;
+  height: 2rem;
+  margin-inline: 2rem;
+}
+
+#cyber-friends-nav button {
+  background-color: transparent;
+  margin-right: 1rem;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.7rem;
+}
+
+#cyber-friends-features {
   flex-grow: 1;
 }
