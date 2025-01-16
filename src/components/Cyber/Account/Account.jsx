@@ -76,7 +76,7 @@ export function Account() {
             </div>
             <div className="account-info">
               <label>Username</label>
-              <span>{userData.username}</span>
+              <span>{userData.username ? userData.username : "(Not Set)"}</span>
             </div>
             <div className="edit-icon">
               <EditIconSVG />

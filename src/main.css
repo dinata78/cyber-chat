@@ -183,9 +183,8 @@ body {
 
 #cyber-container {
   background-color: #0a101650;
-  width: 90vw;
-  height: 90vh;
-  border: 1px solid white;
+  width: 100vw;
+  height: 100vh;
   display: flex;
 }
 
@@ -290,13 +289,12 @@ button#toggle-theme {
 #chats-aside-search {
   display: flex;
   background-color: #22222f;
-  border-radius: 1.5rem;
+  border-radius: 12px;
 }
 
 #chats-aside-search div {
   height: 42px;
   width: 54px;
-  border-radius: 1.5rem 0 0 1.5rem;
   display: grid;
   place-content: center;
 }
@@ -311,10 +309,13 @@ button#toggle-theme {
   background-color: transparent;
   padding-inline: 0.5rem;
   border: none;
-  border-radius: 0 1.5rem 1.5rem 0;
   color: inherit;
   font-family: inherit;
   font-size: 1.2rem;
+}
+
+#chats-aside-search input:focus {
+  outline: none;
 }
 
 #chats-aside-bottom {
@@ -332,7 +333,7 @@ button#toggle-theme {
   display: none;
 }
 
-.friend-card {
+.chat-card {
   background-color: #22222f;
   min-height: 96px;
   border-radius: 16px;
@@ -341,36 +342,41 @@ button#toggle-theme {
   justify-content: center;
 }
 
-.friend-card.selected {
+.chat-card:hover {
+  background-color: #33334f;
+}
+
+.chat-card.selected {
   background-color: #0077ff;
 }
 
-.friend-card-pfp {
+.chat-card-pfp {
   min-width: 75px;
   border-radius: 100%;
   display: grid;
   place-content: center;
 }
 
-.friend-card-pfp img {
+.chat-card-pfp img {
   width: 50px;
   height: 50px;
   border-radius: 100%;
 }
 
-.friend-card-info {
+.chat-card-info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.friend-card-name {
+.chat-card-name {
   width: 90%;
   font-size: 1.25rem;
   font-weight: 700;
 }
 
-.friend-card-title {
+.chat-card-title {
+  color: #ffffffbb;
   width: 90%;
   font-size: 0.9rem;
 }
@@ -412,6 +418,7 @@ button#toggle-theme {
 }
 
 #chats-content-top-info span {
+  color: #ffffff99;
   font-size: 1.1rem;
 }
 
@@ -526,7 +533,7 @@ button#toggle-theme {
 }
 
 #cyber-settings h1 {
-  min-height: 15%;
+  min-height: 10%;
   margin: 0;
   display: flex;
   justify-content: flex-start;
@@ -718,7 +725,7 @@ hr#account-pfp-features-border {
 }
 
 #cyber-friends-nav {
-  min-height: 15%;
+  min-height: 10%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -729,7 +736,7 @@ hr#account-pfp-features-border {
 }
 
 .divider {
-  background-color: #777;
+  background-color: #aaa;
   width: 2px;
   height: 2rem;
   margin-inline: 2rem;
@@ -738,12 +745,149 @@ hr#account-pfp-features-border {
 #cyber-friends-nav button {
   background-color: transparent;
   margin-right: 1rem;
+  padding-inline: 12px;
   border: none;
   color: inherit;
   font-family: inherit;
   font-size: 1.7rem;
 }
 
-#cyber-friends-features {
+#cyber-friends-nav button.selected {
+  color: #0077ff;
+  border-bottom: 1px solid #0077ff;
+}
+
+button#add-friend {
+  background-color: #ffffff50;
+  border-radius: 6px;
+}
+
+button#add-friend:active {
+  background-color: #0077ff50;
+}
+
+#cyber-friends-content {
   flex-grow: 1;
+  padding-right: 72px;
+  display: flex;
+  flex-direction: column;
+}
+
+#friends-search {
+  display: flex;
+  border: 1px solid white;
+}
+
+#friends-search input {
+  flex-grow: 1;
+  background-color: transparent;
+  min-height: 42px;
+  border: none;
+  padding-right: 12px;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1.2rem;
+}
+
+#friends-search input:focus {
+  outline: none;
+}
+
+#friends-search div {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-content: center;
+}
+
+#friends-search svg {
+  fill: white;
+  width: 27px;
+}
+
+.friend-cards {
+  flex-grow: 1;
+  padding-block: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-card {
+  background-color: #22222f;
+  height: 100px;
+  border-radius: 16px;
+  display: flex;
+}
+
+.friend-card:hover {
+  background-color: #33334f;
+}
+
+.friend-card-pfp {
+  width: 100px;
+  height: 100%;
+  display: grid;
+  place-content: center;
+}
+
+.friend-card-pfp img {
+  width: 65px;
+  border-radius: 100%;
+}
+
+.friend-card-info {
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.friend-card-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.friend-card-title {
+  color: #ffffff99;
+  font-size: 1.1rem;
+}
+
+.friend-card-buttons {
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.friend-card-buttons button {
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  border: none;
+}
+
+.friend-card-buttons button:active {
+  svg {
+    fill: #0077ff;
+  }
+}
+
+.friend-card-buttons svg {
+  fill: white;
+}
+
+#friends-all {
+  flex-grow: 1;
+  padding-block: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+#friends-all h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: lighter;
 }

@@ -5,7 +5,7 @@ import { SettingsSVG } from "../svg/nav-svg/SettingsSVG";
 import { FriendsSVG } from "../svg/nav-svg/FriendsSVG";
 import { ThemeSVG } from "../svg/nav-svg/ThemeSVG";
 import { Chats } from "./Chats/Chats";
-import { Friends } from "./Contacts/Friends";
+import { Friends } from "./Friends/Friends";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account/Account";
 import { useState } from "react";

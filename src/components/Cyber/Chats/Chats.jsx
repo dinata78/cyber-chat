@@ -1,4 +1,4 @@
-import { FriendCard } from "./FriendCard";
+import { ChatCard } from "./ChatCard";
 import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
 import { MessageCard } from "./MessageCard";
@@ -39,7 +39,7 @@ export function Chats({ isAsideVisible }) {
 
   const unsubscribeSnapshot = useRef(null);
 
-  const onFriendCardClick = (friendName, friendTitle, friendUid) => {
+  const onChatCardClick = (friendName, friendTitle, friendUid) => {
     setCurrentChatData({
       name: friendName,
       title: friendTitle,
@@ -86,8 +86,6 @@ export function Chats({ isAsideVisible }) {
     const conversationId = getConversationId(auth.currentUser.uid, currentChatData.uid);
     const collectionRef = collection(db, "conversations", conversationId, "messages");
 
-    console.log(conversationId)
-
     await addDoc(collectionRef, {
       content: message,
       senderId: auth.currentUser.uid,
@@ -126,19 +124,19 @@ export function Chats({ isAsideVisible }) {
 
         </div>
         <div id="chats-aside-bottom">
-          <FriendCard 
+          <ChatCard 
             currentChatName={currentChatData.name} 
             friendName="Global Chat" 
             friendTitle="A global room everyone can access." 
             friendUid="GlobalChat" 
-            onFriendCardClick={onFriendCardClick} 
+            onChatCardClick={onChatCardClick} 
           />
-          <FriendCard 
+          <ChatCard 
             currentChatName={currentChatData.name} 
             friendName="Steven Dinata" 
             friendTitle="Developer of CyberChat" 
             friendUid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
-            onFriendCardClick={onFriendCardClick} 
+            onChatCardClick={onChatCardClick}
           />
         </div>
       </div>
