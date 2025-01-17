@@ -762,8 +762,8 @@ button#add-friend {
   border-radius: 6px;
 }
 
-button#add-friend:active {
-  background-color: #0077ff50;
+button#add-friend:hover, button#add-friend:active {
+  background-color: #0077ff99;
 }
 
 #cyber-friends-content {
@@ -810,6 +810,7 @@ button#add-friend:active {
   padding-block: 24px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .friend-card {
@@ -828,11 +829,33 @@ button#add-friend:active {
   height: 100%;
   display: grid;
   place-content: center;
+  position: relative;
 }
 
 .friend-card-pfp img {
   width: 65px;
   border-radius: 100%;
+}
+
+.friend-card-pfp .indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 22%;
+  right: 18%;
+}
+
+.friend-card-pfp .indicator.online {
+  background-color: lime;
+}
+
+.friend-card-pfp .indicator.offline {
+  background-color: red;
+}
+
+.friend-card-pfp .indicator.hidden {
+  background-color: lightgray;
 }
 
 .friend-card-info {
@@ -869,7 +892,7 @@ button#add-friend:active {
   border: none;
 }
 
-.friend-card-buttons button:active {
+.friend-card-buttons button:hover, .friend-card-buttons button:active {
   svg {
     fill: #0077ff;
   }
