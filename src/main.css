@@ -896,6 +896,54 @@ button#add-friend:hover, button#add-friend:active {
   background-color: #0077ffaa;
 }
 
+#add-friend-no-result {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#add-friend-no-result img {
+  width: 225px;
+}
+
+#add-friend-no-result span {
+  font-size: 1.25rem;
+}
+
+#add-friend-profile {
+  flex-grow: 1;
+  display: flex;
+}
+
+#add-friend-profile-pfp {
+  min-width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+#add-friend-profile-pfp img {
+  width: 160px;
+  border-radius: 100%;
+}
+
+#add-friend-profile-pfp span {
+  color: white;
+  font-size: 1.2rem;
+}
+
+#add-friend-profile-data {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
 #friends-search {
   display: flex;
   border: 1px solid white;
