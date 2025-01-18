@@ -4,6 +4,7 @@ import { FriendsAll } from "./FriendsAll";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { AddFriendModal } from "./AddFriendModal";
 
 export function Friends() {
   const [currentNav, setCurrentNav] = useState("all");
@@ -11,6 +12,7 @@ export function Friends() {
   const [friendDataList, setFriendDataList] = useState([]);
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
+  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
 
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
@@ -68,7 +70,7 @@ export function Friends() {
         <button className={currentNav === "all" ? "selected" : ""} onClick={() => friendsButtonOnClick("all")}>All</button>
         <button className={currentNav === "pending" ? "selected" : ""} onClick={() => friendsButtonOnClick("pending")}>Pending</button>
         <button className={currentNav === "inbox" ? "selected" : ""} onClick={() => friendsButtonOnClick("inbox")}>Inbox</button>
-        <button id="add-friend" onClick={() => console.log(200)}>Add Friend</button>
+        <button id="add-friend" onClick={() => setIsAddFriendModalVisible(true)}>Add Friend</button>
       </div>
       <div id="cyber-friends-content">
         <div id="friends-search">
@@ -83,6 +85,10 @@ export function Friends() {
           : null
         }
       </div>
+      {
+        isAddFriendModalVisible &&
+        <AddFriendModal setIsAddFriendModalVisible={setIsAddFriendModalVisible} />
+      }
     </div>
   )
 }
