@@ -3,10 +3,11 @@ import { CloseSVG } from "../../svg/CloseSVG";
 import { SearchIconSVG } from "../../svg/SearchIconSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
-import { db } from "../../../../firebase"
+import { auth, db } from "../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
+import { AddFriendButton } from "./AddFriendButton";
 
-export function AddFriendModal({ setIsAddFriendModalVisible }) {
+export function AddFriendModal({ setIsAddFriendModalVisible, friendRequestSentList }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
@@ -26,7 +27,8 @@ export function AddFriendModal({ setIsAddFriendModalVisible }) {
         username: searchedUserData.username,
         title: searchedUserData.title,
         bio: searchedUserData.bio,
-        status: searchedUserData.status
+        status: searchedUserData.status,
+        uid: searchedUserData.uid,
       };
       
       setSearchedUserData(filteredUserData);
@@ -61,7 +63,14 @@ export function AddFriendModal({ setIsAddFriendModalVisible }) {
             resultStatus === "found" ? 
               <>
               <AddFriendProfile searchedUserData={searchedUserData} />
-              <button id="add-friend-button">SEND FRIEND REQUEST</button>
+              {
+                searchedUserData.uid === auth.currentUser.uid ? null
+                : 
+                <AddFriendButton
+                  searchedUserData={searchedUserData}
+                  friendRequestSentList={friendRequestSentList}
+                />
+              }
               </>
             : <AddFriendNoResult type={resultStatus} />
           }

@@ -27,7 +27,18 @@ export function Auth() {
 
       const newDocId = auth.currentUser.uid;
       const newDocRef = doc(db, "users", newDocId);
-      await setDoc(newDocRef, {username: null, name: "Anonymous", bio: "Hello world!", title: "-", email: auth.currentUser.email});
+      await setDoc(newDocRef, {
+        uid: auth.currentUser.uid,
+        username: null,
+        name: "Anonymous",
+        bio: "Hello world!",
+        title: "-",
+        email: auth.currentUser.email,
+        chatList: [],
+        friendList: [],
+        friendRequestSent: [],
+        friendRequestReceived: [],
+      });
     }
     catch (error) {
       console.log("Sign Up Failed: " + error);

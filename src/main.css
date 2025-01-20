@@ -915,14 +915,13 @@ button#add-friend:hover, button#add-friend:active {
   flex-grow: 1;
   max-height: 80%;
   display: flex;
-  gap: 8px;
+  gap: 1%;
   padding-block: 12px;
   overflow-y: auto;
 }
 
 #add-friend-profile-left {
-  min-width: 40%;
-  max-width: 40%;
+  width: 40%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -935,7 +934,7 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #add-friend-profile-right {
-  flex-grow: 1;
+  width: 59%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -952,6 +951,7 @@ button#add-friend:hover, button#add-friend:active {
   justify-content: flex-start;
   align-items: flex-start;
   gap: 2px;
+  overflow-x: auto;
 }
 
 .add-friend-profile-data-card:last-child {
@@ -967,11 +967,11 @@ button#add-friend:hover, button#add-friend:active {
 
 .add-friend-profile-data-card .label {
   color: #aaddff;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .add-friend-profile-data-card {
-  font-size: 1.25rem;
+  font-size: 1rem;
 }
 
 #add-friend-button {
@@ -991,6 +991,16 @@ button#add-friend:hover, button#add-friend:active {
 #add-friend-button:active {
   background-color: #ffffff50;
 }
+
+#add-friend-button.sent {
+  color: lime;
+  border-color: lime;
+}
+
+#add-friend-button.sent:hover, #add-friend-button.sent:active {
+  background-color: transparent;
+}
+
 
 #friends-search {
   display: flex;

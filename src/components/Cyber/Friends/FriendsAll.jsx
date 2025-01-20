@@ -1,6 +1,6 @@
 import { FriendCard } from "./FriendCard";
 
-export function FriendsAll({friendDataList}) {
+export function FriendsAll({ friendDataList }) {
 
   return (
     <div id="friends-all">

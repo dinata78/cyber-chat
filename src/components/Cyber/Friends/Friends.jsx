@@ -11,6 +11,9 @@ export function Friends() {
   const [friendUidList, setFriendUidList] = useState([]);
   const [friendDataList, setFriendDataList] = useState([]);
 
+  const [friendRequestSentList, setFriendRequestSentList] = useState([]);
+  const [friendRequestReceivedList, setFriendRequestReceivedList] = useState([]);
+
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
 
@@ -27,7 +30,7 @@ export function Friends() {
   }, []);
 
   useEffect(() => {
-    let unsubscribe = null;
+    let unsubscribe;
 
     const fetchFriendList = async () => {
       const userDocRef = doc(db, "users", auth.currentUser.uid);
@@ -40,9 +43,8 @@ export function Friends() {
 
     fetchFriendList();
 
-    return () => {
-      if (unsubscribe) unsubscribe();
-    }
+    return () => unsubscribe();
+
   }, [isAuthChanged]);
 
   useEffect(() => {
@@ -60,7 +62,25 @@ export function Friends() {
 
     fetchFriendData();
   }, [friendUidList]);
-  
+
+  useEffect(() => {
+    let unsubscribe;
+
+    const fetchFriendRequestList = async () => {
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      unsubscribe = onSnapshot(userDocRef, (snapshot) => {
+        const data = snapshot.data();
+
+        setFriendRequestSentList(data.friendRequestSent);
+        setFriendRequestReceivedList(data.friendRequestReceivedList);
+      })
+    }
+
+    fetchFriendRequestList();
+
+    return () => unsubscribe();
+
+  }, []);
 
   return (
     <div id="cyber-friends">
@@ -87,7 +107,10 @@ export function Friends() {
       </div>
       {
         isAddFriendModalVisible &&
-        <AddFriendModal setIsAddFriendModalVisible={setIsAddFriendModalVisible} />
+        <AddFriendModal 
+          setIsAddFriendModalVisible={setIsAddFriendModalVisible} 
+          friendRequestSentList={friendRequestSentList} 
+        />
       }
     </div>
   )
