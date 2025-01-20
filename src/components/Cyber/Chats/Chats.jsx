@@ -83,6 +83,8 @@ export function Chats({ isAsideVisible }) {
   }
 
   const addMessage = async (message) => {
+    if (!message.trim()) return;
+
     const conversationId = getConversationId(auth.currentUser.uid, currentChatData.uid);
     const collectionRef = collection(db, "conversations", conversationId, "messages");
 

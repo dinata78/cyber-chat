@@ -12,6 +12,7 @@ export function AddFriendModal({ setIsAddFriendModalVisible }) {
   const [searchedUserData, setSearchedUserData] = useState({});
 
   const searchUser = async (username) => {
+    if (!username.trim()) return;
     try {
       const userQuery = query(
         collection(db, "users"),
@@ -57,7 +58,11 @@ export function AddFriendModal({ setIsAddFriendModalVisible }) {
             <button onClick={() => searchUser(usernameInput)}>Search</button>
           </div>
           {
-            resultStatus === "found" ? <AddFriendProfile searchedUserData={searchedUserData} />
+            resultStatus === "found" ? 
+              <>
+              <AddFriendProfile searchedUserData={searchedUserData} />
+              <button id="add-friend-button">SEND FRIEND REQUEST</button>
+              </>
             : <AddFriendNoResult type={resultStatus} />
           }
         </div>

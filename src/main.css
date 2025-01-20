@@ -787,14 +787,14 @@ button#add-friend:hover, button#add-friend:active {
 #add-friend-modal > div {
   background-color: #444455;
   width: 480px;
-  height: 480px;
+  height: 510px;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
 }
 
 #add-friend-modal-top {
-  min-height: 12%;
+  min-height: 10%;
   display: grid;
   place-content: center;
   position: relative;
@@ -802,7 +802,7 @@ button#add-friend:hover, button#add-friend:active {
 
 #add-friend-modal-top h1 {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
 }
 
 #add-friend-modal-top div {
@@ -913,35 +913,83 @@ button#add-friend:hover, button#add-friend:active {
 
 #add-friend-profile {
   flex-grow: 1;
+  max-height: 80%;
   display: flex;
+  gap: 8px;
+  padding-block: 12px;
+  overflow-y: auto;
 }
 
-#add-friend-profile-pfp {
-  min-width: 50%;
-  height: 100%;
+#add-friend-profile-left {
+  min-width: 40%;
+  max-width: 40%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 6px;
 }
 
-#add-friend-profile-pfp img {
-  width: 160px;
-  border-radius: 100%;
+#add-friend-profile-left img {
+  max-width: 200px;
+  border: 3px solid #aaddff;
 }
 
-#add-friend-profile-pfp span {
-  color: white;
-  font-size: 1.2rem;
-}
-
-#add-friend-profile-data {
+#add-friend-profile-right {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.add-friend-profile-data-card {
+  width: 100%;
+  height: max-content;
+  padding: 8px;
+  border: 3px solid #aaddff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.add-friend-profile-data-card:last-child {
+  flex-grow: 1;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.add-friend-profile-data-card:last-child::-webkit-scrollbar {
+  display: none;
+}
+
+.add-friend-profile-data-card .label {
+  color: #aaddff;
+  font-size: 0.8rem;
+}
+
+.add-friend-profile-data-card {
+  font-size: 1.25rem;
+}
+
+#add-friend-button {
+  background-color: transparent;
+  min-height: 10%;
+  border: 3px solid #aaddff;
+  color: #aaddff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+#add-friend-button:hover {
+  background-color: #ffffff22;
+}
+
+#add-friend-button:active {
+  background-color: #ffffff50;
 }
 
 #friends-search {

@@ -1,16 +1,17 @@
+import { AddFriendProfileDataCard } from "./AddFriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {
   return (
     <div id="add-friend-profile">
-      <div id="add-friend-profile-pfp">
+      <div id="add-friend-profile-left">
         <img src="/empty-pfp.webp" />
-        <span>{"@" + searchedUserData.username}</span>
+        <AddFriendProfileDataCard label="USERNAME" content={searchedUserData.username} />
+        <AddFriendProfileDataCard label="STATUS" content={searchedUserData.status.charAt(0).toUpperCase() + searchedUserData.status.slice(1)} />
       </div>
-      <div id="add-friend-profile-data">
-        <span className="name">{searchedUserData.displayName}</span>
-        <span className="status">{searchedUserData.status}</span>
-        <span className="title">{searchedUserData.title}</span>
-        <span className="bio">{searchedUserData.bio}</span>
+      <div id="add-friend-profile-right">
+      <AddFriendProfileDataCard label="DISPLAY NAME" content={searchedUserData.displayName} />
+      <AddFriendProfileDataCard label="TITLE" content={searchedUserData.title} />
+      <AddFriendProfileDataCard label="BIO" content={searchedUserData.bio} />
       </div>
     </div>
   )
