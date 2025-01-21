@@ -1,7 +1,7 @@
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
 
-export function FriendCard({ friendName, friendTitle, friendStatus }) {
+export function FriendCard({ type, friendName, friendTitle, friendStatus }) {
   const getIndicator = (friendStatus) => {
     if (friendStatus === "online") return "indicator online";
     else if (friendStatus === "offline") return "indicator offline";
@@ -20,12 +20,33 @@ export function FriendCard({ friendName, friendTitle, friendStatus }) {
         <span className="friend-card-title">{friendTitle}</span>
       </div>
       <div className="friend-card-buttons">
-        <button className="chat" title={"Chat"}>
-          <ChatSVG />
-        </button>
-        <button className="delete" title="Remove Friend">
-          <AccountMinusSVG />
-        </button>
+        {
+          type === "normal" ?
+            <>
+              <button className="normal" title="Chat">
+                <ChatSVG />
+              </button>
+              <button className="normal" title="Remove Friend">
+                <AccountMinusSVG />
+              </button>
+            </>
+          : type === "pending-received" ?
+            <>
+              <button className="received accept">
+                ACCEPT
+              </button>
+              <button className="received reject">
+                REJECT
+              </button>
+            </>
+          : type === "pending-sent" ?
+            <>
+              <button className="sent">
+                CANCEL REQUEST
+              </button>      
+            </>          
+          : null
+        }
       </div>
     </div>
   )

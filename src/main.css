@@ -754,7 +754,7 @@ hr#account-pfp-features-border {
 
 #cyber-friends-nav button.selected {
   color: #0077ff;
-  border-bottom: 1px solid #0077ff;
+  border-bottom: 3px solid #0077ff;
 }
 
 button#add-friend {
@@ -1107,29 +1107,65 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 .friend-card-buttons {
-  width: 200px;
   display: flex;
-  justify-content: center;
+  padding-inline: 36px;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
 }
 
-.friend-card-buttons button {
+.friend-card-buttons button.normal {
   background-color: transparent;
   width: 50px;
   height: 50px;
   border: none;
 }
 
-.friend-card-buttons button:hover, .friend-card-buttons button:active {
+.friend-card-buttons button.normal:hover, .friend-card-buttons button.normal:active {
   svg {
     fill: #0077ff;
   }
 }
 
-.friend-card-buttons svg {
+.friend-card-buttons button.normal svg {
   fill: white;
 }
+
+.friend-card-buttons button.received {
+  padding-block: 4px;
+  padding-inline: 12px;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.friend-card-buttons button.received:active {
+  opacity: 80%;
+}
+
+.friend-card-buttons button.received.accept {
+  background-color: #10c80a;
+}
+
+.friend-card-buttons button.received.reject {
+  background-color: red;
+}
+
+.friend-card-buttons button.sent {
+  background-color: red;
+  padding-block: 4px;
+  padding-inline: 12px;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.friend-card-buttons button.sent:active {
+  opacity: 80%;
+}
+
 
 #friends-all {
   flex-grow: 1;
@@ -1139,6 +1175,19 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #friends-all h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
+
+#friends-pending {
+  flex-grow: 1;
+  padding-block: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+#friends-pending h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: lighter;

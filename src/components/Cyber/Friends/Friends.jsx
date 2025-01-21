@@ -5,6 +5,7 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { AddFriendModal } from "./AddFriendModal";
+import { FriendsPending } from "./FriendsPending";
 
 export function Friends() {
   const [currentNav, setCurrentNav] = useState("all");
@@ -13,6 +14,8 @@ export function Friends() {
 
   const [friendRequestSentList, setFriendRequestSentList] = useState([]);
   const [friendRequestReceivedList, setFriendRequestReceivedList] = useState([]);
+  const [friendRequestSentDataList, setFriendRequestSentDataList] = useState([]);
+  const [friendRequestReceivedDataList, setFriendRequestReceivedDataList] = useState([]);
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -43,7 +46,9 @@ export function Friends() {
 
     fetchFriendList();
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    }
 
   }, [isAuthChanged]);
 
@@ -72,15 +77,17 @@ export function Friends() {
         const data = snapshot.data();
 
         setFriendRequestSentList(data.friendRequestSent);
-        setFriendRequestReceivedList(data.friendRequestReceivedList);
+        setFriendRequestReceivedList(data.friendRequestReceived);
       })
     }
 
     fetchFriendRequestList();
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    } 
 
-  }, []);
+  }, [isAuthChanged]);
 
   return (
     <div id="cyber-friends">
@@ -102,6 +109,7 @@ export function Friends() {
         
         {
           currentNav === "all" ? <FriendsAll friendDataList={friendDataList} />
+          : currentNav === "pending" ? <FriendsPending friendRequestReceivedList={friendRequestReceivedList} friendRequestSentList={friendRequestSentList} />
           : null
         }
       </div>
