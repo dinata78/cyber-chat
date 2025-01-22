@@ -8,7 +8,15 @@ export function FriendsAll({ friendDataList }) {
       <div className="friend-cards">
         {
           friendDataList.map((friendData, index) => {
-            return <FriendCard key={index + friendData.name} type="normal" friendName={friendData.name} friendTitle={friendData.title} friendStatus={friendData.status} />
+            return (
+              <FriendCard 
+                key={index + friendData.name}
+                type="normal"
+                friendName={friendData.name}
+                friendTitle={friendData.title}
+                friendStatus={friendData.status}
+              />
+            )
           })
         }
       </div>

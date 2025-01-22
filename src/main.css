@@ -122,26 +122,26 @@ body {
   border-color: red;
 }
 
-#auth-button-container {
+#auth-button {
   height: 25%;
   display: grid;
   justify-content: center;
   align-items: start;
 }
 
-#auth-button-container button {
+#auth-button button {
   background-color: #ffffff55;
-  width: calc(var(--auth-size) / 5);
-  height: calc(var(--auth-size) / 22);
+  width: calc(var(--auth-size) / 4);
+  height: calc(var(--auth-size) / 15);
   border: none;
   color: inherit;
   font-family: inherit;
-  font-size: inherit;
+  font-size: 18px;
 }
 
-#auth-button-container button:active {
-  color: red;
-  border: calc(var(--auth-size) / 400) solid red;
+#auth-button button:active {
+  background-color: #10c80a55;
+  color: #10c80a;
 }
 
 #loading-overlay {
@@ -189,7 +189,7 @@ body {
 }
 
 #cyber-container nav {
-  padding: 24px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
 }
@@ -213,9 +213,10 @@ body {
 }
 
 #nav-pfp {
-  width: 50px;
-  border: 3px solid white;
-  border-radius: 100%;
+  width: 48px;
+  height: 48px;
+  border: 2px solid white;
+  border-radius: 8px;
 }
 
 #nav-pfp.selected {
@@ -224,7 +225,19 @@ body {
 
 button#toggle-theme {
   background-color: transparent;
+  width: 50px;
+  height: 50px;
   border: none;
+  border-radius: 100%;
+}
+
+button#toggle-theme:hover {
+  background-color: #ffffff22;
+}
+
+button#toggle-theme svg {
+  fill: white;
+  width: 35px;
 }
 
 #cyber-chats {
@@ -235,7 +248,8 @@ button#toggle-theme {
 }
 
 #toggle-chats-aside {
-  height: 48px;
+  width: 50px;
+  height: 50px;
   display: grid;
   place-content: center;
 }
@@ -251,8 +265,10 @@ button#toggle-theme {
   width: 42px;
 }
 
-#toggle-chats-aside button svg:active {
-  fill: #0077ff;
+#toggle-chats-aside button:active {
+  svg {
+    fill: #0077ff;
+  }
 }
 
 #cyber-chats-aside {
@@ -454,14 +470,14 @@ button#toggle-theme {
   justify-content: flex-end;
 }
 
-.message-info {
+.message-card > div {
   width: 600px;
   height: max-content;
   display: flex;
   flex-direction: column;
 }
 
-.message-info.own-message {
+.message-card > div.own-message {
   align-items: flex-end;
 }
 
@@ -473,7 +489,7 @@ button#toggle-theme {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .message-sender-name.own-message {
@@ -605,25 +621,31 @@ button#toggle-theme {
 }
 
 #account-pfp {
+  width: 250px;
+  height: 250px;
   position: relative;
 }
 
 #account-pfp img {
-  width: 220px;
-  border: 12px solid #333;
-  border-radius: 100%;
+  width: 100%;
+  border: 6px solid #222;
+  border-radius: 24px;
 }
 
 #account-pfp-edit {
-  background-color: #2f2f2f;
+  background-color: #000000aa;
   width: 70px;
   height: 70px;
-  border-radius: 50%;
+  border-radius: 12px;
   display: grid;
   place-content: center;
   position: absolute;
-  bottom: 15px;
-  right: 5px;
+  bottom: 12px;
+  right: 12px;
+}
+
+#account-pfp-edit:active {
+  opacity: 80%;
 }
 
 #account-pfp-edit svg {
@@ -655,7 +677,7 @@ hr#account-pfp-features-border {
 }
 
 #cyber-account-features hr {
-  margin: 12p;
+  margin-block: 12px;
 }
 
 .account-feature {
@@ -699,8 +721,16 @@ hr#account-pfp-features-border {
 }
 
 .account-feature .edit-icon {
+  align-self: center;
+  background-color: #ffffff22;
+  padding: 12px;
+  border-radius: 8px;
   display: grid;
   place-content: center;
+}
+
+.account-feature .edit-icon:active {
+  opacity: 70%;
 }
 
 .account-feature .edit-icon svg {

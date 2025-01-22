@@ -8,11 +8,48 @@ import { Chats } from "./Chats/Chats";
 import { Friends } from "./Friends/Friends";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account/Account";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth, db } from "../../../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 
 export function Cyber() {
   const { parameter } = useParams();
   const [ isAsideVisible, setIsAsideVisible ] = useState(true);
+
+  const [isAuthChanged, setIsAuthChanged] = useState(false);
+  const [ownData, setOwnData] = useState({});
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, () => {
+      setIsAuthChanged((prev) => !prev);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    let unsubscribe = null;
+
+    const fetchOwnData = async () => {
+      const ownDocRef = doc(db, "users", auth.currentUser.uid);
+
+      unsubscribe = onSnapshot(ownDocRef, (snapshot) => {
+        const data = snapshot.data();
+        setOwnData(data);
+      });
+    }
+
+    fetchOwnData();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    }
+  }, [isAuthChanged]);
+
+  useEffect(() => {
+    
+  })
 
   return (
     <div id="cyber-page">
@@ -30,7 +67,6 @@ export function Cyber() {
           
           
           <div id="top-nav">
-            
             <Link to="/cyber/chats">
               <ChatsSVG currentParameter={parameter} />
             </Link>
@@ -44,19 +80,19 @@ export function Cyber() {
 
           <div id="bottom-nav">
             <Link to="/cyber/account">
-              <img id="nav-pfp" className={parameter === "account" ? "selected" : ""} src="/empty-pfp.webp" alt="PFP" />          
+              <img id="nav-pfp" className={parameter === "account" ? "selected" : null} src="/empty-pfp.webp" />
             </Link>
-            <button id="toggle-theme" >
+            <button id="toggle-theme">
               <ThemeSVG theme="dark" />
             </button>
           </div>
         </nav>
 
         {
-          parameter === "chats" ? <Chats isAsideVisible={isAsideVisible} />
-          : parameter === "friends" ? <Friends />
-          : parameter === "settings" ? <Settings />
-          : parameter === "account" ? <Account />
+          parameter === "chats" ? <Chats ownData={ownData} isAsideVisible={isAsideVisible} />
+          : parameter === "friends" ? <Friends ownData={ownData} />
+          : parameter === "settings" ? <Settings ownData={ownData} />
+          : parameter === "account" ? <Account ownData={ownData} />
           : null
         }
       </div>

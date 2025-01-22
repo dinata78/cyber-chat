@@ -1,12 +1,12 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "../../../../firebase";
+import { db } from "../../../../firebase";
 
-export function AddFriendButton({ searchedUserData, friendRequestSentList }) {
+export function AddFriendButton({ ownUid, searchedUserData, friendRequestSentList }) {
 
   const addFriend = async (newFriendUid) => {
     if (friendRequestSentList.includes(newFriendUid)) return;
         
-    const userDocRef = doc(db, "users", auth.currentUser.uid);
+    const userDocRef = doc(db, "users", ownUid);
     const userDoc = await getDoc(userDocRef);
     const userDocData = userDoc.data();
 
@@ -21,7 +21,7 @@ export function AddFriendButton({ searchedUserData, friendRequestSentList }) {
 
     await updateDoc(friendDocRef, {
       ...friendDocData,
-      friendRequestReceived: [...friendDocData.friendRequestReceived, auth.currentUser.uid],
+      friendRequestReceived: [...friendDocData.friendRequestReceived, ownUid],
     });
 
   }

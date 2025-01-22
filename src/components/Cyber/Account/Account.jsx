@@ -1,18 +1,14 @@
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "../../../../firebase";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { EditIconSVG } from "../../svg/EditIconSVG";
-import { NameIconSVG } from "../../svg/NameIconSVG";
-import { BioIconSVG } from "../../svg/BioIconSVG";
-import { EmailIconSVG } from "../../svg/EmailIconSVG";
-import { doc, onSnapshot, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { TitleIconSVG } from "../../svg/TitleIconSVG";
-import { AtIconSVG } from "../../svg/AtIconSVG";
+import { AtSVG } from "../../svg/AtSVG";
+import { EditSVG } from "../../svg/EditSVG";
+import { NameSVG } from "../../svg/NameSVG";
+import { BioSVG } from "../../svg/BioSVG";
+import { TitleSVG } from "../../svg/TitleSVG";
+import { EmailSVG } from "../../svg/EmailSVG";
 
-export function Account() {
-  const [userData, setUserData] = useState({});
-
+export function Account({ ownData }) {
   const navigate = useNavigate();
 
   const logOut = async () => {
@@ -24,38 +20,6 @@ export function Account() {
       console.error("Log Out Failed: " + error);
     }
   }
-
-  let unsubscribeSnapshot = null;
-
-  useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (authUser) => {
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-        unsubscribeSnapshot = null;
-      }
-
-      if (authUser) {
-        const currentUserQuery = query(
-          doc(db, "users", authUser.uid)
-        )
-  
-        unsubscribeSnapshot = onSnapshot(
-          currentUserQuery, (docSnapshot) => {
-            setUserData(docSnapshot.data());
-          }
-        )
-      }
-
-    })
-
-    return () => {
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-        unsubscribeSnapshot = null;
-      }
-      unsubscribeAuth();
-    }
-  }, []);
   
   return (
     <div id="cyber-account">
@@ -63,7 +27,7 @@ export function Account() {
         <div id="account-pfp">
           <img src="/empty-pfp.webp" />
           <div id="account-pfp-edit">
-            <EditIconSVG />
+            <EditSVG />
           </div>
         </div>
       </div>
@@ -72,63 +36,63 @@ export function Account() {
         <div id="account-features-container">
           <div className="account-feature">
             <div className="info-icon">
-              <AtIconSVG />
+              <AtSVG />
             </div>
             <div className="account-info">
               <label>Username</label>
-              <span>{userData.username ? userData.username : "(Not Set)"}</span>
+              <span>{ownData.username ? ownData.username : "(Not Set)"}</span>
             </div>
             <div className="edit-icon">
-              <EditIconSVG />
+              <EditSVG />
             </div>
           </div>
           <hr />
           <div className="account-feature">
             <div className="info-icon">
-              <NameIconSVG />
+              <NameSVG />
             </div>
             <div className="account-info">
               <label>Display Name</label>
-              <span>{userData.name}</span>
+              <span>{ownData.name}</span>
             </div>
             <div className="edit-icon">
-              <EditIconSVG />
+              <EditSVG />
             </div>
           </div>
           <hr />
           <div className="account-feature">
             <div className="info-icon">
-              <TitleIconSVG />
+              <TitleSVG />
             </div>
             <div className="account-info">
               <label>Title</label>
-              <span>{userData.title}</span>
+              <span>{ownData.title}</span>
             </div>
             <div className="edit-icon">
-              <EditIconSVG />
+              <EditSVG />
             </div>
           </div>
           <hr />
           <div className="account-feature">
             <div className="info-icon">
-              <BioIconSVG />
+              <BioSVG />
             </div>
             <div className="account-info">
               <label>Bio</label>
-              <span>{userData.bio}</span>
+              <span>{ownData.bio}</span>
             </div>
             <div className="edit-icon">
-              <EditIconSVG />
+              <EditSVG />
             </div>
           </div>
           <hr />
           <div className="account-feature">
             <div className="info-icon">
-              <EmailIconSVG />
+              <EmailSVG />
             </div>
             <div className="account-info">
               <label>Email</label>
-              <span>{userData.email}</span>
+              <span>{ownData.email}</span>
             </div>
           </div>
           <hr />

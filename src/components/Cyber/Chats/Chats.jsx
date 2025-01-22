@@ -1,56 +1,35 @@
 import { ChatCard } from "./ChatCard";
-import { SearchIconSVG } from "../../svg/SearchIconSVG";
+import { SearchSVG } from "../../svg/SearchSVG";
 import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
-import { auth, db } from "../../../../firebase";
+import { db } from "../../../../firebase";
+import { getConversationId } from "../../../utils";
 
-export function Chats({ isAsideVisible }) {
+export function Chats({ ownData, isAsideVisible }) {
   const [currentChatData, setCurrentChatData] = useState({});
   const [currentChatContent, setCurrentChatContent] = useState([]);
 
   const [messageInput,setMessageInput] = useState("");
-
-  const [usernamesMap, setUsernamesMap] = useState([]);
+  const [usernamesMap, setUsernamesMap] = useState({});
 
   const messageEndRef = useRef(null);
 
-  const getConversationId = (ownUid, friendUid) => {
-    if (ownUid === friendUid) return ownUid;
-
-    const mergeUids = (a, b) => {
-      let i = 0;
-      while (true) {
-        const aCharCode = a.charCodeAt(i);
-        const bCharCode = b.charCodeAt(i);
-        
-        if (aCharCode < bCharCode) return a + b;
-        else if (aCharCode > bCharCode) return b + a;
-        else {
-          i++;
-        }  
-      }
-    }
-
-    if (friendUid === "GlobalChat") return "GlobalChat";
-    else return mergeUids(ownUid, friendUid);
-  };
-
   const unsubscribeSnapshot = useRef(null);
 
-  const onChatCardClick = (friendName, friendTitle, friendUid) => {
+  const onChatCardClick = (name, title, uid) => {
     setCurrentChatData({
-      name: friendName,
-      title: friendTitle,
-      uid: friendUid, 
+      name: name,
+      title: title,
+      uid: uid, 
     });
 
     if (unsubscribeSnapshot.current) {
       unsubscribeSnapshot.current();
     }
 
-    const conversationId = getConversationId(auth.currentUser.uid, friendUid);
+    const conversationId = getConversationId(ownData.uid, uid);
 
     const messageQuery = query(
       collection(db, "conversations", conversationId, "messages"),
@@ -59,14 +38,14 @@ export function Chats({ isAsideVisible }) {
     );
 
     const unsubscribe = onSnapshot(messageQuery, async (snapshot) => {
-      const messages = snapshot.docs.map((doc) => {return {...doc.data()}});
+      const messages = snapshot.docs.map((doc) => ({...doc.data()}));
 
       const uniqueSenderIds = Array.from(new Set(messages.map((message) => message.senderId)));
-      const missingUsernames = uniqueSenderIds.filter((id) => !usernamesMap[id]);
+      const missingUsernameIds = uniqueSenderIds.filter((id) => !usernamesMap[id]);
 
-      if (missingUsernames.length > 0) {
+      if (missingUsernameIds.length > 0) {
         const fetchedNames = {};
-        for (const senderId of missingUsernames) {
+        for (const senderId of missingUsernameIds) {
           const userDoc = await getDoc(doc(db, "users", senderId));
           if (userDoc.exists()) {
             fetchedNames[senderId] = userDoc.data().name;
@@ -75,22 +54,21 @@ export function Chats({ isAsideVisible }) {
         setUsernamesMap((prev) => ({...prev, ...fetchedNames}));
       }
 
-
       setCurrentChatContent(messages.reverse());
     });
 
     unsubscribeSnapshot.current = unsubscribe;
   }
 
-  const addMessage = async (message) => {
-    if (!message.trim()) return;
+  const addMessage = async (newMessage) => {
+    if (!newMessage.trim()) return;
 
-    const conversationId = getConversationId(auth.currentUser.uid, currentChatData.uid);
+    const conversationId = getConversationId(ownData.uid, currentChatData.uid);
     const collectionRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(collectionRef, {
-      content: message,
-      senderId: auth.currentUser.uid,
+      content: newMessage,
+      senderId: ownData.uid,
       timeCreated: new Date(),
     });
 
@@ -101,85 +79,100 @@ export function Chats({ isAsideVisible }) {
     if (currentChatData.name) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  })
+  });
 
   return (
     <div id="cyber-chats">
 
       {isAsideVisible &&
+        <div id="cyber-chats-aside">
 
-      <div id="cyber-chats-aside">
-        
-        <div id="chats-aside-top">
-          <div id="chats-aside-top-top">
-            <h1>Chats</h1>
-          </div>
-          
-          <div id="chats-aside-top-bottom">
-            <div id="chats-aside-search">
-              <div>
-                <SearchIconSVG />
+          <div id="chats-aside-top">
+            <div id="chats-aside-top-top">
+              <h1>Chats</h1>
+            </div>
+            <div id="chats-aside-top-bottom">
+              <div id="chats-aside-search">
+                <div>
+                  <SearchSVG />
+                </div>
+                <input type="text" placeholder="Search" />
               </div>
-              <input type="text" placeholder="Search" />
             </div>
           </div>
 
-        </div>
-        <div id="chats-aside-bottom">
-          <ChatCard 
-            currentChatName={currentChatData.name} 
-            friendName="Global Chat" 
-            friendTitle="A global room everyone can access." 
-            friendUid="GlobalChat" 
-            onChatCardClick={onChatCardClick} 
-          />
-          <ChatCard 
-            currentChatName={currentChatData.name} 
-            friendName="Steven Dinata" 
-            friendTitle="Developer of CyberChat" 
-            friendUid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
-            onChatCardClick={onChatCardClick}
-          />
-        </div>
-      </div>
-      }
-      
-      {currentChatData.name ?
-      <div id="cyber-chats-content">
-
-        <div id="chats-content-top">
-          <div id="chats-content-top-pfp">
-            <img src="/empty-pfp.webp" />
-          </div>
-          <div id="chats-content-top-info">
-            <h1>{currentChatData.name}</h1>
-            <span>{currentChatData.title}</span>
-          </div>
-        </div>
-        
-        <div id="chats-content-bottom">
-          <div id="chat-display">
-            {currentChatContent.map((chatContent, index) => {
-            return <MessageCard
-                      key={index + chatContent.senderId}
-                      senderName={usernamesMap[chatContent.senderId]} 
-                      content={chatContent.content} 
-                      isOwnMessage={chatContent.senderId === auth.currentUser.uid}
-                   />
-            })}
-            <div id="message-end-ref" ref={messageEndRef}></div>
+          <div id="chats-aside-bottom">
+            <ChatCard 
+              currentChatName={currentChatData.name} 
+              name="Global Chat" 
+              title="A global room everyone can access." 
+              uid="GlobalChat" 
+              onChatCardClick={onChatCardClick} 
+            />
+            {
+              ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
+                <ChatCard 
+                  currentChatName={currentChatData.name} 
+                  name="Steven Dinata" 
+                  title="Developer of CyberChat" 
+                  uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
+                  onChatCardClick={onChatCardClick}
+                />
+              : null
+            }
+            <ChatCard 
+              currentChatName={currentChatData.name}
+              name={ownData.name + " (You)"}
+              title={ownData.title}
+              uid={ownData.uid}
+              onChatCardClick={onChatCardClick}
+            />
           </div>
           
-          <div id="chat-input">
-            <input type="text" placeholder="Type something.." value={messageInput} onChange={(e) => setMessageInput(e.target.value)} />
-            <button onClick={() => addMessage(messageInput)}>
-              <ArrowLeftIconSVG />
-            </button>
-          </div>
-
         </div>
-      </div>
-      : null
+      }
+      
+      {
+        currentChatData.name ?
+          <div id="cyber-chats-content">
+
+            <div id="chats-content-top">
+              <div id="chats-content-top-pfp">
+                <img src="/empty-pfp.webp" />
+              </div>
+              <div id="chats-content-top-info">
+                <h1>{currentChatData.name}</h1>
+                <span>{currentChatData.title}</span>
+              </div>
+            </div>
+            
+            <div id="chats-content-bottom">
+              <div id="chat-display">
+                {currentChatContent.map((chatContent, index) => {
+                return <MessageCard
+                          key={index + chatContent.senderId}
+                          senderName={usernamesMap[chatContent.senderId]} 
+                          content={chatContent.content} 
+                          isOwnMessage={chatContent.senderId === ownData.uid}
+                      />
+                })}
+                <div id="message-end-ref" ref={messageEndRef}></div>
+              </div>
+              <div id="chat-input">
+                <input 
+                  type="text"
+                  placeholder="Type something.."
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                />
+                <button onClick={() => addMessage(messageInput)}>
+                  <ArrowLeftIconSVG />
+                </button>
+              </div>
+            </div>
+
+          </div>
+        : null
       }
     </div>
   )

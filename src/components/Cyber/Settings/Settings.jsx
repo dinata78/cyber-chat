@@ -1,6 +1,6 @@
 import { InputTypeToggle } from "./InputTypeToggle";
 
-export function Settings() {
+export function Settings({ ownData }) {
   const onContrastToggle = () => {
     console.log("Contrast Mode Toggled.");
   }

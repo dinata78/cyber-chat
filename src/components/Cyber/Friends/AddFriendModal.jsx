@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { CloseSVG } from "../../svg/CloseSVG";
-import { SearchIconSVG } from "../../svg/SearchIconSVG";
+import { SearchSVG } from "../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
-import { auth, db } from "../../../../firebase"
+import { db } from "../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
 
-export function AddFriendModal({ setIsAddFriendModalVisible, friendRequestSentList }) {
+export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendRequestSentList }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
@@ -19,7 +19,7 @@ export function AddFriendModal({ setIsAddFriendModalVisible, friendRequestSentLi
         collection(db, "users"),
         where("username", "==", username),
         limit(1)
-      )
+      );
       const searchedUserDoc = await getDocs(userQuery);
       const searchedUserData = searchedUserDoc.docs[0].data();
       const filteredUserData = {
@@ -40,7 +40,10 @@ export function AddFriendModal({ setIsAddFriendModalVisible, friendRequestSentLi
   }
 
   return (
-    <div id="add-friend-modal" onClick={() => setIsAddFriendModalVisible(false)}>
+    <div 
+      id="add-friend-modal"
+      onClick={() => setIsAddFriendModalVisible(false)}
+    >
       <div onClick={(e) => e.stopPropagation()}>
         <div id="add-friend-modal-top">
           <h1>ADD FRIEND</h1>
@@ -54,23 +57,29 @@ export function AddFriendModal({ setIsAddFriendModalVisible, friendRequestSentLi
         <div id="add-friend-modal-bottom">
           <div id="add-friend-input">
             <div>
-              <SearchIconSVG />
+              <SearchSVG />
             </div>
-            <input type="text" placeholder="Search user with their username" value={usernameInput} onChange={(e) => setUsernameInput(e.target.value)} />
+            <input
+              type="text"
+              placeholder="Search user with their username"
+              value={usernameInput}
+              onChange={(e) => setUsernameInput(e.target.value)}
+            />
             <button onClick={() => searchUser(usernameInput)}>Search</button>
           </div>
           {
             resultStatus === "found" ? 
               <>
-              <AddFriendProfile searchedUserData={searchedUserData} />
-              {
-                searchedUserData.uid === auth.currentUser.uid ? null
-                : 
-                <AddFriendButton
-                  searchedUserData={searchedUserData}
-                  friendRequestSentList={friendRequestSentList}
-                />
-              }
+                <AddFriendProfile searchedUserData={searchedUserData} />
+                {
+                  searchedUserData.uid === ownUid ? null
+                  :
+                  <AddFriendButton
+                    ownUid={ownUid}
+                    searchedUserData={searchedUserData}
+                    friendRequestSentList={friendRequestSentList}
+                  />
+                }
               </>
             : <AddFriendNoResult type={resultStatus} />
           }
