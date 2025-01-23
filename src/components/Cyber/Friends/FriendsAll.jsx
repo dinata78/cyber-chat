@@ -10,11 +10,11 @@ export function FriendsAll({ friendDataList }) {
           friendDataList.map((friendData, index) => {
             return (
               <FriendCard 
-                key={index + friendData.name}
+                key={index + friendData.uid}
                 type="normal"
+                friendUid={friendData.uid}
                 friendName={friendData.name}
                 friendTitle={friendData.title}
-                friendStatus={friendData.status}
               />
             )
           })

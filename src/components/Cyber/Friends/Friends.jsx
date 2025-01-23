@@ -3,8 +3,8 @@ import { SearchSVG } from "../../svg/SearchSVG";
 import { FriendsAll } from "./FriendsAll";
 import { AddFriendModal } from "./AddFriendModal";
 import { FriendsPending } from "./FriendsPending";
-import { useFriendList } from "../../custom-hooks/useFriendList";
-import { useFriendRequestList } from "../../custom-hooks/useFriendRequestList";
+import { useFriendList } from "../../../custom-hooks/useFriendList";
+import { useFriendRequestList } from "../../../custom-hooks/useFriendRequestList";
 
 export function Friends({ ownData }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -23,10 +23,30 @@ export function Friends({ ownData }) {
       <div id="cyber-friends-nav">
         <h1>Friends</h1>
         <div className="divider"></div>
-        <button className={currentNav === "all" ? "selected" : ""} onClick={() => friendsButtonOnClick("all")}>All</button>
-        <button className={currentNav === "pending" ? "selected" : ""} onClick={() => friendsButtonOnClick("pending")}>Pending</button>
-        <button className={currentNav === "inbox" ? "selected" : ""} onClick={() => friendsButtonOnClick("inbox")}>Inbox</button>
-        <button id="add-friend" onClick={() => setIsAddFriendModalVisible(true)}>Add Friend</button>
+        <button 
+          className={currentNav === "all" ? "selected" : ""}
+          onClick={() => friendsButtonOnClick("all")}
+        >
+          All
+        </button>
+        <button
+          className={currentNav === "pending" ? "selected" : ""}
+          onClick={() => friendsButtonOnClick("pending")}
+        >
+          Pending
+        </button>
+        <button
+          className={currentNav === "inbox" ? "selected" : ""}
+          onClick={() => friendsButtonOnClick("inbox")}
+        >
+          Inbox
+        </button>
+        <button
+          id="add-friend"
+          onClick={() => setIsAddFriendModalVisible(true)}
+        >
+          Add Friend
+        </button>
       </div>
 
       <div id="cyber-friends-content">
@@ -37,8 +57,13 @@ export function Friends({ ownData }) {
           <input type="text" />
         </div>
         {
-          currentNav === "all" ? <FriendsAll friendDataList={friendDataList} />
-          : currentNav === "pending" ? <FriendsPending friendRequestSentList={friendRequestSentList} friendRequestReceivedList={friendRequestReceivedList} />
+          currentNav === "all" ? 
+            <FriendsAll friendDataList={friendDataList} />
+          : currentNav === "pending" ?
+            <FriendsPending
+              friendRequestSentList={friendRequestSentList}
+              friendRequestReceivedList={friendRequestReceivedList}
+            />
           : null
         }
       </div>

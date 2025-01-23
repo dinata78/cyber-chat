@@ -3,7 +3,7 @@ import { db } from "../firebase";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
-  if (uid1 === "GlobalChat" || uid2 === "GlobalChat") return "GlobalChat";
+  if (uid1 === "globalChat" || uid2 === "globalChat") return "globalChat";
   if (uid1 === uid2) return uid1;
   if (uid1.length !== uid2.length) return null;
   

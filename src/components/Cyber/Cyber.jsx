@@ -8,10 +8,11 @@ import { Chats } from "./Chats/Chats";
 import { Friends } from "./Friends/Friends";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account/Account";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../../../firebase";
+import { auth, db, realtimeDb } from "../../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import { onDisconnect, ref, set, update } from "firebase/database";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -21,14 +22,25 @@ export function Cyber() {
   const [ownData, setOwnData] = useState({});
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, () => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsAuthChanged((prev) => !prev);
+
+      const setOnlineStatus = async () => {
+        const dbRef = ref(realtimeDb, `users/${user.uid}`);
+
+        await set(dbRef, {isOnline: true});
+        onDisconnect(dbRef).remove();
+      }
+
+      setOnlineStatus();
     });
 
     return () => unsubscribe();
   }, []);
 
   useEffect(() => {
+    if (!auth?.currentUser) return;
+
     let unsubscribe = null;
 
     const fetchOwnData = async () => {
@@ -46,10 +58,6 @@ export function Cyber() {
       if (unsubscribe) unsubscribe();
     }
   }, [isAuthChanged]);
-
-  useEffect(() => {
-    
-  })
 
   return (
     <div id="cyber-page">

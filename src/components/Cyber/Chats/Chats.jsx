@@ -1,6 +1,6 @@
 import { ChatCard } from "./ChatCard";
 import { SearchSVG } from "../../svg/SearchSVG";
-import { ArrowLeftIconSVG } from "../../svg/ArrowLeftIconSVG";
+import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
@@ -19,6 +19,8 @@ export function Chats({ ownData, isAsideVisible }) {
   const unsubscribeSnapshot = useRef(null);
 
   const onChatCardClick = (name, title, uid) => {
+    if (!ownData.uid) return;
+
     setCurrentChatData({
       name: name,
       title: title,
@@ -106,7 +108,7 @@ export function Chats({ ownData, isAsideVisible }) {
               currentChatName={currentChatData.name} 
               name="Global Chat" 
               title="A global room everyone can access." 
-              uid="GlobalChat" 
+              uid="globalChat"
               onChatCardClick={onChatCardClick} 
             />
             {
@@ -166,7 +168,7 @@ export function Chats({ ownData, isAsideVisible }) {
                   onChange={(e) => setMessageInput(e.target.value)}
                 />
                 <button onClick={() => addMessage(messageInput)}>
-                  <ArrowLeftIconSVG />
+                  <ArrowLeftSVG />
                 </button>
               </div>
             </div>

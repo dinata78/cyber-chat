@@ -1,13 +1,15 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../../../firebase";
-import { fetchDataFromUid } from "../../utils";
+import { db } from "../../firebase";
+import { fetchDataFromUid } from "../utils";
 
 export function useFriendList(userData) {
   const [friendUidList, setFriendUidList] = useState([]);
   const [friendDataList, setFriendDataList] = useState([]);
   
   useEffect(() => {
+    if (!userData.uid) return;
+
     let unsubscribe;
 
     const fetchFriendList = async () => {

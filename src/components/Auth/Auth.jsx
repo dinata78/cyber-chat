@@ -5,7 +5,7 @@ import { auth } from "../../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { LoadingOverlay } from "../LoadingOverlay";
-import { useAuth } from "../custom-hooks/useAuth";
+import { useAuth } from "../../custom-hooks/useAuth"
 
 export function Auth() {
   const [isAuth, setIsAuth] = useState(null);

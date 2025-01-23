@@ -1,8 +1,30 @@
+import { useEffect, useState } from "react";
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
+import { get, ref } from "firebase/database";
+import { realtimeDb } from "../../../../firebase";
 
-export function FriendCard({ type, friendName, friendTitle, friendStatus }) {
+export function FriendCard({ type, friendUid, friendName, friendTitle }) {
+  const [friendStatus, setFriendStatus] = useState(null);
+
+  useEffect(() => {
+    const fetchFriendStatus = async () => {
+      const dbRef = ref(realtimeDb, `users/${friendUid}`);
+
+      const response = await get(dbRef);
+      const data = response.toJSON();
+      
+      if (data?.isOnline) {
+        setFriendStatus("online");
+      }
+      else {
+        setFriendStatus("offline")
+      }
+    }
+
+    fetchFriendStatus();
+  }, []);
 
   return (
     <div className="friend-card">
@@ -12,7 +34,6 @@ export function FriendCard({ type, friendName, friendTitle, friendStatus }) {
         <div 
           className={
             getIndicatorClass(friendStatus)}
-            title={friendStatus.charAt(0).toUpperCase() + friendStatus.slice(1)}
         >
         </div>
       </div>
