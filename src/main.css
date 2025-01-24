@@ -1144,58 +1144,22 @@ button#add-friend:hover, button#add-friend:active {
   gap: 12px;
 }
 
-.friend-card-buttons button.normal {
+.friend-card-buttons button {
   background-color: transparent;
   width: 50px;
   height: 50px;
   border: none;
 }
 
-.friend-card-buttons button.normal:hover, .friend-card-buttons button.normal:active {
+.friend-card-buttons button svg {
+  fill: white;
+}
+
+.friend-card-buttons button:hover, .friend-card-buttons button:active {
   svg {
     fill: #0077ff;
   }
 }
-
-.friend-card-buttons button.normal svg {
-  fill: white;
-}
-
-.friend-card-buttons button.received {
-  padding-block: 4px;
-  padding-inline: 12px;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.friend-card-buttons button.received:active {
-  opacity: 80%;
-}
-
-.friend-card-buttons button.received.accept {
-  background-color: #10c80a;
-}
-
-.friend-card-buttons button.received.reject {
-  background-color: red;
-}
-
-.friend-card-buttons button.sent {
-  background-color: red;
-  padding-block: 4px;
-  padding-inline: 12px;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.friend-card-buttons button.sent:active {
-  opacity: 80%;
-}
-
 
 #friends-all {
   flex-grow: 1;

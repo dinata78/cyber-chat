@@ -11,7 +11,6 @@ export function FriendsAll({ friendDataList }) {
             return (
               <FriendCard 
                 key={index + friendData.uid}
-                type="normal"
                 friendUid={friendData.uid}
                 friendName={friendData.name}
                 friendTitle={friendData.title}
