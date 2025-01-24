@@ -1,30 +1,10 @@
-import { useEffect, useState } from "react";
+import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
-import { get, ref } from "firebase/database";
-import { realtimeDb } from "../../../../firebase";
 
 export function FriendCard({ type, friendUid, friendName, friendTitle }) {
-  const [friendStatus, setFriendStatus] = useState(null);
-
-  useEffect(() => {
-    const fetchFriendStatus = async () => {
-      const dbRef = ref(realtimeDb, `users/${friendUid}`);
-
-      const response = await get(dbRef);
-      const data = response.toJSON();
-      
-      if (data?.isOnline) {
-        setFriendStatus("online");
-      }
-      else {
-        setFriendStatus("offline")
-      }
-    }
-
-    fetchFriendStatus();
-  }, []);
+  const { onlineStatus } = useTrackOnlineStatus(friendUid);
 
   return (
     <div className="friend-card">
@@ -33,7 +13,7 @@ export function FriendCard({ type, friendUid, friendName, friendTitle }) {
         <img src="/empty-pfp.webp" />
         <div 
           className={
-            getIndicatorClass(friendStatus)}
+            getIndicatorClass(onlineStatus)}
         >
         </div>
       </div>

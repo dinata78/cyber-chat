@@ -8,7 +8,7 @@ import { Chats } from "./Chats/Chats";
 import { Friends } from "./Friends/Friends";
 import { Settings } from "./Settings/Settings";
 import { Account } from "./Account/Account";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, realtimeDb } from "../../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -28,8 +28,8 @@ export function Cyber() {
       const setOnlineStatus = async () => {
         const dbRef = ref(realtimeDb, `users/${user.uid}`);
 
-        await set(dbRef, {isOnline: true});
-        onDisconnect(dbRef).remove();
+        await update(dbRef, {isOnline: true});
+        onDisconnect(dbRef).update({isOnline: false});
       }
 
       setOnlineStatus();
