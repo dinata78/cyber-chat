@@ -1,6 +1,9 @@
+import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
 import { AddFriendProfileDataCard } from "./AddFriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {
+  const { onlineStatus } = useTrackOnlineStatus(searchedUserData.uid);
+  
   return (
     <div id="add-friend-profile">
 
@@ -13,8 +16,10 @@ export function AddFriendProfile({ searchedUserData }) {
         <AddFriendProfileDataCard
           label="STATUS"
           content={
-            searchedUserData.status.charAt(0).toUpperCase()
-            + searchedUserData.status.slice(1)
+            onlineStatus ? 
+              onlineStatus.charAt(0).toUpperCase() 
+              + onlineStatus.slice(1) 
+            : "Loading..."
           }
         />
       </div>

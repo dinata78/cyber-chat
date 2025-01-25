@@ -27,7 +27,6 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendReque
         username: searchedUserData.username,
         title: searchedUserData.title,
         bio: searchedUserData.bio,
-        status: searchedUserData.status,
         uid: searchedUserData.uid,
       };
       
