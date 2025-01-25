@@ -104,12 +104,21 @@ export function Chats({ ownData, isAsideVisible }) {
           </div>
 
           <div id="chats-aside-bottom" className="overflow-y-support">
-            <ChatCard 
+            <ChatCard
+              type="special"
               currentChatName={currentChatData.name} 
               name="Global Chat" 
               title="A global room everyone can access." 
               uid="globalChat"
               onChatCardClick={onChatCardClick} 
+            />
+            <ChatCard 
+              type="special"
+              currentChatName={currentChatData.name}
+              name={ownData.name + " (You)"}
+              title={ownData.title}
+              uid={ownData.uid}
+              onChatCardClick={onChatCardClick}
             />
             {
               ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
@@ -122,13 +131,6 @@ export function Chats({ ownData, isAsideVisible }) {
                 />
               : null
             }
-            <ChatCard 
-              currentChatName={currentChatData.name}
-              name={ownData.name + " (You)"}
-              title={ownData.title}
-              uid={ownData.uid}
-              onChatCardClick={onChatCardClick}
-            />
 
           </div>
           

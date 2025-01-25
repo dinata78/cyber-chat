@@ -182,6 +182,14 @@ body {
   display: none;
 }
 
+.indicator.online {
+  background-color: lime;
+}
+
+.indicator.offline {
+  background-color: red;
+}
+
 #cyber-page {
   background-color: #000000e0;
   height: 100vh;
@@ -375,12 +383,22 @@ button#toggle-theme svg {
   border-radius: 100%;
   display: grid;
   place-content: center;
+  position: relative;
 }
 
 .chat-card-pfp img {
   width: 50px;
   height: 50px;
   border-radius: 100%;
+}
+
+.chat-card-pfp .indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 15px;
 }
 
 .chat-card-info {
@@ -1103,17 +1121,6 @@ button#add-friend:hover, button#add-friend:active {
   right: 18%;
 }
 
-.friend-card-pfp .indicator.online {
-  background-color: lime;
-}
-
-.friend-card-pfp .indicator.offline {
-  background-color: red;
-}
-
-.friend-card-pfp .indicator.hidden {
-  background-color: lightgray;
-}
 
 .friend-card-info {
   flex-grow: 1;

@@ -13,7 +13,8 @@ export function FriendCard({ friendUid, friendName, friendTitle }) {
         <img src="/empty-pfp.webp" />
         <div 
           className={
-            getIndicatorClass(onlineStatus)}
+            getIndicatorClass(onlineStatus)
+          }
         >
         </div>
       </div>
