@@ -103,7 +103,7 @@ export function Chats({ ownData, isAsideVisible }) {
             </div>
           </div>
 
-          <div id="chats-aside-bottom">
+          <div id="chats-aside-bottom" className="overflow-y-support">
             <ChatCard 
               currentChatName={currentChatData.name} 
               name="Global Chat" 
@@ -129,6 +129,7 @@ export function Chats({ ownData, isAsideVisible }) {
               uid={ownData.uid}
               onChatCardClick={onChatCardClick}
             />
+
           </div>
           
         </div>
@@ -149,7 +150,7 @@ export function Chats({ ownData, isAsideVisible }) {
             </div>
             
             <div id="chats-content-bottom">
-              <div id="chat-display">
+              <div id="chat-display" className="overflow-y-support">
                 {currentChatContent.map((chatContent, index) => {
                 return <MessageCard
                           key={index + chatContent.senderId}

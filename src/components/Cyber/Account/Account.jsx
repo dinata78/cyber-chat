@@ -39,7 +39,7 @@ export function Account({ ownData }) {
       </div>
       <hr id="account-pfp-features-border"/>
       <div id="cyber-account-features">
-        <div id="account-features-container">
+        <div id="account-features-container" className="overflow-y-support">
           <div className="account-feature">
             <div className="info-icon">
               <AtSVG />

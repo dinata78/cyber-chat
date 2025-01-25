@@ -12,6 +12,7 @@
 
 * {
   box-sizing: border-box;
+  overflow-y: none;
 }
 
 :root {
@@ -169,6 +170,16 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+.overflow-y-support {
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.overflow-y-support::-webkit-scrollbar {
+  display: none;
 }
 
 #cyber-page {
@@ -335,18 +346,11 @@ button#toggle-theme svg {
 }
 
 #chats-aside-bottom {
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   flex-grow: 1;
   padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-#chats-aside-bottom::-webkit-scrollbar {
-  display: none;
 }
 
 .chat-card {
@@ -439,26 +443,19 @@ button#toggle-theme svg {
 }
 
 #chats-content-bottom {
-  overflow-y: auto;
   flex-grow: 1;
+  height: 0;
   display: flex;
   flex-direction: column;
 }
 
 #chat-display {
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   flex-grow: 1;
   padding: 2rem;
   padding-left: 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-
-#chat-display::-webkit-scrollbar {
-  display: none;
 }
 
 .message-card {
@@ -658,22 +655,15 @@ hr#account-pfp-features-border {
 }
 
 #cyber-account-features {
-  overflow-y: auto;
   flex-grow: 1;
+  height: 0;
   display: flex;
   justify-content: center;
 }
 
 #account-features-container {
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
   width: 640px;
   padding-bottom: 1rem;
-}
-
-#cyber-account-features-container::-webkit-scrollbar {
-  display: none;
 }
 
 #cyber-account-features hr {
@@ -805,13 +795,13 @@ button#add-friend:hover, button#add-friend:active {
 
 #add-friend-modal {
   background-color: #000000dd;
-  top: 0px;
-  left: 0px;
   width: 100vw;
   height: 100vh;
-  position: fixed;
   display: grid;
   place-content: center;
+  position: fixed;
+  top: 0px;
+  left: 0px;
 }
 
 #add-friend-modal > div {
@@ -947,7 +937,6 @@ button#add-friend:hover, button#add-friend:active {
   display: flex;
   gap: 1%;
   padding-block: 12px;
-  overflow-y: auto;
 }
 
 #add-friend-profile-left {
@@ -986,13 +975,6 @@ button#add-friend:hover, button#add-friend:active {
 
 .add-friend-profile-data-card:last-child {
   flex-grow: 1;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.add-friend-profile-data-card:last-child::-webkit-scrollbar {
-  display: none;
 }
 
 .add-friend-profile-data-card .label {
@@ -1031,7 +1013,6 @@ button#add-friend:hover, button#add-friend:active {
   background-color: transparent;
 }
 
-
 #friends-search {
   display: flex;
   border: 1px solid white;
@@ -1066,15 +1047,32 @@ button#add-friend:hover, button#add-friend:active {
 
 .friend-cards {
   flex-grow: 1;
+  height: 0;
   padding-block: 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+#friends-all {
+  flex-grow: 1;
+  padding-block: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+#friends-all h1 {
+  min-height: 50px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
+
 .friend-card {
   background-color: #22222f;
-  height: 100px;
+  min-height: 100px;
   border-radius: 16px;
   display: flex;
 }
@@ -1161,19 +1159,6 @@ button#add-friend:hover, button#add-friend:active {
   }
 }
 
-#friends-all {
-  flex-grow: 1;
-  padding-block: 48px;
-  display: flex;
-  flex-direction: column;
-}
-
-#friends-all h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: lighter;
-}
-
 #friends-pending {
   flex-grow: 1;
   padding-block: 48px;
@@ -1182,7 +1167,10 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #friends-pending h1 {
+  height: 50px;
   margin: 0;
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: lighter;
 }
