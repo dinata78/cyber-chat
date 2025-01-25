@@ -28,7 +28,5 @@ export async function fetchDataFromUid(uid) {
 
 export function getIndicatorClass(status) {
   if (status === "online") return "indicator online";
-  else if (status === "offline") return "indicator offline";
-  else if (status === "hidden") return "indicator hidden";
-  else return "indicator";
+  else return "indicator offline";
 }
