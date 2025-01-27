@@ -1187,15 +1187,55 @@ button#add-friend:hover, button#add-friend:active {
 #friends-pending {
   flex-grow: 1;
   padding-block: 48px;
+}
+
+#friends-pending > div {
+  height: 100%;
+  border: 1px solid white;
   display: flex;
   flex-direction: column;
 }
 
 #friends-pending h1 {
-  height: 50px;
   margin: 0;
-  display: flex;
-  align-items: center;
+  padding: 18px;
   font-size: 1.5rem;
   font-weight: lighter;
+  border-bottom: 1px solid white;
+}
+
+.pending-cards {
+  flex-grow: 1;
+  height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pending-card {
+  background-color: #ffffff15;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.pending-card-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pending-card-buttons button {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pending-card-buttons button:hover,
+.pending-card-buttons button:active {
+  opacity: 60%;
 }
