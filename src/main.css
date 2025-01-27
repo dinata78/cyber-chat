@@ -946,6 +946,8 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #add-friend-no-result span {
+  text-align: center;
+  color: #aaddff;
   font-size: 1.25rem;
 }
 
@@ -1023,11 +1025,27 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #add-friend-button.sent {
-  color: lime;
-  border-color: lime;
+  color: #00ff62;
+  border-color: #00ff62;
 }
 
-#add-friend-button.sent:hover, #add-friend-button.sent:active {
+#add-friend-button.received {
+  color: #00ff62;
+  border-color: #00ff62;
+}
+
+#add-friend-button.self {
+  color: red;
+  border-color: red;
+}
+
+#add-friend-button.sent:hover, 
+#add-friend-button.sent:active,
+#add-friend-button.received:hover, 
+#add-friend-button.received:active,
+#add-friend-button.self:hover, 
+#add-friend-button.self:active
+{
   background-color: transparent;
 }
 

@@ -72,7 +72,8 @@ export function Friends({ ownData }) {
         <AddFriendModal
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible} 
-          friendRequestSentList={friendRequestSentList} 
+          friendRequestSentList={friendRequestSentList}
+          friendRequestReceivedList={friendRequestReceivedList}
         />
       }
     </div>
