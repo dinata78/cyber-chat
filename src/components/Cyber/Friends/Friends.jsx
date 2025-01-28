@@ -61,6 +61,7 @@ export function Friends({ ownData }) {
             <FriendsAll friendDataList={friendDataList} />
           : currentNav === "pending" ?
             <FriendsPending
+              ownUid={ownData.uid}
               friendRequestSentList={friendRequestSentList}
               friendRequestReceivedList={friendRequestReceivedList}
             />

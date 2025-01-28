@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { fetchDataFromUid } from "../../../utils";
+import { cancelRequest, handleRequest } from "./handleRequest";
 
-export function PendingCard({ type, uid }) {
-  const [name, setName] = useState("...");
-  const [username, setUsername] = useState("...");
+export function PendingCard({ ownUid, type, uid }) {
+  const [name, setName] = useState(null);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -11,8 +12,12 @@ export function PendingCard({ type, uid }) {
       setName(data.name);
       setUsername(data.username);
     }
+
     fetchData();
+    
   }, []);
+
+  if (!name || !username) return null;
 
   return (
     <div className="pending-card">
@@ -25,11 +30,13 @@ export function PendingCard({ type, uid }) {
             <div className="pending-card-buttons">
               <button
                 style={{color: "#00ff62"}}
+                onClick={() => handleRequest("accept", ownUid, uid)}
               >
                 ACCEPT
               </button>
               <button
                 style={{color: "red"}}
+                onClick={() => handleRequest("reject", ownUid, uid)}
               >
                 REJECT
               </button>
@@ -43,6 +50,7 @@ export function PendingCard({ type, uid }) {
             <div className="pending-card-buttons">
               <button
                 style={{color: "red"}}
+                onClick={() => cancelRequest(ownUid, uid)}
               >
                 CANCEL
               </button>

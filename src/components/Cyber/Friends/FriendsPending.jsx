@@ -1,6 +1,6 @@
 import { PendingCard } from "./PendingCard"
 
-export function FriendsPending({ friendRequestSentList, friendRequestReceivedList }) {
+export function FriendsPending({ ownUid, friendRequestSentList, friendRequestReceivedList }) {
 
   return (
     <div id="friends-pending">
@@ -13,9 +13,11 @@ export function FriendsPending({ friendRequestSentList, friendRequestReceivedLis
         </h1>
         <div className="pending-cards overflow-y-support">
           {
-            friendRequestSentList.map((requestSentUid) => {
+            friendRequestSentList.map((requestSentUid, index) => {
               return (
                 <PendingCard
+                  key={index + requestSentUid}
+                  ownUid={ownUid}
                   type="sent"
                   uid={requestSentUid}
                 />
@@ -23,9 +25,11 @@ export function FriendsPending({ friendRequestSentList, friendRequestReceivedLis
             })
           }
           {
-            friendRequestReceivedList.map((requestReceivedUid) => {
+            friendRequestReceivedList.map((requestReceivedUid, index) => {
               return (
                 <PendingCard
+                  key={index + requestReceivedUid}
+                  ownUid={ownUid}
                   type="received"
                   uid={requestReceivedUid}
                 />
