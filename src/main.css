@@ -1081,15 +1081,6 @@ button#add-friend:hover, button#add-friend:active {
   width: 27px;
 }
 
-.friend-cards {
-  flex-grow: 1;
-  height: 0;
-  padding-block: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 #friends-all {
   flex-grow: 1;
   padding-block: 48px;
@@ -1098,23 +1089,31 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #friends-all h1 {
-  min-height: 50px;
   margin: 0;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: lighter;
 }
 
+.friend-cards {
+  flex-grow: 1;
+  height: 0;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .friend-card {
-  background-color: #22222f;
+  background-color: #ffffff20;
   min-height: 100px;
-  border-radius: 16px;
   display: flex;
 }
 
 .friend-card:hover {
-  background-color: #33334f;
+  background-color: #ffffff35;
 }
 
 .friend-card-pfp {
@@ -1191,24 +1190,26 @@ button#add-friend:hover, button#add-friend:active {
 
 #friends-pending > div {
   height: 100%;
-  border: 1px solid white;
   display: flex;
   flex-direction: column;
 }
 
 #friends-pending h1 {
   margin: 0;
-  padding: 18px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: lighter;
-  border-bottom: 1px solid white;
 }
 
 .pending-cards {
   flex-grow: 1;
   height: 0;
+  padding-bottom: 24px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .pending-card {
