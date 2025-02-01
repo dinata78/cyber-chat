@@ -24,19 +24,19 @@ export function Friends({ ownData }) {
         <h1>Friends</h1>
         <div className="divider"></div>
         <button 
-          className={currentNav === "all" ? "selected" : ""}
+          className={currentNav === "all" ? "selected" : null}
           onClick={() => friendsButtonOnClick("all")}
         >
           All
         </button>
         <button
-          className={currentNav === "pending" ? "selected" : ""}
+          className={currentNav === "pending" ? "selected" : null}
           onClick={() => friendsButtonOnClick("pending")}
         >
           Pending
         </button>
         <button
-          className={currentNav === "inbox" ? "selected" : ""}
+          className={currentNav === "inbox" ? "selected" : null}
           onClick={() => friendsButtonOnClick("inbox")}
         >
           Inbox
@@ -58,7 +58,10 @@ export function Friends({ ownData }) {
         </div>
         {
           currentNav === "all" ? 
-            <FriendsAll friendDataList={friendDataList} />
+            <FriendsAll
+              ownUid={ownData.uid}
+              friendDataList={friendDataList}
+            />
           : currentNav === "pending" ?
             <FriendsPending
               ownUid={ownData.uid}

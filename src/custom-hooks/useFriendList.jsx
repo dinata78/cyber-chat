@@ -30,7 +30,10 @@ export function useFriendList(userData) {
   }, [userData]);
 
   useEffect(() => {
-    if (friendUidList.length < 1) return;
+    if (friendUidList.length < 1) {
+      setFriendDataList([]);
+      return;
+    };
 
     const fetchFriendData = async () => {
       const data = [];
