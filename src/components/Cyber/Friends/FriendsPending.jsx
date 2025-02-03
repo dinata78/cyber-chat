@@ -5,7 +5,6 @@ export function FriendsPending({ ownUid, friendRequestSentList, friendRequestRec
   return (
     <div id="friends-pending">
 
-      <div>
         <h1>
           Pending Request 
           - {friendRequestSentList.length 
@@ -37,7 +36,6 @@ export function FriendsPending({ ownUid, friendRequestSentList, friendRequestRec
             })
           }
         </div>
-      </div>
 
     </div>
   )

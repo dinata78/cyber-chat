@@ -1187,10 +1187,6 @@ button#add-friend:hover, button#add-friend:active {
 #friends-pending {
   flex-grow: 1;
   padding-block: 48px;
-}
-
-#friends-pending > div {
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -1215,7 +1211,7 @@ button#add-friend:hover, button#add-friend:active {
 
 .pending-card {
   background-color: #ffffff15;
-  padding: 20px;
+  padding: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1240,4 +1236,37 @@ button#add-friend:hover, button#add-friend:active {
 .pending-card-buttons button:hover,
 .pending-card-buttons button:active {
   opacity: 60%;
+}
+
+#friends-inbox {
+  flex-grow: 1;
+  padding-block: 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+#friends-inbox h1 {
+  margin: 0;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
+
+.inbox-cards {
+  flex-grow: 1;
+  height: 0;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inbox-card {
+  background-color: #ffffff15;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
 }

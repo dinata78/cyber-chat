@@ -5,6 +5,7 @@ import { AddFriendModal } from "./AddFriendModal";
 import { FriendsPending } from "./FriendsPending";
 import { useFriendList } from "../../../custom-hooks/useFriendList";
 import { useFriendRequestList } from "../../../custom-hooks/useFriendRequestList";
+import { FriendsInbox } from "./FriendsInbox";
 
 export function Friends({ ownData }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -67,6 +68,10 @@ export function Friends({ ownData }) {
               ownUid={ownData.uid}
               friendRequestSentList={friendRequestSentList}
               friendRequestReceivedList={friendRequestReceivedList}
+            />
+          : currentNav === "inbox" ?
+            <FriendsInbox
+              ownUid={ownData.uid}
             />
           : null
         }

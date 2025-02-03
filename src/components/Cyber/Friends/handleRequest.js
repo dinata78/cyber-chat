@@ -1,6 +1,7 @@
 import { fetchDataFromUid } from "../../../utils";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { addInbox } from "./addInbox";
 
 export async function handleRequest(type, ownUid, requestUid) {
   const ownDocRef = doc(db, "users", ownUid);
@@ -33,7 +34,11 @@ export async function handleRequest(type, ownUid, requestUid) {
       ...requestDocData,
       friendRequestSent: requestFriendRequestSent,
       friendList: [...requestDocData.friendList, ownUid],
-    });  
+    });
+
+    await addInbox(requestUid, "request-accepted", ownUid);
+    await addInbox(requestUid, "friend-added", ownUid);
+    await addInbox (ownUid, "friend-added", requestUid);
   }
 
   else if (type === "reject") {
@@ -46,6 +51,8 @@ export async function handleRequest(type, ownUid, requestUid) {
       ...requestDocData,
       friendRequestSent: requestFriendRequestSent,
     });
+
+    await addInbox(requestUid, "request-rejected", ownUid);
   }
   
 }
@@ -79,5 +86,8 @@ export async function cancelRequest(ownUid, requestedUid) {
     ...requestedDocData,
     friendRequestReceived: requestedFriendRequestReceived,
   })
+
+  await addInbox(ownUid, "cancel-request", requestedUid);
+  await addInbox(requestedUid, "request-cancelled", ownUid);
   
 }

@@ -93,11 +93,13 @@ export function Auth() {
               : signUpData.password 
             } 
             onEmailChange={
-              signType === "in" ? (e) => setSignInData({...signInData, email: e.target.value})
+              signType === "in" ? 
+                (e) => setSignInData({...signInData, email: e.target.value})
               : (e) => setSignUpData({...signUpData, email: e.target.value})
             }
             onPasswordChange={
-              signType === "in" ? (e) => setSignInData({...signInData, password: e.target.value})
+              signType === "in" ?
+                (e) => setSignInData({...signInData, password: e.target.value})
               : (e) => setSignUpData({...signUpData, password: e.target.value})
             } 
           />

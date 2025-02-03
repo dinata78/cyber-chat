@@ -32,6 +32,7 @@ export function useAuth(setIsLoading) {
         friendList: [],
         friendRequestSent: [],
         friendRequestReceived: [],
+        inbox: [],
       });
     }
     catch (error) {

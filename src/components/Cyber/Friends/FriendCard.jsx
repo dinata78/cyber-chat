@@ -2,6 +2,7 @@ import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
+import { addInbox } from "./addInbox";
 import { removeFriend } from "./removeFriend";
 
 export function FriendCard({ ownUid, friendUid, friendName, friendTitle }) {
@@ -10,6 +11,8 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle }) {
   const friendRemove = async (ownUid, friendUid) => {
     await removeFriend(ownUid, friendUid);
     await removeFriend(friendUid, ownUid);
+    await addInbox(ownUid, "friend-removed", friendUid);
+    await addInbox(friendUid, "friend-removed", ownUid);
   }
 
   return (

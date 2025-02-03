@@ -1,34 +1,20 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../../firebase";
+import { addInbox } from "./addInbox";
+import { requestFriend } from "./requestFriend";
 
 export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequestSentList, friendRequestReceivedList }) {
 
-  const addFriend = async (newFriendUid) => {
+  const addFriendOnClick = async (newFriendUid) => {
     if (
       friendRequestSentList.includes(newFriendUid) 
       || friendRequestReceivedList.includes(newFriendUid)
       || friendList.includes(newFriendUid)
       || newFriendUid === ownUid
       ) return;
-        
-    const userDocRef = doc(db, "users", ownUid);
-    const userDoc = await getDoc(userDocRef);
-    const userDocData = userDoc.data();
-
-    await updateDoc(userDocRef, {
-      ...userDocData,
-      friendRequestSent: [...userDocData.friendRequestSent, newFriendUid],
-    });
-
-    const friendDocRef = doc(db, "users", newFriendUid);
-    const friendDoc = await getDoc(friendDocRef);
-    const friendDocData = friendDoc.data();
-
-    await updateDoc(friendDocRef, {
-      ...friendDocData,
-      friendRequestReceived: [...friendDocData.friendRequestReceived, ownUid],
-    });
-
+    
+    await requestFriend(ownUid, newFriendUid);
+    await addInbox(ownUid, "request-sent", newFriendUid);
+    await addInbox(newFriendUid, "request-received", ownUid);
+    
   }
   
   return (
@@ -40,7 +26,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
         : searchedUserData.uid === ownUid ? "self no-effect"
         : null
       }
-      onClick={() => addFriend(searchedUserData.uid)}
+      onClick={() => addFriendOnClick(searchedUserData.uid)}
     >
       {
         friendRequestSentList.includes(searchedUserData.uid) ?

@@ -1,23 +1,10 @@
-import { useEffect, useState } from "react"
-import { fetchDataFromUid } from "../../../utils";
 import { cancelRequest, handleRequest } from "./handleRequest";
+import { useName } from "../../../custom-hooks/useName";
 
 export function PendingCard({ ownUid, type, uid }) {
-  const [name, setName] = useState(null);
-  const [username, setUsername] = useState(null);
+  const { displayName, username } = useName(uid);  
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDataFromUid(uid);
-      setName(data.name);
-      setUsername(data.username);
-    }
-
-    fetchData();
-    
-  }, []);
-
-  if (!name || !username) return null;
+  if (!displayName || !username) return null;
 
   return (
     <div className="pending-card">
@@ -25,7 +12,7 @@ export function PendingCard({ ownUid, type, uid }) {
         type === "received" ?
           <>
             <span>
-              <b style={{color:"#aaddff"}}>{name} (@{username})</b> sent you a friend request!
+              <b style={{color:"#aaddff"}}>{displayName} (@{username})</b> sent you a friend request!
             </span>
             <div className="pending-card-buttons">
               <button
