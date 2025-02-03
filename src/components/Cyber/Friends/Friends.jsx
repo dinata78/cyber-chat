@@ -10,7 +10,7 @@ export function Friends({ ownData }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
-  const { friendDataList } = useFriendList(ownData);
+  const { friendUidList, friendDataList } = useFriendList(ownData);
   const { friendRequestSentList, friendRequestReceivedList } = useFriendRequestList(ownData);
 
   const friendsButtonOnClick = (navType) => {
@@ -75,7 +75,8 @@ export function Friends({ ownData }) {
         isAddFriendModalVisible &&
         <AddFriendModal
           ownUid={ownData.uid}
-          setIsAddFriendModalVisible={setIsAddFriendModalVisible} 
+          setIsAddFriendModalVisible={setIsAddFriendModalVisible}
+          friendList={friendUidList}
           friendRequestSentList={friendRequestSentList}
           friendRequestReceivedList={friendRequestReceivedList}
         />

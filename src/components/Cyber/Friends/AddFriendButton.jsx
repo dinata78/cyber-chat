@@ -1,12 +1,13 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
-export function AddFriendButton({ ownUid, searchedUserData, friendRequestSentList, friendRequestReceivedList }) {
+export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequestSentList, friendRequestReceivedList }) {
 
   const addFriend = async (newFriendUid) => {
     if (
       friendRequestSentList.includes(newFriendUid) 
       || friendRequestReceivedList.includes(newFriendUid)
+      || friendList.includes(newFriendUid)
       || newFriendUid === ownUid
       ) return;
         
@@ -33,9 +34,10 @@ export function AddFriendButton({ ownUid, searchedUserData, friendRequestSentLis
   return (
     <button id="add-friend-button" 
       className={ 
-        (friendRequestSentList.includes(searchedUserData.uid)) ? "sent"
-        : (friendRequestReceivedList.includes(searchedUserData.uid)) ? "received"
-        : searchedUserData.uid === ownUid ? "self"
+        friendRequestSentList.includes(searchedUserData.uid) ? "sent no-effect"
+        : friendRequestReceivedList.includes(searchedUserData.uid) ? "received no-effect"
+        : friendList.includes(searchedUserData.uid) ? "is-friend no-effect"
+        : searchedUserData.uid === ownUid ? "self no-effect"
         : null
       }
       onClick={() => addFriend(searchedUserData.uid)}
@@ -47,6 +49,8 @@ export function AddFriendButton({ ownUid, searchedUserData, friendRequestSentLis
           "USER SENT YOU A FRIEND REQUEST"
         : searchedUserData.uid === ownUid ?
           "CAN'T ADD YOURSELF"
+        : friendList.includes(searchedUserData.uid) ?
+          "USER IS ALREADY YOUR FRIEND"
         : "SEND FRIEND REQUEST"
       }
     </button>

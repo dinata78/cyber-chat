@@ -1034,17 +1034,18 @@ button#add-friend:hover, button#add-friend:active {
   border-color: #00ff62;
 }
 
+#add-friend-button.is-friend {
+  color: #00ff62;
+  border-color: #00ff62;
+}
+
 #add-friend-button.self {
   color: red;
   border-color: red;
 }
 
-#add-friend-button.sent:hover, 
-#add-friend-button.sent:active,
-#add-friend-button.received:hover, 
-#add-friend-button.received:active,
-#add-friend-button.self:hover, 
-#add-friend-button.self:active
+#add-friend-button.no-effect:hover, 
+#add-friend-button.no-effect:active
 {
   background-color: transparent;
 }
