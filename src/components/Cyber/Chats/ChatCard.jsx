@@ -8,6 +8,9 @@ export function ChatCard({ type, currentChatName, name, title, uid, onChatCardCl
     const { onlineStatus } = useTrackOnlineStatus(uid);
     status = onlineStatus;
   }
+  else {
+    status = "online"
+  }
 
   return (
     <div 
@@ -22,15 +25,8 @@ export function ChatCard({ type, currentChatName, name, title, uid, onChatCardCl
 
       <div className="chat-card-pfp">
         <img src="/empty-pfp.webp" />
-        {
-          type !== "special" ?
-            <div className={
-              getIndicatorClass(status)
-              }
-            >
-            </div>
-          : null
-        }
+          <div className={getIndicatorClass(status)}>
+          </div>
       </div>
 
       <div className="chat-card-info">

@@ -6,16 +6,17 @@ import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { getConversationId } from "../../../utils";
+import { useFriendList } from "../../../custom-hooks/useFriendList"
 
 export function Chats({ ownData, isAsideVisible }) {
   const [currentChatData, setCurrentChatData] = useState({});
   const [currentChatContent, setCurrentChatContent] = useState([]);
-
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
 
-  const messageEndRef = useRef(null);
+  const { friendDataList } = useFriendList(ownData);
 
+  const messageEndRef = useRef(null);
   const unsubscribeSnapshot = useRef(null);
 
   const onChatCardClick = (name, title, uid) => {
@@ -112,6 +113,18 @@ export function Chats({ ownData, isAsideVisible }) {
               uid="globalChat"
               onChatCardClick={onChatCardClick} 
             />
+            {
+              ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
+                <ChatCard 
+                  type={null}
+                  currentChatName={currentChatData.name} 
+                  name="Steven Dinata" 
+                  title="Developer of CyberChat" 
+                  uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
+                  onChatCardClick={onChatCardClick}
+                />
+              : null
+            }
             <ChatCard 
               type="special"
               currentChatName={currentChatData.name}
@@ -121,15 +134,19 @@ export function Chats({ ownData, isAsideVisible }) {
               onChatCardClick={onChatCardClick}
             />
             {
-              ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
-                <ChatCard 
-                  currentChatName={currentChatData.name} 
-                  name="Steven Dinata" 
-                  title="Developer of CyberChat" 
-                  uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
-                  onChatCardClick={onChatCardClick}
-                />
-              : null
+              friendDataList.map((friendData, index) => {
+                return (
+                  <ChatCard
+                    key={index + friendData.uid}
+                    type={null}
+                    currentChatName={currentChatData.name}
+                    name={friendData.name}
+                    title={friendData.title}
+                    uid={friendData.uid}
+                    onChatCardClick={onChatCardClick}
+                  />
+                )
+              })
             }
 
           </div>
