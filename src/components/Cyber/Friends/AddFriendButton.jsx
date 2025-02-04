@@ -9,6 +9,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
       || friendRequestReceivedList.includes(newFriendUid)
       || friendList.includes(newFriendUid)
       || newFriendUid === ownUid
+      || newFriendUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1"
       ) return;
     
     await requestFriend(ownUid, newFriendUid);
@@ -24,6 +25,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
         : friendRequestReceivedList.includes(searchedUserData.uid) ? "received no-effect"
         : friendList.includes(searchedUserData.uid) ? "is-friend no-effect"
         : searchedUserData.uid === ownUid ? "self no-effect"
+        : searchedUserData.uid === "28qZ6LQQi3g76LLRd20HXrkQIjh1" ? "dev no-effect"
         : null
       }
       onClick={() => addFriendOnClick(searchedUserData.uid)}
@@ -37,6 +39,8 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
           "CAN'T ADD YOURSELF"
         : friendList.includes(searchedUserData.uid) ?
           "USER IS ALREADY YOUR FRIEND"
+        : searchedUserData.uid === "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
+          "DEVELOPER OF CYBERCHAT"
         : "SEND FRIEND REQUEST"
       }
     </button>

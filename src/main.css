@@ -1044,6 +1044,11 @@ button#add-friend:hover, button#add-friend:active {
   border-color: red;
 }
 
+#add-friend-button.dev {
+  color: red;
+  border-color: red;
+}
+
 #add-friend-button.no-effect:hover, 
 #add-friend-button.no-effect:active
 {
