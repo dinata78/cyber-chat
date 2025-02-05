@@ -1,6 +1,6 @@
 import { FriendCard } from "./FriendCard";
 
-export function FriendsAll({ ownUid, friendDataList }) {
+export function FriendsAll({ ownUid, friendDataList, setSelectedChatUid }) {
   
   return (
     <div id="friends-all">
@@ -15,6 +15,7 @@ export function FriendsAll({ ownUid, friendDataList }) {
                 friendUid={friendData.uid}
                 friendName={friendData.name}
                 friendTitle={friendData.title}
+                setSelectedChatUid={setSelectedChatUid}
               />
             )
           })

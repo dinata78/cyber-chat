@@ -1,25 +1,54 @@
 import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
+import { onChatCardClick } from "./onChatCardClick";
 
-export function ChatCard({ type, currentChatName, name, title, uid, onChatCardClick }) {
+export function ChatCard(
+  { 
+    type, 
+    currentChatName, 
+    name, 
+    title, 
+    uid, 
+    ownUid, 
+    setCurrentChatData, 
+    setCurrentChatContent,
+    usernamesMap, 
+    setUsernamesMap,
+    unsubscribeSnapshot,
+    setSelectedChatUid
+  }
+) {
   let status = null;
 
-  if (type !== "special") {
-    const { onlineStatus } = useTrackOnlineStatus(uid);
-    status = onlineStatus;
+  if (type === "special") {
+    status = "online"
   }
   else {
-    status = "online"
+    const { onlineStatus } = useTrackOnlineStatus(uid);
+    status = onlineStatus;
   }
 
   return (
     <div 
       className={
-        currentChatName === name ? "chat-card selected" 
+        currentChatName === name ? 
+          "chat-card selected" 
         : "chat-card"
       } 
       onClick={
-        () => onChatCardClick(name, title, uid)
+        () => 
+        onChatCardClick(
+          name,
+          title,
+          uid,
+          ownUid,
+          setCurrentChatData,
+          setCurrentChatContent,
+          usernamesMap,
+          setUsernamesMap,
+          unsubscribeSnapshot,
+          setSelectedChatUid     
+        )
       }
     >
 

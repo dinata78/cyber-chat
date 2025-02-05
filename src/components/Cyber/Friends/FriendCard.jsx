@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
@@ -5,14 +6,21 @@ import { ChatSVG } from "../../svg/ChatSVG";
 import { addInbox } from "./addInbox";
 import { removeFriend } from "./removeFriend";
 
-export function FriendCard({ ownUid, friendUid, friendName, friendTitle }) {
+export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSelectedChatUid }) {
   const { onlineStatus } = useTrackOnlineStatus(friendUid);
+
+  const navigate = useNavigate();
 
   const friendRemove = async (ownUid, friendUid) => {
     await removeFriend(ownUid, friendUid);
     await removeFriend(friendUid, ownUid);
     await addInbox(ownUid, "friend-removed", friendUid);
     await addInbox(friendUid, "friend-removed", ownUid);
+  }
+
+  const chatFriend = (friendUid) => {
+    navigate("/cyber/chats");
+    setSelectedChatUid(friendUid);
   }
 
   return (
@@ -36,6 +44,7 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle }) {
       <div className="friend-card-buttons">
         <button
           title="Chat"
+          onClick={() => chatFriend(friendUid)}
         >
           <ChatSVG />
         </button>

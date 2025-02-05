@@ -3,12 +3,13 @@ import { SearchSVG } from "../../svg/SearchSVG";
 import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
-import { addDoc, collection, doc, getDoc, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { getConversationId } from "../../../utils";
+import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { useFriendList } from "../../../custom-hooks/useFriendList"
+import { onChatCardClick } from "./onChatCardClick";
 
-export function Chats({ ownData, isAsideVisible }) {
+export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedChatUid }) {
   const [currentChatData, setCurrentChatData] = useState({});
   const [currentChatContent, setCurrentChatContent] = useState([]);
   const [messageInput,setMessageInput] = useState("");
@@ -17,51 +18,8 @@ export function Chats({ ownData, isAsideVisible }) {
   const { friendDataList } = useFriendList(ownData);
 
   const messageEndRef = useRef(null);
+
   const unsubscribeSnapshot = useRef(null);
-
-  const onChatCardClick = (name, title, uid) => {
-    if (!ownData.uid) return;
-
-    setCurrentChatData({
-      name: name,
-      title: title,
-      uid: uid, 
-    });
-
-    if (unsubscribeSnapshot.current) {
-      unsubscribeSnapshot.current();
-    }
-
-    const conversationId = getConversationId(ownData.uid, uid);
-
-    const messageQuery = query(
-      collection(db, "conversations", conversationId, "messages"),
-      orderBy("timeCreated", "desc"),
-      limit(50),
-    );
-
-    const unsubscribe = onSnapshot(messageQuery, async (snapshot) => {
-      const messages = snapshot.docs.map((doc) => ({...doc.data()}));
-
-      const uniqueSenderIds = Array.from(new Set(messages.map((message) => message.senderId)));
-      const missingUsernameIds = uniqueSenderIds.filter((id) => !usernamesMap[id]);
-
-      if (missingUsernameIds.length > 0) {
-        const fetchedNames = {};
-        for (const senderId of missingUsernameIds) {
-          const userDoc = await getDoc(doc(db, "users", senderId));
-          if (userDoc.exists()) {
-            fetchedNames[senderId] = userDoc.data().name;
-          }
-        }
-        setUsernamesMap((prev) => ({...prev, ...fetchedNames}));
-      }
-
-      setCurrentChatContent(messages.reverse());
-    });
-
-    unsubscribeSnapshot.current = unsubscribe;
-  }
 
   const addMessage = async (newMessage) => {
     if (!newMessage.trim()) return;
@@ -79,10 +37,47 @@ export function Chats({ ownData, isAsideVisible }) {
   }
 
   useEffect(() => {
+    const selectChatOnFirstRender = async () => {
+      if (selectedChatUid === "globalChat") {
+        onChatCardClick(
+          "Global Chat",
+          "A global room everyone can access.",
+          "globalChat",
+          ownData.uid,
+          setCurrentChatData,
+          setCurrentChatContent,
+          usernamesMap,
+          setUsernamesMap,
+          unsubscribeSnapshot,
+          setSelectedChatUid
+        )  
+      }
+      else {
+        const data = await fetchDataFromUid(selectedChatUid);
+        onChatCardClick(
+          data.name,
+          data.title,
+          data.uid,
+          ownData.uid,
+          setCurrentChatData,
+          setCurrentChatContent,
+          usernamesMap,
+          setUsernamesMap,
+          unsubscribeSnapshot,
+          setSelectedChatUid
+        )
+      }
+    }
+
+    selectChatOnFirstRender();
+  }, [ownData])
+
+  useEffect(() => {
     if (currentChatData.name) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   });
+
 
   return (
     <div id="cyber-chats">
@@ -111,7 +106,13 @@ export function Chats({ ownData, isAsideVisible }) {
               name="Global Chat" 
               title="A global room everyone can access." 
               uid="globalChat"
-              onChatCardClick={onChatCardClick} 
+              ownUid={ownData.uid}
+              setCurrentChatData={setCurrentChatData}
+              setCurrentChatContent={setCurrentChatContent}
+              usernamesMap={usernamesMap}
+              setUsernamesMap={setUsernamesMap}
+              unsubscribeSnapshot={unsubscribeSnapshot}
+              setSelectedChatUid={setSelectedChatUid}
             />
             {
               ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
@@ -121,7 +122,13 @@ export function Chats({ ownData, isAsideVisible }) {
                   name="Steven Dinata" 
                   title="Developer of CyberChat" 
                   uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
-                  onChatCardClick={onChatCardClick}
+                  ownUid={ownData.uid}
+                  setCurrentChatData={setCurrentChatData}
+                  setCurrentChatContent={setCurrentChatContent}
+                  usernamesMap={usernamesMap}
+                  setUsernamesMap={setUsernamesMap} 
+                  unsubscribeSnapshot={unsubscribeSnapshot}
+                  setSelectedChatUid={setSelectedChatUid}
                 />
               : null
             }
@@ -131,7 +138,13 @@ export function Chats({ ownData, isAsideVisible }) {
               name={ownData.name + " (You)"}
               title={ownData.title}
               uid={ownData.uid}
-              onChatCardClick={onChatCardClick}
+              ownUid={ownData.uid}
+              setCurrentChatData={setCurrentChatData}
+              setCurrentChatContent={setCurrentChatContent}
+              usernamesMap={usernamesMap}
+              setUsernamesMap={setUsernamesMap}
+              unsubscribeSnapshot={unsubscribeSnapshot}
+              setSelectedChatUid={setSelectedChatUid}
             />
             {
               friendDataList.map((friendData, index) => {
@@ -143,7 +156,13 @@ export function Chats({ ownData, isAsideVisible }) {
                     name={friendData.name}
                     title={friendData.title}
                     uid={friendData.uid}
-                    onChatCardClick={onChatCardClick}
+                    ownUid={ownData.uid}
+                    setCurrentChatData={setCurrentChatData}
+                    setCurrentChatContent={setCurrentChatContent}
+                    usernamesMap={usernamesMap}
+                    setUsernamesMap={setUsernamesMap} 
+                    unsubscribeSnapshot={unsubscribeSnapshot}
+                    setSelectedChatUid={setSelectedChatUid}
                   />
                 )
               })

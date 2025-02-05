@@ -12,11 +12,12 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, realtimeDb } from "../../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { onDisconnect, ref, set, update } from "firebase/database";
+import { onDisconnect, ref, update } from "firebase/database";
 
 export function Cyber() {
   const { parameter } = useParams();
   const [ isAsideVisible, setIsAsideVisible ] = useState(true);
+  const [ selectedChatUid, setSelectedChatUid ] = useState("globalChat");
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [ownData, setOwnData] = useState({});
@@ -97,10 +98,26 @@ export function Cyber() {
         </nav>
 
         {
-          parameter === "chats" ? <Chats ownData={ownData} isAsideVisible={isAsideVisible} />
-          : parameter === "friends" ? <Friends ownData={ownData} />
-          : parameter === "settings" ? <Settings ownData={ownData} />
-          : parameter === "account" ? <Account ownData={ownData} />
+          parameter === "chats" ? 
+            <Chats
+              ownData={ownData}
+              isAsideVisible={isAsideVisible}
+              selectedChatUid={selectedChatUid}
+              setSelectedChatUid={setSelectedChatUid}
+            />
+          : parameter === "friends" ? 
+            <Friends
+              ownData={ownData}
+              setSelectedChatUid={setSelectedChatUid}
+            />
+          : parameter === "settings" ?
+            <Settings
+              ownData={ownData}
+            />
+          : parameter === "account" ?
+            <Account
+              ownData={ownData}
+            />
           : null
         }
       </div>

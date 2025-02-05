@@ -7,7 +7,7 @@ import { useFriendList } from "../../../custom-hooks/useFriendList";
 import { useFriendRequestList } from "../../../custom-hooks/useFriendRequestList";
 import { FriendsInbox } from "./FriendsInbox";
 
-export function Friends({ ownData }) {
+export function Friends({ ownData, setSelectedChatUid }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
@@ -62,6 +62,7 @@ export function Friends({ ownData }) {
             <FriendsAll
               ownUid={ownData.uid}
               friendDataList={friendDataList}
+              setSelectedChatUid={setSelectedChatUid}
             />
           : currentNav === "pending" ?
             <FriendsPending
