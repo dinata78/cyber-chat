@@ -208,7 +208,7 @@ body {
 }
 
 #cyber-container nav {
-  padding: 18px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
 }
@@ -224,18 +224,24 @@ body {
 
 .nav-button {
   fill: white;
-  width: 42px;
+  width: 60px;
+  padding: 10px;
+  border-radius: 100%;
+  display: grid;
+  place-content: center;
 }
 
 .nav-button.selected {
-  fill: #0077ff;
+  background-color: #ffffff35;
 }
 
 #nav-pfp {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border: 2px solid white;
-  border-radius: 8px;
+  border-radius: 100%;
+  display: grid;
+  place-content: center;
 }
 
 #nav-pfp.selected {
@@ -244,8 +250,8 @@ body {
 
 button#toggle-theme {
   background-color: transparent;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border: none;
   border-radius: 100%;
 }
@@ -256,19 +262,18 @@ button#toggle-theme:hover {
 
 button#toggle-theme svg {
   fill: white;
-  width: 35px;
+  width: 45px;
 }
 
 #cyber-chats {
   flex-grow: 1;
   display: flex;
-  gap: 24px;
   position: relative;
 }
 
 #toggle-chats-aside {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   display: grid;
   place-content: center;
 }
@@ -281,18 +286,17 @@ button#toggle-theme svg {
 
 #toggle-chats-aside svg {
   fill: white;
-  width: 42px;
+  width: 48px;
 }
 
 #toggle-chats-aside button:active {
   svg {
-    fill: #0077ff;
+    fill: #0066ff;
   }
 }
 
 #cyber-chats-aside {
-  min-width: 400px;
-  padding-inline: 10px;
+  min-width: 450px;
   display: flex;
   flex-direction: column;
 }
@@ -323,8 +327,7 @@ button#toggle-theme svg {
 
 #chats-aside-search {
   display: flex;
-  background-color: #22222f;
-  border-radius: 12px;
+  background-color: #ffffff25;
 }
 
 #chats-aside-search div {
@@ -362,20 +365,19 @@ button#toggle-theme svg {
 }
 
 .chat-card {
-  background-color: #22222f;
+  background-color: #ffffff25;
   min-height: 96px;
-  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .chat-card:hover {
-  background-color: #33334f;
+  background-color: #7777bf50;
 }
 
 .chat-card.selected {
-  background-color: #0077ff;
+  background-color: #0066ff;
 }
 
 .chat-card-pfp {
@@ -423,24 +425,22 @@ button#toggle-theme svg {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  padding-inline: 36px;
 }
 
 #chats-content-top  {
-  min-height: 12%;
+  padding-block: 24px;
   display: flex;
-  gap: 1rem;
+  gap: 18px;
 }
 
 #chats-content-top-pfp {
-  width: 100px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  display: grid;
+  place-content: center;
 }
 
 #chats-content-top-pfp img {
   width: 72px;
-  border: 2px solid white;
   border-radius: 100%;
 }
 
@@ -469,8 +469,6 @@ button#toggle-theme svg {
 
 #chat-display {
   flex-grow: 1;
-  padding: 2rem;
-  padding-left: 0;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -521,7 +519,6 @@ button#toggle-theme svg {
 
 #chat-input {
   min-height: 120px;
-  padding-right: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -545,10 +542,10 @@ button#toggle-theme svg {
 }
 
 #chat-input button {
-  background-color: #0077ff;
+  background-color: #0066ff;
   width: 48px;
   height: 48px;
-  border: 1px solid #0077ff;
+  border: 1px solid #0066ff;
   border-radius: 8px;
 }
 

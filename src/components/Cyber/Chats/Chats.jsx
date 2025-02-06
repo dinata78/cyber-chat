@@ -10,7 +10,7 @@ import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
 
 export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedChatUid }) {
-  const [currentChatData, setCurrentChatData] = useState({});
+  const [currentChatData, setCurrentChatData] = useState({name: "Loading...", title: "Loading...", uid: null});
   const [currentChatContent, setCurrentChatContent] = useState([]);
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
@@ -41,7 +41,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
       if (selectedChatUid === "globalChat") {
         onChatCardClick(
           "Global Chat",
-          "A global room everyone can access.",
+          "A global room everyone can access",
           "globalChat",
           ownData.uid,
           setCurrentChatData,
@@ -104,7 +104,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
               type="special"
               currentChatName={currentChatData.name} 
               name="Global Chat" 
-              title="A global room everyone can access." 
+              title="A global room everyone can access" 
               uid="globalChat"
               ownUid={ownData.uid}
               setCurrentChatData={setCurrentChatData}
@@ -137,7 +137,11 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
             <ChatCard 
               type="special"
               currentChatName={currentChatData.name}
-              name={ownData.name + " (You)"}
+              name={
+                ownData.name ?
+                  ownData.name + " (You)"
+                : "Loading..."
+              }
               title={ownData.title}
               uid={ownData.uid}
               ownUid={ownData.uid}
@@ -177,48 +181,45 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
         </div>
       }
       
-      {
-        currentChatData.name ?
-          <div id="cyber-chats-content">
+      <div id="cyber-chats-content">
 
-            <div id="chats-content-top">
-              <div id="chats-content-top-pfp">
-                <img src="/empty-pfp.webp" />
-              </div>
-              <div id="chats-content-top-info">
-                <h1>{currentChatData.name}</h1>
-                <span>{currentChatData.title}</span>
-              </div>
-            </div>
-            
-            <div id="chats-content-bottom">
-              <div id="chat-display" className="overflow-y-support">
-                {currentChatContent.map((chatContent, index) => {
-                return <MessageCard
-                          key={index + chatContent.senderId}
-                          senderName={usernamesMap[chatContent.senderId]} 
-                          content={chatContent.content} 
-                          isOwnMessage={chatContent.senderId === ownData.uid}
-                      />
-                })}
-                <div id="message-end-ref" ref={messageEndRef}></div>
-              </div>
-              <div id="chat-input">
-                <input 
-                  type="text"
-                  placeholder="Type something.."
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                />
-                <button onClick={() => addMessage(messageInput)}>
-                  <ArrowLeftSVG />
-                </button>
-              </div>
-            </div>
-
+        <div id="chats-content-top">
+          <div id="chats-content-top-pfp">
+            <img src="/empty-pfp.webp" />
           </div>
-        : null
-      }
+          <div id="chats-content-top-info">
+            <h1>{currentChatData.name}</h1>
+            <span>{currentChatData.title}</span>
+          </div>
+        </div>
+        
+        <div id="chats-content-bottom">
+          <div id="chat-display" className="overflow-y-support">
+            {currentChatContent.map((chatContent, index) => {
+            return <MessageCard
+                      key={index + chatContent.senderId}
+                      senderName={usernamesMap[chatContent.senderId]} 
+                      content={chatContent.content} 
+                      isOwnMessage={chatContent.senderId === ownData.uid}
+                  />
+            })}
+            <div id="message-end-ref" ref={messageEndRef}></div>
+          </div>
+          <div id="chat-input">
+            <input 
+              type="text"
+              placeholder="Type something.."
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+            />
+            <button onClick={() => addMessage(messageInput)}>
+              <ArrowLeftSVG />
+            </button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   )
 }
