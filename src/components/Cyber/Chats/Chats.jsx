@@ -112,6 +112,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
               usernamesMap={usernamesMap}
               setUsernamesMap={setUsernamesMap}
               unsubscribeSnapshot={unsubscribeSnapshot}
+              selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
             />
             {
@@ -128,6 +129,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
                   usernamesMap={usernamesMap}
                   setUsernamesMap={setUsernamesMap} 
                   unsubscribeSnapshot={unsubscribeSnapshot}
+                  selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                 />
               : null
@@ -144,6 +146,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
               usernamesMap={usernamesMap}
               setUsernamesMap={setUsernamesMap}
               unsubscribeSnapshot={unsubscribeSnapshot}
+              selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
             />
             {
@@ -162,6 +165,7 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
                     usernamesMap={usernamesMap}
                     setUsernamesMap={setUsernamesMap} 
                     unsubscribeSnapshot={unsubscribeSnapshot}
+                    selectedChatUid={selectedChatUid}
                     setSelectedChatUid={setSelectedChatUid}
                   />
                 )

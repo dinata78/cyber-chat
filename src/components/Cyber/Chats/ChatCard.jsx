@@ -15,6 +15,7 @@ export function ChatCard(
     usernamesMap, 
     setUsernamesMap,
     unsubscribeSnapshot,
+    selectedChatUid,
     setSelectedChatUid
   }
 ) {
@@ -31,7 +32,7 @@ export function ChatCard(
   return (
     <div 
       className={
-        currentChatName === name ? 
+        uid === selectedChatUid ? 
           "chat-card selected" 
         : "chat-card"
       } 
