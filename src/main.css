@@ -557,205 +557,6 @@ button#toggle-theme svg {
   width: 24px;
 }
 
-#cyber-settings {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-#cyber-settings h1 {
-  min-height: 10%;
-  margin: 0;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-#cyber-settings-features {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.settings-feature {
-  background-color: #777777cc;
-  height: 50px;
-  padding-inline: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.settings-feature span {
-  font-size: 2rem;
-}
-
-.settings-feature select {
-  background-color: black;
-  width: 120px;
-  height: 40px;
-  padding: 4px 8px;
-  border: 1px solid white;
-  color: inherit;
-  font-size: 1.5rem;
-}
-
-.input-type-toggle {
-  background-color: black;
-  width: 80px;
-  height: 40px;
-  padding-inline: 8px;
-  border: 1px solid white;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.input-type-toggle div {
-  background-color: #ccc;
-  width: 28px;
-  height: 28px;
-}
-
-.input-type-toggle.toggle-on {
-  background-color: #0077ff;
-  justify-content: flex-end;
-}
-
-#cyber-account {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-#cyber-account-pfp {
-  padding: 25px;
-  display: grid;
-  place-content: center;
-}
-
-#account-pfp {
-  width: 250px;
-  height: 250px;
-  position: relative;
-}
-
-#account-pfp img {
-  width: 100%;
-  border: 6px solid #222;
-  border-radius: 24px;
-}
-
-#account-pfp-edit {
-  background-color: #000000aa;
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  display: grid;
-  place-content: center;
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-}
-
-#account-pfp-edit:active {
-  opacity: 80%;
-}
-
-#account-pfp-edit svg {
-  fill: gray;
-  width: 50px;
-}
-
-hr#account-pfp-features-border {
-  width: 640px;
-}
-
-#cyber-account-features {
-  flex-grow: 1;
-  height: 0;
-  display: flex;
-  justify-content: center;
-}
-
-#account-features-container {
-  width: 640px;
-  padding-bottom: 1rem;
-}
-
-#cyber-account-features hr {
-  margin-block: 12px;
-}
-
-.account-feature {
-  padding: 1rem;
-  display: flex;
-  gap: 1rem;
-}
-
-.account-feature .info-icon {
-  height: 60px;
-  padding-top: 10px;
-  width: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.account-feature .info-icon svg {
-  fill: #777;
-  width: 40px;
-}
-
-.account-feature .account-info {
-  flex-grow: 1;
-  width: min-content;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.account-feature label {
-  color: #777;
-  font-size: 1.2rem;
-}
-
-.account-feature span {
-  width: 80%;
-  color: white;
-  font-size: 1.7rem;
-}
-
-.account-feature .edit-icon {
-  align-self: center;
-  background-color: #ffffff22;
-  padding: 12px;
-  border-radius: 8px;
-  display: grid;
-  place-content: center;
-}
-
-.account-feature .edit-icon:active {
-  opacity: 70%;
-}
-
-.account-feature .edit-icon svg {
-  fill: white;
-  width: 30px;
-}
-
-.account-feature button {
-  background-color: transparent;
-  width: 100%;
-  height: 3rem;
-  border: 2px solid red;
-  color: red;
-  font-family: inherit;
-  font-size: 1.8rem;
-}
-
 #cyber-friends {
   flex-grow: 1;
   display: flex;
@@ -773,7 +574,7 @@ hr#account-pfp-features-border {
   margin: 0;
 }
 
-.divider {
+#cyber-friends .divider {
   background-color: #aaa;
   width: 2px;
   height: 2rem;
@@ -1274,4 +1075,74 @@ button#add-friend:hover, button#add-friend:active {
   display: flex;
   align-items: center;
   font-size: 1.25rem;
+}
+
+#cyber-settings {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#cyber-settings h1 {
+  min-height: 10%;
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#cyber-settings-features {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings-feature {
+  background-color: #777777cc;
+  height: 50px;
+  padding-inline: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-feature span {
+  font-size: 2rem;
+}
+
+.settings-feature select {
+  background-color: black;
+  width: 120px;
+  height: 40px;
+  padding: 4px 8px;
+  border: 1px solid white;
+  color: inherit;
+  font-size: 1.5rem;
+}
+
+.input-type-toggle {
+  background-color: black;
+  width: 80px;
+  height: 40px;
+  padding-inline: 8px;
+  border: 1px solid white;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.input-type-toggle div {
+  background-color: #ccc;
+  width: 28px;
+  height: 28px;
+}
+
+.input-type-toggle.toggle-on {
+  background-color: #0077ff;
+  justify-content: flex-end;
+}
+
+#cyber-account {
+  flex-grow: 1;
 }
