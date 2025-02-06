@@ -9,7 +9,7 @@ import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
 
-export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedChatUid }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
   const [currentChatData, setCurrentChatData] = useState({name: "Loading...", title: "Loading...", uid: null});
   const [currentChatContent, setCurrentChatContent] = useState([]);
   const [messageInput,setMessageInput] = useState("");
@@ -81,48 +81,86 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
 
   return (
     <div id="cyber-chats">
+      <div id="cyber-chats-aside">
 
-      {isAsideVisible &&
-        <div id="cyber-chats-aside">
-
-          <div id="chats-aside-top">
-            <div id="chats-aside-top-top">
-              <h1>Chats</h1>
-            </div>
-            <div id="chats-aside-top-bottom">
-              <div id="chats-aside-search">
-                <div>
-                  <SearchSVG />
-                </div>
-                <input type="text" placeholder="Search" />
+        <div id="chats-aside-top">
+          <div id="chats-aside-top-top">
+            <h1>Chats</h1>
+          </div>
+          <div id="chats-aside-top-bottom">
+            <div id="chats-aside-search">
+              <div>
+                <SearchSVG />
               </div>
+              <input type="text" placeholder="Search" />
             </div>
           </div>
+        </div>
 
-          <div id="chats-aside-bottom" className="overflow-y-support">
-            <ChatCard
-              type="special"
-              currentChatName={currentChatData.name} 
-              name="Global Chat" 
-              title="A global room everyone can access" 
-              uid="globalChat"
-              ownUid={ownData.uid}
-              setCurrentChatData={setCurrentChatData}
-              setCurrentChatContent={setCurrentChatContent}
-              usernamesMap={usernamesMap}
-              setUsernamesMap={setUsernamesMap}
-              unsubscribeSnapshot={unsubscribeSnapshot}
-              selectedChatUid={selectedChatUid}
-              setSelectedChatUid={setSelectedChatUid}
-            />
-            {
-              ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
-                <ChatCard 
+        <div id="chats-aside-bottom" className="overflow-y-support">
+          <ChatCard
+            type="special"
+            currentChatName={currentChatData.name} 
+            name="Global Chat" 
+            title="A global room everyone can access" 
+            uid="globalChat"
+            ownUid={ownData.uid}
+            setCurrentChatData={setCurrentChatData}
+            setCurrentChatContent={setCurrentChatContent}
+            usernamesMap={usernamesMap}
+            setUsernamesMap={setUsernamesMap}
+            unsubscribeSnapshot={unsubscribeSnapshot}
+            selectedChatUid={selectedChatUid}
+            setSelectedChatUid={setSelectedChatUid}
+          />
+          {
+            ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
+              <ChatCard 
+                type={null}
+                currentChatName={currentChatData.name} 
+                name="Steven Dinata" 
+                title="Developer of CyberChat" 
+                uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
+                ownUid={ownData.uid}
+                setCurrentChatData={setCurrentChatData}
+                setCurrentChatContent={setCurrentChatContent}
+                usernamesMap={usernamesMap}
+                setUsernamesMap={setUsernamesMap} 
+                unsubscribeSnapshot={unsubscribeSnapshot}
+                selectedChatUid={selectedChatUid}
+                setSelectedChatUid={setSelectedChatUid}
+              />
+            : null
+          }
+          <ChatCard 
+            type="special"
+            currentChatName={currentChatData.name}
+            name={
+              ownData.name ?
+                ownData.name + " (You)"
+              : "Loading..."
+            }
+            title={ownData.title}
+            uid={ownData.uid}
+            ownUid={ownData.uid}
+            setCurrentChatData={setCurrentChatData}
+            setCurrentChatContent={setCurrentChatContent}
+            usernamesMap={usernamesMap}
+            setUsernamesMap={setUsernamesMap}
+            unsubscribeSnapshot={unsubscribeSnapshot}
+            selectedChatUid={selectedChatUid}
+            setSelectedChatUid={setSelectedChatUid}
+          />
+          {
+            friendDataList.map((friendData, index) => {
+              return (
+                <ChatCard
+                  key={index + friendData.uid}
                   type={null}
-                  currentChatName={currentChatData.name} 
-                  name="Steven Dinata" 
-                  title="Developer of CyberChat" 
-                  uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
+                  currentChatName={currentChatData.name}
+                  name={friendData.name}
+                  title={friendData.title}
+                  uid={friendData.uid}
                   ownUid={ownData.uid}
                   setCurrentChatData={setCurrentChatData}
                   setCurrentChatContent={setCurrentChatContent}
@@ -132,54 +170,13 @@ export function Chats({ ownData, isAsideVisible, selectedChatUid, setSelectedCha
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                 />
-              : null
-            }
-            <ChatCard 
-              type="special"
-              currentChatName={currentChatData.name}
-              name={
-                ownData.name ?
-                  ownData.name + " (You)"
-                : "Loading..."
-              }
-              title={ownData.title}
-              uid={ownData.uid}
-              ownUid={ownData.uid}
-              setCurrentChatData={setCurrentChatData}
-              setCurrentChatContent={setCurrentChatContent}
-              usernamesMap={usernamesMap}
-              setUsernamesMap={setUsernamesMap}
-              unsubscribeSnapshot={unsubscribeSnapshot}
-              selectedChatUid={selectedChatUid}
-              setSelectedChatUid={setSelectedChatUid}
-            />
-            {
-              friendDataList.map((friendData, index) => {
-                return (
-                  <ChatCard
-                    key={index + friendData.uid}
-                    type={null}
-                    currentChatName={currentChatData.name}
-                    name={friendData.name}
-                    title={friendData.title}
-                    uid={friendData.uid}
-                    ownUid={ownData.uid}
-                    setCurrentChatData={setCurrentChatData}
-                    setCurrentChatContent={setCurrentChatContent}
-                    usernamesMap={usernamesMap}
-                    setUsernamesMap={setUsernamesMap} 
-                    unsubscribeSnapshot={unsubscribeSnapshot}
-                    selectedChatUid={selectedChatUid}
-                    setSelectedChatUid={setSelectedChatUid}
-                  />
-                )
-              })
-            }
+              )
+            })
+          }
 
-          </div>
-          
         </div>
-      }
+        
+      </div>
       
       <div id="cyber-chats-content">
 

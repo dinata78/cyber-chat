@@ -16,7 +16,6 @@ import { onDisconnect, ref, update } from "firebase/database";
 
 export function Cyber() {
   const { parameter } = useParams();
-  const [ isAsideVisible, setIsAsideVisible ] = useState(true);
   const [ selectedChatUid, setSelectedChatUid ] = useState("globalChat");
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
@@ -64,17 +63,6 @@ export function Cyber() {
     <div id="cyber-page">
       <div id="cyber-container">
         <nav>
-          <div id="toggle-chats-aside">
-            {
-              parameter === "chats" ?
-                <button onClick={() => setIsAsideVisible((prev) => !prev)}>
-                  <MenuSVG />
-                </button>
-              : null
-            }
-          </div>
-          
-          
           <div id="top-nav">
             <Link to="/cyber/chats">
               <ChatsSVG currentParameter={parameter} />
@@ -88,9 +76,9 @@ export function Cyber() {
           </div>
 
           <div id="bottom-nav">
-            <Link to="/cyber/account">
-              <img id="nav-pfp" className={parameter === "account" ? "selected" : null} src="/empty-pfp.webp" />
-            </Link>
+            <button id="nav-pfp">
+              <img src="/empty-pfp.webp" />
+            </button>
             <button id="toggle-theme">
               <ThemeSVG theme="dark" />
             </button>
@@ -101,7 +89,6 @@ export function Cyber() {
           parameter === "chats" ? 
             <Chats
               ownData={ownData}
-              isAsideVisible={isAsideVisible}
               selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
             />
@@ -112,10 +99,6 @@ export function Cyber() {
             />
           : parameter === "settings" ?
             <Settings
-              ownData={ownData}
-            />
-          : parameter === "account" ?
-            <Account
               ownData={ownData}
             />
           : null

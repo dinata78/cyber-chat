@@ -231,17 +231,33 @@ body {
   place-content: center;
 }
 
-.nav-button.selected {
-  background-color: #ffffff35;
+.nav-button:hover {
+  background-color: #ffffff20;
 }
 
-#nav-pfp {
-  width: 56px;
-  height: 56px;
-  border: 2px solid white;
-  border-radius: 100%;
+.nav-button.selected {
+  background-color: #ffffff30;
+}
+
+button#nav-pfp {
+  background-color: transparent;
+  border: none;
+  padding: 0;
   display: grid;
   place-content: center;
+  border-radius: 100%;
+}
+
+button#nav-pfp img {
+  width: 54px;
+  height: 54px;
+  border: 3px solid #ffffff30;
+  border-radius: 100%;
+}
+
+button#nav-pfp:hover,
+button#nav-pfp:active {
+  opacity: 75%;
 }
 
 #nav-pfp.selected {
@@ -271,30 +287,6 @@ button#toggle-theme svg {
   position: relative;
 }
 
-#toggle-chats-aside {
-  width: 60px;
-  height: 60px;
-  display: grid;
-  place-content: center;
-}
-
-#toggle-chats-aside button {
-  background-color: transparent;
-  padding: 0;
-  border: none;
-}
-
-#toggle-chats-aside svg {
-  fill: white;
-  width: 48px;
-}
-
-#toggle-chats-aside button:active {
-  svg {
-    fill: #0066ff;
-  }
-}
-
 #cyber-chats-aside {
   min-width: 450px;
   display: flex;
@@ -303,26 +295,16 @@ button#toggle-theme svg {
 
 #chats-aside-top {
   box-sizing: border-box;
-  min-height: 15%;
+  padding-top: 36px;
+  padding-bottom: 12px;
   display: flex;
   flex-direction: column;
-}
-
-#chats-aside-top-top {
-  height: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  gap: 12px;
 }
 
 #chats-aside-top-top h1 {
-  margin-block: 0;
-}
-#chats-aside-top-bottom {
-  height: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  margin: 0;
+  text-align: center;
 }
 
 #chats-aside-search {
@@ -331,15 +313,15 @@ button#toggle-theme svg {
 }
 
 #chats-aside-search div {
-  height: 42px;
   width: 54px;
+  height: 42px;
   display: grid;
   place-content: center;
 }
 
 #chats-aside-search svg {
   fill: white;
-  width: 1.7rem;
+  width: 1.8rem;
 }
 
 #chats-aside-search input {
@@ -352,7 +334,7 @@ button#toggle-theme svg {
   font-size: 1.2rem;
 }
 
-#chats-aside-search input:focus {
+#chats-aside-search input:focus-visible {
   outline: none;
 }
 
@@ -537,7 +519,7 @@ button#toggle-theme svg {
   font-size: 1.2rem;
 }
 
-#chat-input input:focus {
+#chat-input input:focus-visible {
   outline: none;
 }
 
@@ -552,6 +534,11 @@ button#toggle-theme svg {
 #chat-input button svg {
   fill: white;
   width: 24px;
+}
+
+#chat-input button:focus {
+  outline: none;
+  border: 2px solid white;
 }
 
 #cyber-friends {

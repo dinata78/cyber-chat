@@ -1,8 +1,6 @@
-import { useInbox } from "../../../custom-hooks/useInbox"
 import { InboxCard } from "./InboxCard";
 
-export function FriendsInbox({ ownUid }) {
-  const { inboxItems } = useInbox(ownUid);
+export function FriendsInbox({ inboxItems }) {
 
   return (
     <div id="friends-inbox">

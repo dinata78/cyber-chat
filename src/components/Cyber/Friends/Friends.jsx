@@ -6,6 +6,7 @@ import { FriendsPending } from "./FriendsPending";
 import { useFriendList } from "../../../custom-hooks/useFriendList";
 import { useFriendRequestList } from "../../../custom-hooks/useFriendRequestList";
 import { FriendsInbox } from "./FriendsInbox";
+import { useInbox } from "../../../custom-hooks/useInbox"
 
 export function Friends({ ownData, setSelectedChatUid }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -13,6 +14,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
 
   const { friendUidList, friendDataList } = useFriendList(ownData);
   const { friendRequestSentList, friendRequestReceivedList } = useFriendRequestList(ownData);
+  const { inboxItems } = useInbox(ownData.uid);
 
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
@@ -72,7 +74,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
             />
           : currentNav === "inbox" ?
             <FriendsInbox
-              ownUid={ownData.uid}
+              inboxItems={inboxItems}
             />
           : null
         }
