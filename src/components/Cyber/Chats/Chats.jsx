@@ -100,7 +100,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
         <div id="chats-aside-bottom" className="overflow-y-support">
           <ChatCard
             type="special"
-            currentChatName={currentChatData.name} 
             name="Global Chat" 
             title="A global room everyone can access" 
             uid="globalChat"
@@ -117,7 +116,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
               <ChatCard 
                 type={null}
-                currentChatName={currentChatData.name} 
                 name="Steven Dinata" 
                 title="Developer of CyberChat" 
                 uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
@@ -134,7 +132,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
           }
           <ChatCard 
             type="special"
-            currentChatName={currentChatData.name}
             name={
               ownData.name ?
                 ownData.name + " (You)"
@@ -157,7 +154,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
                 <ChatCard
                   key={index + friendData.uid}
                   type={null}
-                  currentChatName={currentChatData.name}
                   name={friendData.name}
                   title={friendData.title}
                   uid={friendData.uid}

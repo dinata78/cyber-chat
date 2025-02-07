@@ -260,10 +260,6 @@ button#nav-pfp:active {
   opacity: 75%;
 }
 
-#nav-pfp.selected {
-  border-color: #0077ff;
-}
-
 button#toggle-theme {
   background-color: transparent;
   width: 60px;
@@ -576,17 +572,17 @@ button#toggle-theme svg {
 }
 
 #cyber-friends-nav button.selected {
-  color: #0077ff;
-  border-bottom: 3px solid #0077ff;
+  color: #0066ff;
+  border-bottom: 3px solid #0066ff;
 }
 
 button#add-friend {
   background-color: #ffffff50;
-  border-radius: 6px;
 }
 
-button#add-friend:hover, button#add-friend:active {
-  background-color: #0077ff99;
+button#add-friend:hover,
+button#add-friend:active {
+  background-color: #0066ff99;
 }
 
 #cyber-friends-content {
@@ -608,52 +604,52 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #add-friend-modal > div {
-  background-color: #444455;
+  background-color: #ffffff18;
   width: 480px;
   height: 510px;
-  border-radius: 16px;
   display: flex;
   flex-direction: column;
 }
 
-#add-friend-modal-top {
+#add-friend-top {
   min-height: 10%;
   display: grid;
   place-content: center;
   position: relative;
 }
 
-#add-friend-modal-top h1 {
+#add-friend-top h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
+  color: #99aaee;
 }
 
-#add-friend-modal-top div {
+#add-friend-top > div {
   width: 60px;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-content: center;
   position: absolute;
   right: 0;
 }
 
-#add-friend-modal-top button {
+#add-friend-top button {
   background-color: transparent;
   width: 40px;
   height: 40px;
+  padding: 0;
   border: none;
   border-radius: 100%;
   display: grid;
   place-content: center;
-  position: absolute;
 }
 
-#add-friend-modal-top button:hover {
-  background-color: #666;
+#add-friend-top button:hover,
+#add-friend-top button:active {
+  background-color: #ffffff15;
 }
 
-#add-friend-modal-top svg {
+#add-friend-top svg {
   fill: white;
   width: 30px;
 }
@@ -663,7 +659,7 @@ button#add-friend:hover, button#add-friend:active {
   border-color: gray;
 }
 
-#add-friend-modal-bottom {
+#add-friend-bottom {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -705,7 +701,7 @@ button#add-friend:hover, button#add-friend:active {
 
 #add-friend-input button {
   align-self: center;
-  background-color: #0077ff;
+  background-color: #0066ff;
   width: 15%;
   height: 70%;
   margin-right: 4px;
@@ -716,7 +712,7 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 #add-friend-input button:active {
-  background-color: #0077ffaa;
+  background-color: #0066ffaa;
 }
 
 #add-friend-no-result {
@@ -732,7 +728,7 @@ button#add-friend:hover, button#add-friend:active {
 
 #add-friend-no-result span {
   text-align: center;
-  color: #aaddff;
+  color: #99aaee;
   font-size: 1.25rem;
 }
 
@@ -968,9 +964,10 @@ button#add-friend:hover, button#add-friend:active {
   fill: white;
 }
 
-.friend-card-buttons button:hover, .friend-card-buttons button:active {
+.friend-card-buttons button:hover, 
+.friend-card-buttons button:active {
   svg {
-    fill: #0077ff;
+    fill: #0066ff;
   }
 }
 
@@ -1123,10 +1120,72 @@ button#add-friend:hover, button#add-friend:active {
 }
 
 .input-type-toggle.toggle-on {
-  background-color: #0077ff;
+  background-color: #0066ff;
   justify-content: flex-end;
 }
 
 #cyber-account {
-  flex-grow: 1;
+  z-index: 1;
+  background-color: #000000dd;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  position: fixed;
+}
+
+#cyber-account > div {
+  background-color: #ffffff18;
+  width: min(1080px, 80vw);
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#cyber-account-top {
+  min-height: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#cyber-account-top h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+#cyber-account-top > div {
+  width: 72px;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  position: absolute;
+  right: 0;
+}
+
+#cyber-account-top button {
+  background-color: transparent;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 100%;
+  display: grid;
+  place-content: center;
+}
+
+#cyber-account-top button:hover,
+#cyber-account-top button:active {
+  background-color: #ffffff15;
+}
+
+#cyber-account-top svg {
+  fill: white;
+  width: 36px;
+}
+
+#cyber-account hr {
+  margin: 0;
+  border-color: gray;
 }

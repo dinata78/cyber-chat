@@ -8,8 +8,9 @@ import { BioSVG } from "../../svg/BioSVG";
 import { TitleSVG } from "../../svg/TitleSVG";
 import { EmailSVG } from "../../svg/EmailSVG";
 import { ref, update } from "firebase/database";
+import { CloseSVG } from "../../svg/CloseSVG";
 
-export function Account({ ownData }) {
+export function Account({ ownData, setIsAccountVisible }) {
   const navigate = useNavigate();
 
   const logOut = async () => {
@@ -27,8 +28,27 @@ export function Account({ ownData }) {
   }
   
   return (
-    <div id="cyber-account">
-
+    <div
+      id="cyber-account"
+      onClick={() => setIsAccountVisible(false)}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+      >
+        
+        <div id="cyber-account-top">
+          <h1>Account</h1>
+          <div>
+            <button
+              onClick={() => setIsAccountVisible(false)}
+            >
+              <CloseSVG />
+            </button>
+          </div>
+        </div>
+        <hr />
+        
+      </div>
     </div>
   )
 }

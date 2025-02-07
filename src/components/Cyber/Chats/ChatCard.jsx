@@ -5,7 +5,6 @@ import { onChatCardClick } from "./onChatCardClick";
 export function ChatCard(
   { 
     type, 
-    currentChatName, 
     name, 
     title, 
     uid, 

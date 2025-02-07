@@ -4,8 +4,10 @@ import { db } from "../../firebase";
 
 export function useInbox(uid) {
   const [ inboxItems, setInboxItems ] = useState([]);
-
+  
   useEffect(() => {
+    if (!uid) return;
+
     let unsubscribe = null;
 
     const fetchData = async () => {
@@ -19,7 +21,7 @@ export function useInbox(uid) {
 
     fetchData();
 
-  }, []);
+  }, [uid]);
 
   return { inboxItems }
 }

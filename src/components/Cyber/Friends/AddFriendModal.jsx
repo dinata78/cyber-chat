@@ -44,7 +44,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList,
       onClick={() => setIsAddFriendModalVisible(false)}
     >
       <div onClick={(e) => e.stopPropagation()}>
-        <div id="add-friend-modal-top">
+        <div id="add-friend-top">
           <h1>ADD FRIEND</h1>
           <div>
             <button onClick={() => setIsAddFriendModalVisible(false)}>
@@ -53,7 +53,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList,
           </div>
         </div>
         <hr />
-        <div id="add-friend-modal-bottom">
+        <div id="add-friend-bottom">
           <div id="add-friend-input">
             <div>
               <SearchSVG />

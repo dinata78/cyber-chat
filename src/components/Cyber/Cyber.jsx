@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-import { MenuSVG } from "../svg/nav-svg/MenuSVG";
 import { ChatsSVG } from "../svg/nav-svg/ChatsSVG";
 import { SettingsSVG } from "../svg/nav-svg/SettingsSVG";
 import { FriendsSVG } from "../svg/nav-svg/FriendsSVG";
@@ -16,10 +15,12 @@ import { onDisconnect, ref, update } from "firebase/database";
 
 export function Cyber() {
   const { parameter } = useParams();
-  const [ selectedChatUid, setSelectedChatUid ] = useState("globalChat");
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [ownData, setOwnData] = useState({});
+
+  const [ selectedChatUid, setSelectedChatUid ] = useState("globalChat");
+  const [ isAccountVisible, setIsAccountVisible ] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -76,7 +77,10 @@ export function Cyber() {
           </div>
 
           <div id="bottom-nav">
-            <button id="nav-pfp">
+            <button 
+              id="nav-pfp"
+              onClick={() => setIsAccountVisible(true)}
+            >
               <img src="/empty-pfp.webp" />
             </button>
             <button id="toggle-theme">
@@ -84,6 +88,14 @@ export function Cyber() {
             </button>
           </div>
         </nav>
+
+        {
+          isAccountVisible && 
+            <Account
+              ownData={ownData}
+              setIsAccountVisible={setIsAccountVisible}
+            />
+        }
 
         {
           parameter === "chats" ? 
