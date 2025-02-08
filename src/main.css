@@ -741,7 +741,7 @@ button#add-friend:active {
 }
 
 #add-friend-profile-left {
-  width: 40%;
+  width: 45%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -750,40 +750,36 @@ button#add-friend:active {
 
 #add-friend-profile-left img {
   max-width: 200px;
-  border: 3px solid #aaddff;
+  border: 2px solid #aaddff;
 }
 
 #add-friend-profile-right {
-  width: 59%;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 6px;
 }
 
-.add-friend-profile-data-card {
+#add-friend-profile .friend-profile-data-card {
   width: 100%;
   height: max-content;
   padding: 8px;
-  border: 3px solid #aaddff;
+  border: 2px solid #aaddff;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 2px;
-  overflow-x: auto;
 }
 
-.add-friend-profile-data-card:last-child {
+#add-friend-profile .friend-profile-data-card:last-child {
   flex-grow: 1;
 }
 
-.add-friend-profile-data-card .label {
+#add-friend-profile .friend-profile-data-card .label {
   color: #aaddff;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
-.add-friend-profile-data-card {
+#add-friend-profile .friend-profile-data-card .content {
   font-size: 1rem;
 }
 
@@ -935,8 +931,20 @@ button#add-friend:active {
   gap: 4px;
 }
 
+.friend-card-info > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .friend-card-name {
   font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.friend-card-username {
+  color: #aaddff;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -1135,9 +1143,9 @@ button#add-friend:active {
 }
 
 #cyber-account > div {
-  background-color: #ffffff18;
-  width: min(1080px, 80vw);
-  height: 70vh;
+  background-color: #ffffff25;
+  width: 640px;
+  height: 640px;
   display: flex;
   flex-direction: column;
 }
@@ -1188,4 +1196,99 @@ button#add-friend:active {
 #cyber-account hr {
   margin: 0;
   border-color: gray;
+}
+
+#cyber-account-bottom {
+  flex-grow: 1;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#account-data {
+  height: max-content;
+  display: flex;
+  gap: 12px;
+}
+
+#account-data .left {
+  min-width: 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#account-data .right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-data-card {
+  width: 100%;
+  height: max-content;
+  padding: 12px;
+  border: 3px solid #999;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-data-card:last-child {
+  flex-grow: 1;
+}
+
+.account-data-card .label {
+  color: #aaddff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.account-data-card .content {
+  font-size: 1.25rem;
+}
+
+#account-data img {
+  width: 100%;
+  border: 3px solid #999;
+}
+
+#account-email {
+  display: flex;
+  gap: 6px;
+}
+
+#account-email svg {
+  fill: #999;
+  width: 32px;
+}
+
+#account-email span {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+#account-buttons {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+#account-buttons button {
+  background-color: transparent;
+  border: none;
+  color: #1177ff;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+#account-buttons button:hover,
+#account-buttons button:active {
+  color: #aaddff;
 }

@@ -5,9 +5,11 @@ import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
 import { addInbox } from "./addInbox";
 import { removeFriend } from "./removeFriend";
+import { useName } from "../../../custom-hooks/useName";
 
 export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSelectedChatUid }) {
   const { onlineStatus } = useTrackOnlineStatus(friendUid);
+  const { username } = useName(friendUid);
 
   const navigate = useNavigate();
 
@@ -23,6 +25,8 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
     setSelectedChatUid(friendUid);
   }
 
+  if (!username) return;
+
   return (
     <div className="friend-card">
 
@@ -37,7 +41,10 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
       </div>
 
       <div className="friend-card-info">
-        <span className="friend-card-name">{friendName}</span>
+        <div>
+          <span className="friend-card-name">{friendName}</span>
+          <span className="friend-card-username">@{username}</span>
+        </div>
         <span className="friend-card-title">{friendTitle}</span>
       </div>
 

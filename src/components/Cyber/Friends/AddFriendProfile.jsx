@@ -1,39 +1,40 @@
 import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
-import { AddFriendProfileDataCard } from "./AddFriendProfileDataCard";
+import { capitalizeFirstLetter } from "../../../utils";
+import { FriendProfileDataCard } from "./FriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {
-  const { onlineStatus } = useTrackOnlineStatus(searchedUserData.uid);
   
+  const { onlineStatus } = useTrackOnlineStatus(searchedUserData.uid);
+
   return (
     <div id="add-friend-profile">
 
       <div id="add-friend-profile-left">
         <img src="/empty-pfp.webp" />
-        <AddFriendProfileDataCard 
+        <FriendProfileDataCard 
           label="USERNAME"
           content={searchedUserData.username}
         />
-        <AddFriendProfileDataCard
+        <FriendProfileDataCard
           label="STATUS"
           content={
             onlineStatus ? 
-              onlineStatus.charAt(0).toUpperCase() 
-              + onlineStatus.slice(1) 
+              capitalizeFirstLetter(onlineStatus)
             : "Loading..."
           }
         />
       </div>
 
       <div id="add-friend-profile-right">
-        <AddFriendProfileDataCard
+        <FriendProfileDataCard
           label="DISPLAY NAME"
           content={searchedUserData.displayName}
         />
-        <AddFriendProfileDataCard
+        <FriendProfileDataCard
           label="TITLE"
           content={searchedUserData.title}
         />
-        <AddFriendProfileDataCard
+        <FriendProfileDataCard
           label="BIO"
           content={searchedUserData.bio}
         />

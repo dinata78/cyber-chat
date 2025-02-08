@@ -30,3 +30,10 @@ export function getIndicatorClass(status) {
   if (status === "online") return "indicator online";
   else return "indicator offline";
 }
+
+export function capitalizeFirstLetter(text) {
+  return (
+    text.charAt(0).toUpperCase()
+    + text.slice(1)
+  )
+}

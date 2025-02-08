@@ -20,7 +20,7 @@ export function useTrackOnlineStatus(uid) {
       });
   
       return () => off(dbRef);
-    }, []);
+    }, [uid]);
 
     return { onlineStatus };
 }

@@ -1,16 +1,13 @@
 import { signOut } from "firebase/auth";
 import { auth, realtimeDb } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { AtSVG } from "../../svg/AtSVG";
-import { EditSVG } from "../../svg/EditSVG";
-import { NameSVG } from "../../svg/NameSVG";
-import { BioSVG } from "../../svg/BioSVG";
-import { TitleSVG } from "../../svg/TitleSVG";
-import { EmailSVG } from "../../svg/EmailSVG";
 import { ref, update } from "firebase/database";
 import { CloseSVG } from "../../svg/CloseSVG";
+import { EmailSVG } from "../../svg/EmailSVG"
+import { AccountDataCard } from "./AccountDataCard";
 
 export function Account({ ownData, setIsAccountVisible }) {
+
   const navigate = useNavigate();
 
   const logOut = async () => {
@@ -46,7 +43,54 @@ export function Account({ ownData, setIsAccountVisible }) {
             </button>
           </div>
         </div>
+
         <hr />
+        
+        <div id="cyber-account-bottom">
+          <div id="account-data">
+            <div className="left">
+              <img src="/empty-pfp.webp" />
+              <AccountDataCard
+                label="USERNAME"
+                content={ownData.username}
+              />
+              <AccountDataCard
+                label="STATUS"
+                content="Online"
+              />
+            </div>
+
+            <div className="right">
+              <AccountDataCard
+                label="DISPLAY NAME"
+                content={ownData.name}
+              />
+              <AccountDataCard
+                label="TITLE"
+                content={ownData.title}
+              />
+              <AccountDataCard
+                label="BIO"
+                content={ownData.bio}
+              />
+            </div>
+          </div>
+          <div id="account-email">
+            <EmailSVG />
+            <span id="email">{ownData.email}</span>
+          </div>
+          <div id="account-buttons">
+            <button>
+              Log Out
+            </button>
+            <button>
+              Reset Password
+            </button>
+            <button>
+              Delete Account
+            </button>
+          </div>
+        </div>
         
       </div>
     </div>
