@@ -53,10 +53,12 @@ export function Account({ ownData, setIsAccountVisible }) {
               <AccountDataCard
                 label="USERNAME"
                 content={ownData.username}
+                ownUid={ownData.uid}
               />
               <AccountDataCard
                 label="STATUS"
                 content="Online"
+                ownUid={ownData.uid}
               />
             </div>
 
@@ -64,14 +66,17 @@ export function Account({ ownData, setIsAccountVisible }) {
               <AccountDataCard
                 label="DISPLAY NAME"
                 content={ownData.name}
+                ownUid={ownData.uid}
               />
               <AccountDataCard
                 label="TITLE"
                 content={ownData.title}
+                ownUid={ownData.uid}
               />
               <AccountDataCard
                 label="BIO"
                 content={ownData.bio}
+                ownUid={ownData.uid}
               />
             </div>
           </div>

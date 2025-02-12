@@ -768,6 +768,7 @@ button#add-friend:active {
   border: 2px solid #aaddff;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 #add-friend-profile .friend-profile-data-card:last-child {
@@ -1210,50 +1211,116 @@ button#add-friend:active {
 #account-data {
   height: max-content;
   display: flex;
-  gap: 12px;
+  gap: 6px;
 }
 
 #account-data .left {
-  min-width: 35%;
+  min-width: 240px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 #account-data .right {
-  flex-grow: 1;
+  min-width: 60%;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
+#account-data img {
+  width: 240px;
+  border: 2px solid #999;
+}
+
 .account-data-card {
-  width: 100%;
-  height: max-content;
+  max-width: 100%;
+  min-height: 70px;
   padding: 12px;
-  border: 3px solid #999;
+  border: 2px solid #999;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  position: relative;
 }
 
 .account-data-card:last-child {
   flex-grow: 1;
 }
 
+.account-data-card button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #aaddff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.account-data-card svg {
+  fill: #aaddff;
+  width: 14px;
+}
+
+.account-data-card button:hover,
+.account-data-card button:active {
+  opacity: 70%;
+}
+
 .account-data-card .label {
   color: #aaddff;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .account-data-card .content {
-  font-size: 1.25rem;
+  width: 100%;
+  font-size: 1rem;
 }
 
-#account-data img {
+.account-data-card .char-tracker {
+  color: #aaddffbb;
+  font-size: 8px;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+
+.account-data-card input {
+  background-color: #aaddff35;
   width: 100%;
-  border: 3px solid #999;
+  height: 25px;
+  padding: 0;
+  padding-inline: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.account-data-card input:focus {
+  outline: none;
+}
+
+.account-data-card textarea {
+  resize: none;
+  background-color: #aaddff35;
+  height: 100%;
+  padding: 6px 8px;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.account-data-card textarea:focus {
+  outline: none;
 }
 
 #account-email {
