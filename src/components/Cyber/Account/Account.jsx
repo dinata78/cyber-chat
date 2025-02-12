@@ -80,7 +80,9 @@ export function Account({ ownData, setIsAccountVisible }) {
             <span id="email">{ownData.email}</span>
           </div>
           <div id="account-buttons">
-            <button>
+            <button
+              onClick={logOut}
+            >
               Log Out
             </button>
             <button>
