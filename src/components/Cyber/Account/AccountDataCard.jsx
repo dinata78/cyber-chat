@@ -6,10 +6,25 @@ import { editField } from "./editField";
 
 export function AccountDataCard({ label, content, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editContent, setEditContent ] = useState(content);
+  const [ editedContent, setEditedContent ] = useState(content);
+  const [ isEditContentFull, setIsContentFull ] = useState(false);
+
+  const editContent = (e) => {
+    const maxChar = getMaxChar(label.toLowerCase());
+
+    if (e.target.value.length <= maxChar) {
+      if (isEditContentFull) setIsContentFull(false);
+
+      setEditedContent(e.target.value);
+    }
+    else {
+      setIsContentFull(true);
+    }
+  }
 
   return (
     <div className="account-data-card">
+
       {
         ["username", "display name", "bio"]
         .includes(label.toLowerCase()) ?
@@ -20,7 +35,8 @@ export function AccountDataCard({ label, content, ownUid }) {
                 isEditMode,
                 setIsEditMode,
                 label.toLowerCase(),
-                editContent,
+                content,
+                editedContent,
                 ownUid
               )
           }
@@ -37,18 +53,32 @@ export function AccountDataCard({ label, content, ownUid }) {
 
       {
         !isEditMode ?
-          <span className="content">{content}</span>
+          <span className="content">
+            {
+              content ? content
+              : "(Not Set)"
+            }
+          </span>
         : 
           label.toLowerCase() !== "bio" ?
             <input 
               type="text"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              className={
+                isEditContentFull ?
+                  "full"
+                : null
+              }
+              value={editedContent}
+              onChange={editContent}
             />
           : <textarea
-          className="overflow-y-support"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
+              className={
+                isEditContentFull ?
+                  "full overflow-y-support"
+                : "overflow-y-support"
+              }
+              value={editedContent}
+              onChange={editContent}
             >
               {content}
             </textarea>
@@ -59,9 +89,10 @@ export function AccountDataCard({ label, content, ownUid }) {
         .includes(label.toLowerCase())  &&
         isEditMode &&
           <span className="char-tracker">
-            {editContent.length} / {getMaxChar(label.toLowerCase())}
+            {editedContent.length} / {getMaxChar(label.toLowerCase())}
           </span>
       }
+
     </div>
   )
 }

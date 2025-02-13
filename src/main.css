@@ -1152,7 +1152,7 @@ button#add-friend:active {
 }
 
 #cyber-account-top {
-  min-height: 12%;
+  min-height: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1255,24 +1255,28 @@ button#add-friend:active {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #aaddff;
+  color: #1177ff;
   font-family: inherit;
   font-size: 12px;
   font-weight: bold;
 }
 
 .account-data-card svg {
-  fill: #aaddff;
+  fill: #1177ff;
   width: 14px;
 }
 
 .account-data-card button:hover,
 .account-data-card button:active {
-  opacity: 70%;
+  color: #aaddff;
+
+  svg {
+    fill: #aaddff;
+  }
 }
 
 .account-data-card .label {
-  color: #aaddff;
+  color: #1177ff;
   font-size: 12px;
   font-weight: bold;
 }
@@ -1308,6 +1312,10 @@ button#add-friend:active {
   outline: none;
 }
 
+.account-data-card input.full {
+  background-color: #ff42424f;
+}
+
 .account-data-card textarea {
   resize: none;
   background-color: #aaddff35;
@@ -1321,6 +1329,10 @@ button#add-friend:active {
 
 .account-data-card textarea:focus {
   outline: none;
+}
+
+.account-data-card textarea.full {
+  background-color: #ff42424f;
 }
 
 #account-email {

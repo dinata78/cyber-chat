@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
@@ -23,7 +23,7 @@ export function useAuth(setIsLoading) {
       
       await setDoc(newDocRef, {
         uid: auth.currentUser.uid,
-        username: null,
+        username: "",
         name: "Anonymous",
         bio: "Hello world!",
         title: "Newcomer",
@@ -34,6 +34,18 @@ export function useAuth(setIsLoading) {
         friendRequestReceived: [],
         inbox: [],
       });
+
+      const metadataDocRef = doc(db, "users", "metadata");
+      const metadataDoc = await getDoc(metadataDocRef); 
+      const metadataDocData = metadataDoc.data();
+      const usernamesMap = metadataDocData.usernames;
+      usernamesMap[auth.currentUser.uid] = "";
+
+      await updateDoc(metadataDocRef, {
+        ...metadataDocData,
+        usernames: usernamesMap, 
+      });
+
     }
     catch (error) {
       console.log("Error occured while signing up: " + error);
