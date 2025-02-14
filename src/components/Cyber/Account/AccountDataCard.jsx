@@ -7,18 +7,23 @@ import { editField } from "./editField";
 export function AccountDataCard({ label, content, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ editedContent, setEditedContent ] = useState(content);
-  const [ isContentFull, setIsContentFull ] = useState(false);
+  const [ isContentInvalid, setIsContentInvalid ] = useState(false);
+  const [ errorInfo, setErrorInfo ] = useState("");
+  const [ isErrorInfoVisible, setIsErrorInfoVisible ] = useState(false);
 
   const editContent = (e) => {
     const maxChar = getMaxChar(label.toLowerCase());
 
     if (e.target.value.length <= maxChar) {
-      if (isContentFull) setIsContentFull(false);
+      if (isContentInvalid) setIsContentInvalid(false);
+      if (isErrorInfoVisible) setIsErrorInfoVisible(false);
 
       setEditedContent(e.target.value);
     }
     else {
-      setIsContentFull(true);
+      setIsContentInvalid(true);
+      setErrorInfo("Character limit reached.")
+      setIsErrorInfoVisible(true);
     }
   }
 
@@ -38,8 +43,12 @@ export function AccountDataCard({ label, content, ownUid }) {
                 content,
                 editedContent.trim(),
                 setEditedContent,
-                isContentFull,
-                setIsContentFull,
+                isContentInvalid,
+                setIsContentInvalid,
+                errorInfo,
+                setErrorInfo,
+                isErrorInfoVisible,
+                setIsErrorInfoVisible,
                 ownUid
               )
           }
@@ -67,8 +76,8 @@ export function AccountDataCard({ label, content, ownUid }) {
             <input 
               type="text"
               className={
-                isContentFull ?
-                  "full"
+                isContentInvalid ?
+                  "invalid"
                 : null
               }
               value={editedContent}
@@ -76,8 +85,8 @@ export function AccountDataCard({ label, content, ownUid }) {
             />
           : <textarea
               className={
-                isContentFull ?
-                  "full overflow-y-support"
+                isContentInvalid ?
+                  "invalid overflow-y-support"
                 : "overflow-y-support"
               }
               value={editedContent}
@@ -93,6 +102,13 @@ export function AccountDataCard({ label, content, ownUid }) {
         isEditMode &&
           <span className="char-tracker">
             {editedContent.length} / {getMaxChar(label.toLowerCase())}
+          </span>
+      }
+
+      {
+        isErrorInfoVisible &&
+          <span className="error-info">
+            {errorInfo}
           </span>
       }
 

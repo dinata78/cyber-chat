@@ -2,9 +2,10 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid } from "../../../utils"
 
-export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentFull, setIsContentFull, ownUid) {
+export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentInvalid, setIsContentInvalid, errorInfo, setErrorInfo, isErrorInfoVisible, setIsErrorInfoVisible, ownUid) {
 
-  if (isContentFull) setIsContentFull(false);
+  if (isContentInvalid) setIsContentInvalid(false);
+  if (isErrorInfoVisible) setIsErrorInfoVisible(false);
 
   if (!isEditMode) {
     setIsEditMode(true);
@@ -56,7 +57,9 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           }
           else {
             setEditedContent(filteredEditedContent);
-            alert("Username already existed.")  
+            setIsContentInvalid(true);
+            setErrorInfo("Username already exists.");
+            setIsErrorInfoVisible(true);
           }
         }
         else {
