@@ -21,12 +21,16 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           ...userDocData,
           name: editedContent,
         })
+
+        setIsEditMode(false);
       }
       else if (label === "bio") {
         await updateDoc(userDocRef, {
           ...userDocData,
           bio: editedContent,
         })
+
+        setIsEditMode(false);
       }
       else if (label === "username") {
 
@@ -51,7 +55,9 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           await updateDoc(metadataDocRef, {
             ...metadataDocData,
             usernames: usernamesMap,
-          })        
+          })
+          
+          setIsEditMode(false);
         }
 
       }
