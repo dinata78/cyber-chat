@@ -7,13 +7,13 @@ import { editField } from "./editField";
 export function AccountDataCard({ label, content, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ editedContent, setEditedContent ] = useState(content);
-  const [ isEditContentFull, setIsContentFull ] = useState(false);
+  const [ isContentFull, setIsContentFull ] = useState(false);
 
   const editContent = (e) => {
     const maxChar = getMaxChar(label.toLowerCase());
 
     if (e.target.value.length <= maxChar) {
-      if (isEditContentFull) setIsContentFull(false);
+      if (isContentFull) setIsContentFull(false);
 
       setEditedContent(e.target.value);
     }
@@ -36,7 +36,10 @@ export function AccountDataCard({ label, content, ownUid }) {
                 setIsEditMode,
                 label.toLowerCase(),
                 content,
-                editedContent,
+                editedContent.trim(),
+                setEditedContent,
+                isContentFull,
+                setIsContentFull,
                 ownUid
               )
           }
@@ -64,7 +67,7 @@ export function AccountDataCard({ label, content, ownUid }) {
             <input 
               type="text"
               className={
-                isEditContentFull ?
+                isContentFull ?
                   "full"
                 : null
               }
@@ -73,7 +76,7 @@ export function AccountDataCard({ label, content, ownUid }) {
             />
           : <textarea
               className={
-                isEditContentFull ?
+                isContentFull ?
                   "full overflow-y-support"
                 : "overflow-y-support"
               }

@@ -2,12 +2,16 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid } from "../../../utils"
 
-export function editField(isEditMode, setIsEditMode, label, content, editedContent, ownUid) {
+export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentFull, setIsContentFull, ownUid) {
+
+  if (isContentFull) setIsContentFull(false);
+
   if (!isEditMode) {
     setIsEditMode(true);
   }
 
   else if (editedContent === content) {
+    setEditedContent(editedContent);
     setIsEditMode(false);
   }
 
@@ -22,6 +26,7 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           name: editedContent,
         })
 
+        setEditedContent(editedContent);
         setIsEditMode(false);
       }
       else if (label === "bio") {
@@ -29,7 +34,8 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           ...userDocData,
           bio: editedContent,
         })
-
+        
+        setEditedContent(editedContent);
         setIsEditMode(false);
       }
       else if (label === "username") {
@@ -41,15 +47,24 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
 
         const usernamesList = Object.values(usernamesMap);
 
-        if (usernamesList.includes(editedContent)) {
-          alert("Username already existed.")
+        const filteredEditedContent = editedContent.replaceAll(" ", "").toLowerCase();
+
+        if (usernamesList.includes(filteredEditedContent)) {
+          if (filteredEditedContent === content) {
+            setEditedContent(filteredEditedContent);
+            setIsEditMode(false);
+          }
+          else {
+            setEditedContent(filteredEditedContent);
+            alert("Username already existed.")  
+          }
         }
         else {
-          usernamesMap[ownUid] = editedContent;
+          usernamesMap[ownUid] = filteredEditedContent;
           
           await updateDoc(userDocRef, {
             ...userDocData,
-            username: editedContent,
+            username: filteredEditedContent,
           })
   
           await updateDoc(metadataDocRef, {
@@ -57,9 +72,11 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
             usernames: usernamesMap,
           })
           
+          setEditedContent(filteredEditedContent);
           setIsEditMode(false);
         }
 
+        
       }
     }
 
