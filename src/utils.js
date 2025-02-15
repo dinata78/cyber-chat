@@ -37,3 +37,7 @@ export function capitalizeFirstLetter(text) {
     + text.slice(1)
   )
 }
+
+export function normalizeSpaces(str) {
+  return str.replace(/\s+/g, ' ').trim();
+}

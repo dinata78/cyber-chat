@@ -2,7 +2,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid } from "../../../utils"
 
-export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentInvalid, setIsContentInvalid, errorInfo, setErrorInfo, isErrorInfoVisible, setIsErrorInfoVisible, ownUid) {
+export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentInvalid, setIsContentInvalid, isErrorInfoVisible, setIsErrorInfoVisible, setErrorInfo, ownUid) {
 
   if (isContentInvalid) setIsContentInvalid(false);
   if (isErrorInfoVisible) setIsErrorInfoVisible(false);

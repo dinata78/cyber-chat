@@ -3,6 +3,7 @@ import { EditSVG } from "../../svg/EditSVG"
 import { CheckSVG } from "../../svg/CheckSVG";
 import { getMaxChar } from "./getMaxChar";
 import { editField } from "./editField";
+import { normalizeSpaces } from "../../../utils";
 
 export function AccountDataCard({ label, content, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
@@ -41,14 +42,13 @@ export function AccountDataCard({ label, content, ownUid }) {
                 setIsEditMode,
                 label.toLowerCase(),
                 content,
-                editedContent.trim(),
+                normalizeSpaces(editedContent),
                 setEditedContent,
                 isContentInvalid,
                 setIsContentInvalid,
-                errorInfo,
-                setErrorInfo,
                 isErrorInfoVisible,
                 setIsErrorInfoVisible,
+                setErrorInfo,
                 ownUid
               )
           }
@@ -65,7 +65,7 @@ export function AccountDataCard({ label, content, ownUid }) {
 
       {
         !isEditMode ?
-          <span className="content">
+          <span className="content overflow-y-support">
             {
               content ? content
               : "(Not Set)"

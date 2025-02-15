@@ -12,7 +12,8 @@
 
 * {
   box-sizing: border-box;
-  overflow-y: none;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 :root {
@@ -1152,7 +1153,7 @@ button#add-friend:active {
 }
 
 #cyber-account-top {
-  min-height: 10%;
+  min-height: 8%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1201,15 +1202,15 @@ button#add-friend:active {
 
 #cyber-account-bottom {
   flex-grow: 1;
-  padding-block: 24px;
-  padding-inline: 18px;
+  padding-block: 12px;
+  padding-inline: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 #account-data {
-  height: max-content;
+  height: 72%;
   display: flex;
   gap: 6px;
 }
