@@ -1,4 +1,4 @@
-import { signOut } from "firebase/auth";
+import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth, realtimeDb } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
 import { ref, update } from "firebase/database";
@@ -21,6 +21,28 @@ export function Account({ ownData, setIsAccountVisible }) {
     }
     catch (error) {
       console.error("Log Out Failed: " + error);
+    }
+  }
+
+  const resetPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, ownData.email);
+      alert("Password reset link sent.");
+    }
+    catch (error) {
+      console.error(error);
+      alert("Password reset link not sent.")
+    }
+  }
+
+  const deleteAccount = async () => {
+    try {
+      await deleteUser(auth.currentUser);
+      alert("Account deleted.");
+    }
+    catch (error) {
+      console.error(error);
+      alert("Failed to delete the account.")
     }
   }
   
@@ -90,10 +112,14 @@ export function Account({ ownData, setIsAccountVisible }) {
             >
               Log Out
             </button>
-            <button>
+            <button
+              onClick={resetPassword}
+            >
               Reset Password
             </button>
-            <button>
+            <button
+              onClick={deleteAccount}
+            >
               Delete Account
             </button>
           </div>

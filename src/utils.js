@@ -31,10 +31,10 @@ export function getIndicatorClass(status) {
   else return "indicator offline";
 }
 
-export function capitalizeFirstLetter(text) {
+export function capitalizeFirstLetter(str) {
   return (
-    text.charAt(0).toUpperCase()
-    + text.slice(1)
+    str.charAt(0).toUpperCase()
+    + str.slice(1)
   )
 }
 
