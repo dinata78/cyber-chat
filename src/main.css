@@ -1428,10 +1428,11 @@ button#add-friend:active {
 #account-modal span {
   flex-grow: 1;
   height: 70%;
-  color: #aaddff;
-  font-size: 21px;
   display: grid;
   place-content: center;
+  text-align: center;
+  color: #aaddff;
+  font-size: 21px;
 }
 
 #account-modal .buttons {

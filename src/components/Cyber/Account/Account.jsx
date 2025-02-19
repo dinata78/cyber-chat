@@ -9,6 +9,7 @@ import { useState } from "react";
 import { AccountModal } from "./AccountModal";
 
 export function Account({ ownData, setIsAccountVisible }) {
+  const [ modalType, setModalType ] = useState("");
   const [ isModalVisible, setIsModalVisible ] = useState(false);
 
   const navigate = useNavigate();
@@ -47,6 +48,25 @@ export function Account({ ownData, setIsAccountVisible }) {
       console.error(error);
       alert("Failed to delete the account.")
     }
+  }
+
+  const buttonOnClick = (type) => {
+    setModalType(type);
+    setIsModalVisible(true);
+  }
+
+  const executeButton = (type) => {
+    if (type === "log-out") {
+      logOut();
+    }
+    else if (type === "reset-password") {
+      resetPassword();
+    }
+    else {
+      deleteAccount();
+    }
+
+    setIsModalVisible(false);
   }
   
   return (
@@ -111,20 +131,19 @@ export function Account({ ownData, setIsAccountVisible }) {
           </div>
           <div id="account-buttons">
             <button
-            className="main-button"
-              onClick={() => setIsModalVisible(true)}
+              onClick={() => buttonOnClick("log-out")}
             >
               Log Out
             </button>
 
             <button
-              onClick={() => alert("Reset Password.")}
+              onClick={() => buttonOnClick("reset-password")}
             >
               Reset Password
             </button>
 
             <button
-              onClick={() => alert("Delete Account.")}
+              onClick={() => buttonOnClick("delete-account")}
             >
               Delete Account
             </button>
@@ -135,8 +154,8 @@ export function Account({ ownData, setIsAccountVisible }) {
         {
           isModalVisible &&
             <AccountModal
-              type="log-out"
-              func={logOut}
+              type={modalType}
+              executeButton={executeButton}
               closeModal={() => setIsModalVisible(false)}
             />
         }
