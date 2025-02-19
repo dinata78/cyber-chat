@@ -5,8 +5,11 @@ import { ref, update } from "firebase/database";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
+import { useState } from "react";
+import { AccountModal } from "./AccountModal";
 
 export function Account({ ownData, setIsAccountVisible }) {
+  const [ isModalVisible, setIsModalVisible ] = useState(false);
 
   const navigate = useNavigate();
 
@@ -108,24 +111,37 @@ export function Account({ ownData, setIsAccountVisible }) {
           </div>
           <div id="account-buttons">
             <button
-              onClick={logOut}
+            className="main-button"
+              onClick={() => setIsModalVisible(true)}
             >
               Log Out
             </button>
+
             <button
-              onClick={resetPassword}
+              onClick={() => alert("Reset Password.")}
             >
               Reset Password
             </button>
+
             <button
-              onClick={deleteAccount}
+              onClick={() => alert("Delete Account.")}
             >
               Delete Account
             </button>
+
           </div>
         </div>
-        
+
+        {
+          isModalVisible &&
+            <AccountModal
+              type="log-out"
+              func={logOut}
+              closeModal={() => setIsModalVisible(false)}
+            />
+        }
       </div>
+
     </div>
   )
 }
