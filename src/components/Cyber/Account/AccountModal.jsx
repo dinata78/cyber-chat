@@ -3,7 +3,15 @@ import { capitalizeFirstLetter } from "../../../utils";
 export function AccountModal({ type, executeButton, closeModal }) {
   const getCaption = (type) => {
     if (type === "log-out") return "Log Out";
-    else if (type === "reset-password") return "Reset Password";
+
+    else if (
+      [
+        "reset-password", 
+        "reset-password-sent", 
+        "reset-password-failed"
+      ].includes(type)
+    ) return "Reset Password";
+
     else return "Delete Account";
   }
 
@@ -14,8 +22,14 @@ export function AccountModal({ type, executeButton, closeModal }) {
     else if (type === "reset-password") {
       return "Are you sure you want to reset your password?";
     }
-    else {
+    else if (type === "delete-account") {
       return "Are you sure you want to delete your account?";
+    }
+    else if (type === "reset-password-sent") {
+      return "Password reset link sent. Please check your email."
+    }
+    else if (type === "reset-password-failed") {
+      return "Password reset link not sent. Please try again later."
     }
   }
   
@@ -35,17 +49,26 @@ export function AccountModal({ type, executeButton, closeModal }) {
           <span>
             {getDescription(type)}
           </span>
-          <div className="buttons">
-            <button onClick={closeModal}>Cancel</button>
-            <button onClick={() => executeButton(type)}>
-              {
-                capitalizeFirstLetter(
-                  getCaption(type)
-                  .toLowerCase()
-                )
-              }
-            </button>
-          </div>
+          
+          {
+            !["reset-password-sent", "reset-password-failed"]
+            .includes(type) ?
+              <div className="buttons">
+                <button onClick={closeModal}>Cancel</button>
+                <button onClick={() => executeButton(type)}>
+                  {
+                    capitalizeFirstLetter(
+                      getCaption(type)
+                      .toLowerCase()
+                    )
+                  }
+                </button>
+              </div>
+            : <div className="buttons">
+                <button onClick={closeModal}>Okay</button>
+              </div>
+          }
+
         </div>
       </div>
   </div>

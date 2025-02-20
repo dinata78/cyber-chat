@@ -1,54 +1,16 @@
-import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
-import { auth, realtimeDb } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
-import { ref, update } from "firebase/database";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
 import { AccountModal } from "./AccountModal";
+import { deleteAccount, logOut, resetPassword } from "./accountFunctions";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [ modalType, setModalType ] = useState("");
   const [ isModalVisible, setIsModalVisible ] = useState(false);
 
   const navigate = useNavigate();
-
-  const logOut = async () => {
-    try {
-      const dbRef = ref(realtimeDb, `users/${auth.currentUser.uid}`);
-
-      await signOut(auth);
-      await update(dbRef, { isOnline: false }); 
-
-      navigate("/");  
-    }
-    catch (error) {
-      console.error("Log Out Failed: " + error);
-    }
-  }
-
-  const resetPassword = async () => {
-    try {
-      await sendPasswordResetEmail(auth, ownData.email);
-      alert("Password reset link sent.");
-    }
-    catch (error) {
-      console.error(error);
-      alert("Password reset link not sent.")
-    }
-  }
-
-  const deleteAccount = async () => {
-    try {
-      await deleteUser(auth.currentUser);
-      alert("Account deleted.");
-    }
-    catch (error) {
-      console.error(error);
-      alert("Failed to delete the account.")
-    }
-  }
 
   const buttonOnClick = (type) => {
     setModalType(type);
@@ -58,15 +20,18 @@ export function Account({ ownData, setIsAccountVisible }) {
   const executeButton = (type) => {
     if (type === "log-out") {
       logOut();
+      navigate("/");
     }
     else if (type === "reset-password") {
-      resetPassword();
+      resetPassword(ownData.email, setModalType);
+    }
+    else if (type === "delete-account") {
+      deleteAccount(auth.currentUser);
+      navigate("/");
     }
     else {
-      deleteAccount();
+      return null;
     }
-
-    setIsModalVisible(false);
   }
   
   return (
