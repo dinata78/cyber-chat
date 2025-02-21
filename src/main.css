@@ -1427,12 +1427,12 @@ button#add-friend:active {
 
 #account-modal span {
   flex-grow: 1;
-  height: 70%;
+  padding-inline: 18px;
   display: grid;
   place-content: center;
   text-align: center;
   color: #aaddff;
-  font-size: 21px;
+  font-size: 18px;
 }
 
 #account-modal .buttons {
@@ -1445,7 +1445,7 @@ button#add-friend:active {
   gap: 12px;
 }
 
-#account-modal button {
+#account-modal .buttons button {
   background-color: transparent;
   padding: 8px 16px;
   border: 1px solid #aaddff50;
@@ -1454,12 +1454,63 @@ button#add-friend:active {
   font-size: 18px;
 }
 
-#account-modal button:last-child {
+#account-modal .buttons button:last-child {
   background-color: #aaddff50;
   color: #aaddff;
 }
 
-#account-modal button:hover,
-#account-modal button:active {
+#account-modal .buttons button:hover,
+#account-modal .buttons button:active {
   opacity: 70%;
+}
+
+#account-modal .confirm-delete {
+  position: relative;
+  width: 100%;
+  margin-bottom: 48px;
+  padding-inline: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+#account-modal .confirm-delete span {
+  margin-left: 6px;
+  padding: 0;
+  color: #aaddffbb;
+  font-size: 13px;
+}
+
+#account-modal .confirm-delete input {
+  background-color: transparent;
+  width: 70%;
+  height: 35px;
+  padding-inline: 8px;
+  border: 2px solid #aaddff99;
+  color: #aaddff;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#account-modal .confirm-delete input:focus {
+  outline: none;
+}
+
+#account-modal .confirm-delete button {
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  background-color: transparent;  
+  height: 35px;
+  padding-inline: 12px;
+  border: 2px solid red;
+  color: red;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+#account-modal .confirm-delete button:hover,
+#account-modal .confirm-delete button:active {
+  background-color: #ff000033;
 }

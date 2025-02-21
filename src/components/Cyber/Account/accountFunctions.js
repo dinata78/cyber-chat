@@ -25,10 +25,9 @@ export async function resetPassword(email, setModalType) {
   }
 }
 
-export async function deleteAccount(currentUser){
+export async function deleteAccount(){
   try {
-    await deleteUser(currentUser);
-    alert("Account deleted.");
+    await deleteUser(auth.currentUser);
   }
   catch (error) {
     console.error(error);

@@ -26,10 +26,13 @@ export function AccountModal({ type, executeButton, closeModal }) {
       return "Are you sure you want to delete your account?";
     }
     else if (type === "reset-password-sent") {
-      return "Password reset link sent. Please check your email."
+      return "Password reset link sent. Please check your email.";
     }
     else if (type === "reset-password-failed") {
-      return "Password reset link not sent. Please try again later."
+      return "Password reset link not sent. Please try again later.";
+    }
+    else if (type === "delete-account-confirmation") {
+      return "Deleting your account will remove all your information on Cyber Chat. This cannot be undone. "
     }
   }
   
@@ -51,8 +54,11 @@ export function AccountModal({ type, executeButton, closeModal }) {
           </span>
           
           {
-            !["reset-password-sent", "reset-password-failed"]
-            .includes(type) ?
+            ![
+              "reset-password-sent",
+              "reset-password-failed",
+              "delete-account-confirmation"
+            ].includes(type) ?
               <div className="buttons">
                 <button onClick={closeModal}>Cancel</button>
                 <button onClick={() => executeButton(type)}>
@@ -64,6 +70,14 @@ export function AccountModal({ type, executeButton, closeModal }) {
                   }
                 </button>
               </div>
+            : type === "delete-account-confirmation" ?
+                <>
+                  <div className="confirm-delete">
+                    <span>Please enter your password to continue.</span>
+                    <input type="password" />
+                    <button>Delete account</button>
+                  </div>            
+                </>
             : <div className="buttons">
                 <button onClick={closeModal}>Okay</button>
               </div>

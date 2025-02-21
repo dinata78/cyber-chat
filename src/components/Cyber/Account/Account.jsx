@@ -17,17 +17,16 @@ export function Account({ ownData, setIsAccountVisible }) {
     setIsModalVisible(true);
   }
 
-  const executeButton = (type) => {
+  const executeButton = async (type) => {
     if (type === "log-out") {
-      logOut();
+      await logOut();
       navigate("/");
     }
     else if (type === "reset-password") {
       resetPassword(ownData.email, setModalType);
     }
     else if (type === "delete-account") {
-      deleteAccount(auth.currentUser);
-      navigate("/");
+      setModalType("delete-account-confirmation");
     }
     else {
       return null;
