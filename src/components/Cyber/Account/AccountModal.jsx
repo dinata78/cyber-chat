@@ -1,4 +1,5 @@
 import { capitalizeFirstLetter } from "../../../utils";
+import { AccountConfirmDelete } from "./AccountConfirmDelete";
 
 export function AccountModal({ type, executeButton, closeModal }) {
   const getCaption = (type) => {
@@ -32,7 +33,7 @@ export function AccountModal({ type, executeButton, closeModal }) {
       return "Password reset link not sent. Please try again later.";
     }
     else if (type === "delete-account-confirmation") {
-      return "Deleting your account will remove all your information on Cyber Chat. This cannot be undone. "
+      return "Deleting your account will remove all of your data on Cyber Chat."
     }
   }
   
@@ -71,13 +72,7 @@ export function AccountModal({ type, executeButton, closeModal }) {
                 </button>
               </div>
             : type === "delete-account-confirmation" ?
-                <>
-                  <div className="confirm-delete">
-                    <span>Please enter your password to continue.</span>
-                    <input type="password" />
-                    <button>Delete account</button>
-                  </div>            
-                </>
+                <AccountConfirmDelete />
             : <div className="buttons">
                 <button onClick={closeModal}>Okay</button>
               </div>

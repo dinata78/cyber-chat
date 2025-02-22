@@ -4,7 +4,7 @@ import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
 import { AccountModal } from "./AccountModal";
-import { deleteAccount, logOut, resetPassword } from "./accountFunctions";
+import { logOut, resetPassword } from "./accountFunctions";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [ modalType, setModalType ] = useState("");
