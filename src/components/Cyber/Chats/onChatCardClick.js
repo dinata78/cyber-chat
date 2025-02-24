@@ -1,6 +1,6 @@
 import { query } from "firebase/database";
-import { getConversationId } from "../../../utils";
-import { collection, doc, getDoc, limit, onSnapshot, orderBy } from "firebase/firestore";
+import { fetchDataFromUid, getConversationId } from "../../../utils";
+import { collection, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
 
@@ -20,7 +20,7 @@ export function onChatCardClick(
   if (!ownUid) return;
 
   setSelectedChatUid(uid);
-
+  
   setCurrentChatData({
     name: name,
     title: title,
@@ -47,11 +47,15 @@ export function onChatCardClick(
 
     if (missingUsernameIds.length > 0) {
       const fetchedNames = {};
-      for (const senderId of missingUsernameIds) {
-        const userDoc = await getDoc(doc(db, "users", senderId));
 
-        if (userDoc.exists()) {
-          fetchedNames[senderId] = userDoc.data().name;
+      for (const senderId of missingUsernameIds) {
+        const senderDocData = await fetchDataFromUid(senderId);
+
+        if (senderDocData) {
+          fetchedNames[senderId] = senderDocData.name;
+        }
+        else {
+          fetchedNames[senderId] = "<deleted>"
         }
       }
       setUsernamesMap((prev) => ({...prev, ...fetchedNames}));

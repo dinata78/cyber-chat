@@ -53,9 +53,16 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
         )  
       }
       else {
-        const data = await fetchDataFromUid(selectedChatUid);
+        const data = await fetchDataFromUid(selectedChatUid);  
+
         onChatCardClick(
-          data.name,
+          data.uid === ownData.uid ?
+            data.name === "" ?
+              "[nameless] (You)"
+            : `${data.name} (You)`
+          : data.name === "" ?
+            "[nameless]"
+          : data.name,
           data.title,
           data.uid,
           ownData.uid,
@@ -135,6 +142,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             name={
               ownData.name ?
                 ownData.name + " (You)"
+              : ownData.name === "" ?
+                "[nameless] (You)"
               : "Loading..."
             }
             title={ownData.title}
@@ -189,12 +198,18 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
         <div id="chats-content-bottom">
           <div id="chat-display" className="overflow-y-support">
             {currentChatContent.map((chatContent, index) => {
-            return <MessageCard
-                      key={index + chatContent.senderId}
-                      senderName={usernamesMap[chatContent.senderId]} 
-                      content={chatContent.content} 
-                      isOwnMessage={chatContent.senderId === ownData.uid}
-                  />
+            return ( 
+              <MessageCard
+                key={index + chatContent.senderId}
+                senderName={
+                  usernamesMap[chatContent.senderId] ?
+                    usernamesMap[chatContent.senderId]
+                  : "[nameless]"
+                } 
+                content={chatContent.content} 
+                isOwnMessage={chatContent.senderId === ownData.uid}
+              />
+            )
             })}
             <div id="message-end-ref" ref={messageEndRef}></div>
           </div>
