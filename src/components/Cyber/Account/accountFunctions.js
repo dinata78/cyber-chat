@@ -1,6 +1,7 @@
 import { auth, realtimeDb } from "../../../../firebase";
 import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { ref, update } from "firebase/database";
+import { deleteUserConversation, deleteUserData } from "../../../utils";
 
 export async function logOut() {
   try {
@@ -26,7 +27,10 @@ export async function resetPassword(email, setModalType) {
 }
 
 export async function deleteAccount(){
-  try {
+  try {    
+    await deleteUserData(auth.currentUser.uid);
+    await deleteUserConversation(auth.currentUser.uid);
+
     await deleteUser(auth.currentUser);
   }
   catch (error) {

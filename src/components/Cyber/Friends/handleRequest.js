@@ -1,4 +1,4 @@
-import { fetchDataFromUid } from "../../../utils";
+import { addNewConversationToDb, fetchDataFromUid } from "../../../utils";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { addInbox } from "./addInbox";
@@ -38,7 +38,10 @@ export async function handleRequest(type, ownUid, requestUid) {
 
     await addInbox(requestUid, "request-accepted", ownUid);
     await addInbox(requestUid, "friend-added", ownUid);
-    await addInbox (ownUid, "friend-added", requestUid);
+    await addInbox(ownUid, "friend-added", requestUid);
+
+    await addNewConversationToDb(ownUid, requestUid);
+
   }
 
   else if (type === "reject") {
