@@ -25,7 +25,7 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
     setSelectedChatUid(friendUid);
   }
 
-  if (!username) return;
+  if (username === null) return;
 
   return (
     <div className="friend-card">
@@ -43,7 +43,7 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
       <div className="friend-card-info">
         <div>
           <span className="friend-card-name">{friendName}</span>
-          <span className="friend-card-username">@{username}</span>
+          <span className="friend-card-username">@{username ? username : "[not-set]"}</span>
         </div>
         <span className="friend-card-title">{friendTitle}</span>
       </div>

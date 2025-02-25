@@ -13,7 +13,7 @@ export function AccountDataCard({ label, content, ownUid }) {
   const [ isErrorInfoVisible, setIsErrorInfoVisible ] = useState(false);
 
   const editContent = (e) => {
-    const maxChar = getMaxChar(label.toLowerCase());
+    const maxChar = getMaxChar(label);
 
     if (e.target.value.length <= maxChar) {
       if (isContentInvalid) setIsContentInvalid(false);
@@ -32,15 +32,14 @@ export function AccountDataCard({ label, content, ownUid }) {
     <div className="account-data-card">
 
       {
-        ["username", "display name", "bio"]
-        .includes(label.toLowerCase()) ?
+        label !== "status" ?
         <button
           onClick={
             () => 
               editField(
                 isEditMode,
                 setIsEditMode,
-                label.toLowerCase(),
+                label,
                 content,
                 normalizeSpaces(editedContent),
                 setEditedContent,
@@ -53,36 +52,42 @@ export function AccountDataCard({ label, content, ownUid }) {
               )
           }
         >
-          {label}
+          {label.toUpperCase()}
           {
-            !isEditMode ?
-              <EditSVG />
-            : <CheckSVG />
+            !isEditMode ? <EditSVG /> : <CheckSVG />
           }
         </button>
-        : <span className="label">{label}</span>
+        : <span className="label">STATUS</span>
       }
 
       {
         !isEditMode ?
           <span className="content overflow-y-support">
-            {
-              content ? content
-              : "(Not Set)"
-            }
+            {content ? content : "(Not Set)"}
           </span>
         : 
-          label.toLowerCase() !== "bio" ?
+          !["title", "bio"].includes(label) ?
             <input 
               type="text"
               className={
-                isContentInvalid ?
+                isContentInvalid ? 
                   "invalid"
                 : null
               }
               value={editedContent}
               onChange={editContent}
             />
+          : label === "title" ?
+            <select 
+              defaultValue={content}
+              onChange={
+                (e) => setEditedContent(e.target.value)
+              }
+            >
+              <option value="Newcomer">Newcomer</option>
+              <option value="Edgerunner">Edgerunner</option>
+              <option value="Netrunner">Netrunner</option>
+            </select>
           : <textarea
               className={
                 isContentInvalid ?
@@ -97,11 +102,11 @@ export function AccountDataCard({ label, content, ownUid }) {
       }
       
       {
-        ["username", "display name", "bio"]
-        .includes(label.toLowerCase())  &&
+        !["status", "title"]
+        .includes(label) &&
         isEditMode &&
           <span className="char-tracker">
-            {editedContent.length} / {getMaxChar(label.toLowerCase())}
+            {editedContent.length} / {getMaxChar(label)}
           </span>
       }
 

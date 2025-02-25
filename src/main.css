@@ -1323,6 +1323,21 @@ button#add-friend:active {
   background-color: #ff42424f;
 }
 
+.account-data-card select {
+  background-color: #aaddff35;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.account-data-card select:focus {
+  outline: none;
+}
+
+.account-data-card option {
+  background-color: #22222f;
+}
+
 .account-data-card textarea {
   resize: none;
   background-color: #aaddff35;

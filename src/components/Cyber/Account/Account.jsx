@@ -60,12 +60,12 @@ export function Account({ ownData, setIsAccountVisible }) {
             <div className="left">
               <img src="/empty-pfp.webp" />
               <AccountDataCard
-                label="USERNAME"
+                label="username"
                 content={ownData.username}
                 ownUid={ownData.uid}
               />
               <AccountDataCard
-                label="STATUS"
+                label="status"
                 content="Online"
                 ownUid={ownData.uid}
               />
@@ -73,17 +73,17 @@ export function Account({ ownData, setIsAccountVisible }) {
 
             <div className="right">
               <AccountDataCard
-                label="DISPLAY NAME"
+                label="display name"
                 content={ownData.name}
                 ownUid={ownData.uid}
               />
               <AccountDataCard
-                label="TITLE"
+                label="title"
                 content={ownData.title}
                 ownUid={ownData.uid}
               />
               <AccountDataCard
-                label="BIO"
+                label="bio"
                 content={ownData.bio}
                 ownUid={ownData.uid}
               />

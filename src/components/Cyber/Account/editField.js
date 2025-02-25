@@ -30,6 +30,14 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
         setEditedContent(editedContent);
         setIsEditMode(false);
       }
+      else if (label === "title") {
+        await updateDoc(userDocRef, {
+          ...userDocData,
+          title: editedContent,
+        })
+
+        setIsEditMode(false);
+      }
       else if (label === "bio") {
         await updateDoc(userDocRef, {
           ...userDocData,
