@@ -30,6 +30,7 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
         setEditedContent(editedContent);
         setIsEditMode(false);
       }
+
       else if (label === "title") {
         await updateDoc(userDocRef, {
           ...userDocData,
@@ -38,6 +39,7 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
 
         setIsEditMode(false);
       }
+
       else if (label === "bio") {
         await updateDoc(userDocRef, {
           ...userDocData,
@@ -47,6 +49,44 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
         setEditedContent(editedContent);
         setIsEditMode(false);
       }
+
+      else if (label === "status") {
+        const metadataDocRef = doc(db, "users", "metadata");
+        const metadataDocData = await fetchDataFromUid("metadata");
+
+        const metadataHiddenUsers = metadataDocData.hiddenUsers;
+
+        if (editedContent === "Online") {
+
+          if (metadataHiddenUsers.includes(ownUid)) {
+            metadataHiddenUsers.splice(
+              metadataHiddenUsers.indexOf(ownUid)
+              , 1
+            )
+
+            await updateDoc(metadataDocRef, {
+              ...metadataDocData,
+              hiddenUsers: metadataHiddenUsers,
+            })
+          }
+          
+        }
+        else {
+
+          if (!metadataHiddenUsers.includes(ownUid)) {
+            metadataHiddenUsers.push(ownUid);
+
+            updateDoc(metadataDocRef, {
+              ...metadataDocData,
+              hiddenUsers: metadataHiddenUsers,
+            })
+          }
+
+        }
+
+        setIsEditMode(false);
+      }
+
       else if (label === "username") {
 
         const metadataDocRef = doc(db, "users", "metadata");

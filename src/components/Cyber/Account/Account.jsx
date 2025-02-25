@@ -5,10 +5,13 @@ import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
 import { AccountModal } from "./AccountModal";
 import { logOut, resetPassword } from "./accountFunctions";
+import { useMetadata } from "../../../custom-hooks/useMetadata";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [ modalType, setModalType ] = useState("");
   const [ isModalVisible, setIsModalVisible ] = useState(false);
+
+  const { hiddenUsers } = useMetadata();
 
   const navigate = useNavigate();
 
@@ -66,7 +69,7 @@ export function Account({ ownData, setIsAccountVisible }) {
               />
               <AccountDataCard
                 label="status"
-                content="Online"
+                content={hiddenUsers.includes(ownData.uid) ? "Hidden" : "Online"}
                 ownUid={ownData.uid}
               />
             </div>

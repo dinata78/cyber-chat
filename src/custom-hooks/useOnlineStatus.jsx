@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { realtimeDb } from "../../firebase";
+import { useMetadata } from "./useMetadata";
 
-export function useTrackOnlineStatus(uid) {
+export function useOnlineStatus(uid) {
   const [onlineStatus, setOnlineStatus] = useState(null);
-  
-    useEffect(() => {
+
+  const { hiddenUsers } = useMetadata();
+
+  useEffect(() => {
+    let unTrack = null;
+
+    if (hiddenUsers.includes(uid)) {
+      setOnlineStatus("hidden");
+    }
+    else {
       const dbRef = ref(realtimeDb, `users/${uid}`);
-  
       onValue(dbRef, (snapshot) => {
         const data = snapshot.val();
       
@@ -18,9 +26,18 @@ export function useTrackOnlineStatus(uid) {
           setOnlineStatus("offline");
         }
       });
-  
-      return () => off(dbRef);
-    }, [uid]);
 
-    return { onlineStatus };
+      unTrack = () => off(dbRef);
+    }
+
+    return () => {
+      if (unTrack) {
+        unTrack();
+        unTrack = null;
+      }
+    }
+    
+  }, [uid, hiddenUsers]);
+
+  return { onlineStatus };
 }

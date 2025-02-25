@@ -3,6 +3,7 @@ import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { addNewConversationToDb, fetchDataFromUid } from "../utils";
+import { useMetadata } from "./useMetadata";
 
 export function useAuth(setIsLoading) {
   const [signInData, setSignInData] = useState({email: "", password: ""});
@@ -29,11 +30,12 @@ export function useAuth(setIsLoading) {
         bio: "Hello world!",
         title: "Newcomer",
         email: auth.currentUser.email,
-        chatList: [],
         friendList: [],
         friendRequestSent: [],
         friendRequestReceived: [],
         inbox: [],
+        isEmailVerified: false,
+        isStatusHidden: false,
       });
 
       await addNewConversationToDb(auth.currentUser.uid);
@@ -51,8 +53,7 @@ export function useAuth(setIsLoading) {
       });
 
       const metadataDocRef = doc(db, "users", "metadata");
-      const metadataDoc = await getDoc(metadataDocRef); 
-      const metadataDocData = metadataDoc.data();
+      const metadataDocData = await fetchDataFromUid("metadata");
       const usernamesMap = metadataDocData.usernames;
       usernamesMap[auth.currentUser.uid] = "";
 

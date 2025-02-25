@@ -1,10 +1,9 @@
-import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
+import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
 import { onChatCardClick } from "./onChatCardClick";
 
 export function ChatCard(
   { 
-    type, 
     name, 
     title, 
     uid, 
@@ -20,11 +19,11 @@ export function ChatCard(
 ) {
   let status = null;
 
-  if (type === "special") {
+  if (name === "Global Chat") {
     status = "online"
   }
   else {
-    const { onlineStatus } = useTrackOnlineStatus(uid);
+    const { onlineStatus } = useOnlineStatus(uid);
     status = onlineStatus;
   }
 

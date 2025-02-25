@@ -191,6 +191,10 @@ body {
   background-color: red;
 }
 
+.indicator.hidden {
+  background-color: lightgray;
+}
+
 #cyber-page {
   background-color: #000000e0;
   height: 100vh;
@@ -1281,7 +1285,7 @@ button#add-friend:active {
   }
 }
 
-.account-data-card .label {
+.account-data-card .status {
   color: #1177ff;
   font-size: 12px;
   font-weight: bold;

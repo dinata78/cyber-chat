@@ -31,34 +31,30 @@ export function AccountDataCard({ label, content, ownUid }) {
   return (
     <div className="account-data-card">
 
-      {
-        label !== "status" ?
-        <button
-          onClick={
-            () => 
-              editField(
-                isEditMode,
-                setIsEditMode,
-                label,
-                content,
-                normalizeSpaces(editedContent),
-                setEditedContent,
-                isContentInvalid,
-                setIsContentInvalid,
-                isErrorInfoVisible,
-                setIsErrorInfoVisible,
-                setErrorInfo,
-                ownUid
-              )
-          }
-        >
-          {label.toUpperCase()}
-          {
-            !isEditMode ? <EditSVG /> : <CheckSVG />
-          }
-        </button>
-        : <span className="label">STATUS</span>
-      }
+      <button
+        onClick={
+          () => 
+            editField(
+              isEditMode,
+              setIsEditMode,
+              label,
+              content,
+              normalizeSpaces(editedContent),
+              setEditedContent,
+              isContentInvalid,
+              setIsContentInvalid,
+              isErrorInfoVisible,
+              setIsErrorInfoVisible,
+              setErrorInfo,
+              ownUid
+            )
+        }
+      >
+        {label.toUpperCase()}
+        {
+          !isEditMode ? <EditSVG /> : <CheckSVG />
+        }
+      </button>  
 
       {
         !isEditMode ?
@@ -66,7 +62,7 @@ export function AccountDataCard({ label, content, ownUid }) {
             {content ? content : "(Not Set)"}
           </span>
         : 
-          !["title", "bio"].includes(label) ?
+          ["username", "display name"].includes(label) ?
             <input 
               type="text"
               className={
@@ -77,6 +73,16 @@ export function AccountDataCard({ label, content, ownUid }) {
               value={editedContent}
               onChange={editContent}
             />
+          : label === "status" ?
+            <select
+              defaultValue={content}
+              onChange={
+                (e) => setEditedContent(e.target.value)
+              }
+            >
+              <option value="Online">Online</option>
+              <option value="Hidden">Hidden</option>
+            </select>
           : label === "title" ?
             <select 
               defaultValue={content}

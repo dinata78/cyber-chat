@@ -1,10 +1,10 @@
-import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
+import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
 import { capitalizeFirstLetter } from "../../../utils";
 import { FriendProfileDataCard } from "./FriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {
   
-  const { onlineStatus } = useTrackOnlineStatus(searchedUserData.uid);
+  const { onlineStatus } = useOnlineStatus(searchedUserData.uid);
 
   return (
     <div id="add-friend-profile">

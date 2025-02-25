@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useTrackOnlineStatus } from "../../../custom-hooks/useTrackOnlineStatus";
+import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
@@ -8,7 +8,7 @@ import { removeFriend } from "./removeFriend";
 import { useName } from "../../../custom-hooks/useName";
 
 export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSelectedChatUid }) {
-  const { onlineStatus } = useTrackOnlineStatus(friendUid);
+  const { onlineStatus } = useOnlineStatus(friendUid);
   const { username } = useName(friendUid);
 
   const navigate = useNavigate();
