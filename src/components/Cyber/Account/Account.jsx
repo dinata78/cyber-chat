@@ -77,7 +77,7 @@ export function Account({ ownData, setIsAccountVisible }) {
             <div className="right">
               <AccountDataCard
                 label="display name"
-                content={ownData.name}
+                content={ownData.displayName}
                 ownUid={ownData.uid}
               />
               <AccountDataCard

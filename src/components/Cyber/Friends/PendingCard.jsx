@@ -32,7 +32,7 @@ export function PendingCard({ ownUid, type, uid }) {
         :
           <>
             <span>
-              You sent <b style={{color: "#aaddff"}}>{name} (@{username})</b> a friend request!
+              You sent <b style={{color: "#aaddff"}}>{displayName} (@{username})</b> a friend request!
             </span>
             <div className="pending-card-buttons">
               <button

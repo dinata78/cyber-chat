@@ -24,7 +24,7 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
       if (label === "display name") {
         await updateDoc(userDocRef, {
           ...userDocData,
-          name: editedContent,
+          displayName: editedContent,
         })
 
         setEditedContent(editedContent);

@@ -3,7 +3,6 @@ import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { addNewConversationToDb, fetchDataFromUid } from "../utils";
-import { useMetadata } from "./useMetadata";
 
 export function useAuth(setIsLoading) {
   const [signInData, setSignInData] = useState({email: "", password: ""});
@@ -26,7 +25,7 @@ export function useAuth(setIsLoading) {
       await setDoc(newDocRef, {
         uid: auth.currentUser.uid,
         username: "",
-        name: "Anonymous",
+        displayName: "Anonymous",
         bio: "Hello world!",
         title: "Newcomer",
         email: auth.currentUser.email,

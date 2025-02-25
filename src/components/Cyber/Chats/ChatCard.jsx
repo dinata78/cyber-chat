@@ -4,7 +4,7 @@ import { onChatCardClick } from "./onChatCardClick";
 
 export function ChatCard(
   { 
-    name, 
+    displayName, 
     title, 
     uid, 
     ownUid, 
@@ -19,7 +19,7 @@ export function ChatCard(
 ) {
   let status = null;
 
-  if (name === "Global Chat") {
+  if (displayName === "Global Chat") {
     status = "online"
   }
   else {
@@ -37,7 +37,7 @@ export function ChatCard(
       onClick={
         () => 
         onChatCardClick(
-          name,
+          displayName,
           title,
           uid,
           ownUid,
@@ -58,7 +58,7 @@ export function ChatCard(
       </div>
 
       <div className="chat-card-info">
-        <span className="chat-card-name">{name}</span>
+        <span className="chat-card-name">{displayName}</span>
         <span className="chat-card-title">{title}</span>
       </div>
 

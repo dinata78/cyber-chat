@@ -3,9 +3,8 @@ import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { collection, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
-
 export function onChatCardClick(
-  name, 
+  displayName, 
   title, 
   uid, 
   ownUid, 
@@ -22,7 +21,7 @@ export function onChatCardClick(
   setSelectedChatUid(uid);
   
   setCurrentChatData({
-    name: name,
+    displayName: displayName,
     title: title,
     uid: uid, 
   });
@@ -52,7 +51,7 @@ export function onChatCardClick(
         const senderDocData = await fetchDataFromUid(senderId);
 
         if (senderDocData) {
-          fetchedNames[senderId] = senderDocData.name;
+          fetchedNames[senderId] = senderDocData.displayName;
         }
         else {
           fetchedNames[senderId] = "<deleted>"

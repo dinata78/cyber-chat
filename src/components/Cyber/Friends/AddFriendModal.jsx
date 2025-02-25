@@ -18,12 +18,11 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList,
       const userQuery = query(
         collection(db, "users"),
         where("username", "==", username),
-        limit(1)
       );
       const searchedUserDoc = await getDocs(userQuery);
       const searchedUserData = searchedUserDoc.docs[0].data();
       const filteredUserData = {
-        displayName: searchedUserData.name,
+        displayName: searchedUserData.displayName,
         username: searchedUserData.username,
         title: searchedUserData.title,
         bio: searchedUserData.bio,

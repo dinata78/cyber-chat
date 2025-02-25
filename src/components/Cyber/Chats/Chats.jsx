@@ -10,7 +10,7 @@ import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
 
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
-  const [currentChatData, setCurrentChatData] = useState({name: "Loading...", title: "Loading...", uid: null});
+  const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [currentChatContent, setCurrentChatContent] = useState([]);
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
@@ -57,12 +57,12 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
 
         onChatCardClick(
           data.uid === ownData.uid ?
-            data.name === "" ?
+            data.displayName === "" ?
               "[nameless] (You)"
-            : `${data.name} (You)`
-          : data.name === "" ?
+            : `${data.displayName} (You)`
+          : data.displayName === "" ?
             "[nameless]"
-          : data.name,
+          : data.displayName,
           data.title,
           data.uid,
           ownData.uid,
@@ -80,7 +80,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
   }, [ownData])
 
   useEffect(() => {
-    if (currentChatData.name) {
+    if (currentChatData.displayName) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   });
@@ -106,7 +106,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
 
         <div id="chats-aside-bottom" className="overflow-y-support">
           <ChatCard
-            name="Global Chat" 
+            displayName="Global Chat" 
             title="A global room everyone can access" 
             uid="globalChat"
             ownUid={ownData.uid}
@@ -121,7 +121,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
           {
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
               <ChatCard 
-                name="Steven Dinata" 
+                displayName="Steven Dinata" 
                 title="Developer of CyberChat" 
                 uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
                 ownUid={ownData.uid}
@@ -136,10 +136,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             : null
           }
           <ChatCard 
-            name={
-              ownData.name ?
-                ownData.name + " (You)"
-              : ownData.name === "" ?
+            displayName={
+              ownData.displayName ?
+                ownData.displayName + " (You)"
+              : ownData.displayName === "" ?
                 "[nameless] (You)"
               : "Loading..."
             }
@@ -159,7 +159,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
               return (
                 <ChatCard
                   key={index + friendData.uid}
-                  name={friendData.name}
+                  displayName={friendData.displayName}
                   title={friendData.title}
                   uid={friendData.uid}
                   ownUid={ownData.uid}
@@ -186,7 +186,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             <img src="/empty-pfp.webp" />
           </div>
           <div id="chats-content-top-info">
-            <h1>{currentChatData.name}</h1>
+            <h1>{currentChatData.displayName}</h1>
             <span>{currentChatData.title}</span>
           </div>
         </div>

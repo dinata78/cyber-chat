@@ -10,7 +10,7 @@ export function useName(uid) {
 
     const fetchData = async () => {
       const data = await fetchDataFromUid(uid);
-      setDisplayName(data.name);
+      setDisplayName(data.displayName);
       setUsername(data.username);
     }
 
