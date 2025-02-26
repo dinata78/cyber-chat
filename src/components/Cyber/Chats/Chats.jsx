@@ -57,11 +57,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
 
         onChatCardClick(
           data.uid === ownData.uid ?
-            data.displayName === "" ?
-              "[nameless] (You)"
-            : `${data.displayName} (You)`
-          : data.displayName === "" ?
-            "[nameless]"
+            data.displayName + " (You)"
           : data.displayName,
           data.title,
           data.uid,
@@ -139,9 +135,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             displayName={
               ownData.displayName ?
                 ownData.displayName + " (You)"
-              : ownData.displayName === "" ?
-                "[nameless] (You)"
-              : "Loading..."
+              : "Loading..." 
             }
             title={ownData.title}
             uid={ownData.uid}
@@ -197,11 +191,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             return ( 
               <MessageCard
                 key={index + chatContent.senderId}
-                senderName={
-                  usernamesMap[chatContent.senderId] ?
-                    usernamesMap[chatContent.senderId]
-                  : "[nameless]"
-                } 
+                senderName={usernamesMap[chatContent.senderId]} 
                 content={chatContent.content} 
                 isOwnMessage={chatContent.senderId === ownData.uid}
               />

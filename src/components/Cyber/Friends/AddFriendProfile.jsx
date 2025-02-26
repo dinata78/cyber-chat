@@ -36,7 +36,11 @@ export function AddFriendProfile({ searchedUserData }) {
         />
         <FriendProfileDataCard
           label="BIO"
-          content={searchedUserData.bio}
+          content={
+            searchedUserData.bio.length ? 
+              searchedUserData.bio
+            : "(Not Set)"
+          }
         />
       </div>
 

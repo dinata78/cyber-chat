@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid } from "../../../utils"
 
@@ -22,13 +22,21 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
       const userDocData = await fetchDataFromUid(ownUid);
       
       if (label === "display name") {
-        await updateDoc(userDocRef, {
-          ...userDocData,
-          displayName: editedContent,
-        })
+        if (editedContent.length) {
+          await updateDoc(userDocRef, {
+            ...userDocData,
+            displayName: editedContent,
+          })
+  
+          setEditedContent(editedContent);
+          setIsEditMode(false);  
+        }
+        else {
+          setIsContentInvalid(true);
+          setErrorInfo("Display name can't be empty.");
+          setIsErrorInfoVisible(true);
+        }
 
-        setEditedContent(editedContent);
-        setIsEditMode(false);
       }
 
       else if (label === "title") {
@@ -89,9 +97,15 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
 
       else if (label === "username") {
 
+        if (!editedContent.length) {
+          setIsContentInvalid(true);
+          setErrorInfo("Username can't be empty.");
+          setIsErrorInfoVisible(true);
+          return;
+        }
+
         const metadataDocRef = doc(db, "users", "metadata");
-        const metadataDoc = await getDoc(metadataDocRef);
-        const metadataDocData = metadataDoc.data();
+        const metadataDocData = await fetchDataFromUid("metadata");
         const usernamesMap = metadataDocData.usernames;
 
         const usernamesList = Object.values(usernamesMap);
