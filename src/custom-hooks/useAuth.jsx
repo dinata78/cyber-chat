@@ -34,11 +34,13 @@ export function useAuth(setIsLoading) {
         friendRequestReceived: [],
         inbox: [],
         isEmailVerified: false,
-        isStatusHidden: false,
       });
 
       await addNewConversationToDb(auth.currentUser.uid);
-      await addNewConversationToDb(auth.currentUser.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1");
+      await addNewConversationToDb(
+        auth.currentUser.uid,
+        "28qZ6LQQi3g76LLRd20HXrkQIjh1"
+      );
 
       const devDocRef = doc(db, "users", "28qZ6LQQi3g76LLRd20HXrkQIjh1");
       const devDocData = await fetchDataFromUid("28qZ6LQQi3g76LLRd20HXrkQIjh1");

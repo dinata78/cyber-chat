@@ -1,8 +1,10 @@
+import { auth } from "../../../../firebase";
 import { InputTypeToggle } from "./InputTypeToggle";
 
 export function Settings({ ownData }) {
   const onContrastToggle = () => {
     console.log("Contrast Mode Toggled.");
+    console.log(auth);
   }
 
   return (

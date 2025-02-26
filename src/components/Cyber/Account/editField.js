@@ -2,8 +2,8 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid } from "../../../utils"
 
-export function editField(isEditMode, setIsEditMode, label, content, editedContent, setEditedContent, isContentInvalid, setIsContentInvalid, isErrorInfoVisible, setIsErrorInfoVisible, setErrorInfo, ownUid) {
-
+export function editField(isEditMode, setIsEditMode, label, content, editedContent, isContentInvalid, setIsContentInvalid, isErrorInfoVisible, setIsErrorInfoVisible, setErrorInfo, ownUid) {
+  
   if (isContentInvalid) setIsContentInvalid(false);
   if (isErrorInfoVisible) setIsErrorInfoVisible(false);
 
@@ -12,7 +12,6 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
   }
 
   else if (editedContent === content) {
-    setEditedContent(editedContent);
     setIsEditMode(false);
   }
 
@@ -28,7 +27,6 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
             displayName: editedContent,
           })
   
-          setEditedContent(editedContent);
           setIsEditMode(false);  
         }
         else {
@@ -54,7 +52,6 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           bio: editedContent,
         })
         
-        setEditedContent(editedContent);
         setIsEditMode(false);
       }
 
@@ -114,11 +111,9 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
 
         if (usernamesList.includes(filteredEditedContent)) {
           if (filteredEditedContent === content) {
-            setEditedContent(filteredEditedContent);
             setIsEditMode(false);
           }
           else {
-            setEditedContent(filteredEditedContent);
             setIsContentInvalid(true);
             setErrorInfo("Username already exists.");
             setIsErrorInfoVisible(true);
@@ -137,7 +132,6 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
             usernames: usernamesMap,
           })
           
-          setEditedContent(filteredEditedContent);
           setIsEditMode(false);
         }
 

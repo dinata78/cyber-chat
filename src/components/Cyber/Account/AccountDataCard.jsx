@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditSVG } from "../../svg/EditSVG"
 import { CheckSVG } from "../../svg/CheckSVG";
 import { getMaxChar } from "./getMaxChar";
@@ -28,6 +28,10 @@ export function AccountDataCard({ label, content, ownUid }) {
     }
   }
 
+  useEffect(() => {
+    setEditedContent(content);
+  }, [content])
+
   return (
     <div className="account-data-card">
 
@@ -40,7 +44,6 @@ export function AccountDataCard({ label, content, ownUid }) {
               label,
               content,
               normalizeSpaces(editedContent),
-              setEditedContent,
               isContentInvalid,
               setIsContentInvalid,
               isErrorInfoVisible,
