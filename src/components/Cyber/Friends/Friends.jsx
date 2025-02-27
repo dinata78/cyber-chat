@@ -74,6 +74,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
             />
           : currentNav === "inbox" ?
             <FriendsInbox
+              ownUid={ownData.uid}
               inboxItems={inboxItems}
             />
           : null

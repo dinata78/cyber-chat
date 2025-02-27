@@ -537,9 +537,8 @@ button#toggle-theme svg {
   width: 24px;
 }
 
-#chat-input button:focus {
-  outline: none;
-  border: 2px solid white;
+#chat-input button:active {
+  border: 2px solid #aaddff;
 }
 
 #cyber-friends {
@@ -1040,22 +1039,44 @@ button#add-friend:active {
 }
 
 #friends-inbox {
+  position: relative;
   flex-grow: 1;
   padding-block: 48px;
   display: flex;
   flex-direction: column;
 }
 
-#friends-inbox h1 {
-  margin: 0;
+#friends-inbox .top {
   margin-bottom: 24px;
   display: flex;
-  align-items: center;
-  font-size: 1.5rem;
+  gap: 12px;
+}
+
+#friends-inbox .top button {
+  background-color: transparent;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: none;
+}
+
+#friends-inbox .top button:hover {
+  svg {
+    fill: #ff000099;
+  }
+}
+
+#friends-inbox .top svg {
+  fill: red;
+}
+
+#friends-inbox h1 {
+  margin: 0;
+  font-size: 24px;
   font-weight: lighter;
 }
 
-.inbox-cards {
+#friends-inbox .inbox-cards {
   flex-grow: 1;
   height: 0;
   padding-bottom: 24px;
@@ -1064,7 +1085,7 @@ button#add-friend:active {
   gap: 12px;
 }
 
-.inbox-card {
+#friends-inbox .inbox-card {
   background-color: #ffffff15;
   padding: 1.5rem;
   display: flex;
