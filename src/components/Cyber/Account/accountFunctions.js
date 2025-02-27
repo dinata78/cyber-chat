@@ -2,6 +2,7 @@ import { auth, realtimeDb } from "../../../../firebase";
 import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { ref, update } from "firebase/database";
 import { deleteUserConversation, deleteUserData } from "../../../utils";
+import { sendEmailVerification } from "firebase/auth";
 
 export async function logOut() {
   try {
@@ -16,13 +17,18 @@ export async function logOut() {
 }
 
 export async function resetPassword(email, setModalType) {
+  if (!auth.currentUser.emailVerified) {
+    setModalType("reset-password-not-allowed");
+    return;
+  } 
+
   try {
     await sendPasswordResetEmail(auth, email);
     setModalType("reset-password-sent");
   }
   catch (error) {
-    console.error(error);
     setModalType("reset-password-failed");
+    console.error(error);
   }
 }
 
@@ -36,5 +42,16 @@ export async function deleteAccount(){
   catch (error) {
     console.error(error);
     alert("Failed to delete the account.")
+  }
+}
+
+export async function verifyEmail(setModalType) {
+  try {
+    await sendEmailVerification(auth.currentUser);
+    setModalType("verify-email-sent");
+  }
+  catch (error) {
+    setModalType("verify-email-failed");
+    console.error(error);
   }
 }

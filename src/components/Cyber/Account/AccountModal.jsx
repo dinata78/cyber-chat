@@ -9,11 +9,29 @@ export function AccountModal({ type, executeButton, closeModal }) {
       [
         "reset-password", 
         "reset-password-sent", 
-        "reset-password-failed"
+        "reset-password-failed",
+        "reset-password-not-allowed"
       ].includes(type)
     ) return "Reset Password";
 
-    else return "Delete Account";
+    else if (
+      [
+        "delete-account",
+        "delete-account-confirmation"
+      ].includes(type)
+    ) { 
+      return "Delete Account";
+    }
+
+    else if (
+      [
+        "verify-email",
+        "verify-email-sent",
+        "verify-email-failed"
+      ].includes(type)
+    ) {
+      return "Verify Email";
+    }
   }
 
   const getDescription = (type) => {
@@ -32,8 +50,20 @@ export function AccountModal({ type, executeButton, closeModal }) {
     else if (type === "reset-password-failed") {
       return "Password reset link not sent. Please try again later.";
     }
+    else if (type === "reset-password-not-allowed") {
+      return "Please verify your email before attempting to reset your password.";
+    }
     else if (type === "delete-account-confirmation") {
       return "Deleting your account will remove all of your data on Cyber Chat."
+    }
+    else if (type === "verify-email") {
+      return "An email verification link will be sent to your email."
+    }
+    else if (type === "verify-email-sent") {
+      return "Email verification link sent. Please check your email.";
+    }
+    else if (type === "verify-email-failed") {
+      return "Email verification link not sent. Please try again later.";
     }
   }
   
@@ -41,7 +71,7 @@ export function AccountModal({ type, executeButton, closeModal }) {
     <div 
       id="account-modal"
       onClick={closeModal}
-    >
+    > 
       <div
         onClick={(e) => e.stopPropagation()}
       > 
@@ -58,7 +88,10 @@ export function AccountModal({ type, executeButton, closeModal }) {
             ![
               "reset-password-sent",
               "reset-password-failed",
-              "delete-account-confirmation"
+              "reset-password-not-allowed",
+              "delete-account-confirmation",
+              "verify-email-sent",
+              "verify-email-failed"
             ].includes(type) ?
               <div className="buttons">
                 <button onClick={closeModal}>Cancel</button>

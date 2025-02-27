@@ -1385,6 +1385,21 @@ button#add-friend:active {
   font-size: 1.25rem;
 }
 
+#account-email button {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  color: lime;
+  font-family: inherit;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+#account-email button:hover,
+#account-email button:active {
+  color: limegreen;
+}
+
 #account-buttons {
   flex-grow: 1;
   display: flex;

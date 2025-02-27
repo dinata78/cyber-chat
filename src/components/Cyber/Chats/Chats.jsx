@@ -4,7 +4,7 @@ import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../firebase";
+import { auth, db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
@@ -206,7 +206,9 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />
-            <button onClick={() => addMessage(messageInput)}>
+            <button
+              onClick={() => addMessage(messageInput)}
+            >
               <ArrowLeftSVG />
             </button>
           </div>

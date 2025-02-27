@@ -33,7 +33,6 @@ export function useAuth(setIsLoading) {
         friendRequestSent: [],
         friendRequestReceived: [],
         inbox: [],
-        isEmailVerified: false,
       });
 
       await addNewConversationToDb(auth.currentUser.uid);

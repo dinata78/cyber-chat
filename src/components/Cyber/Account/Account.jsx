@@ -4,8 +4,9 @@ import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
 import { AccountModal } from "./AccountModal";
-import { logOut, resetPassword } from "./accountFunctions";
+import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
 import { useMetadata } from "../../../custom-hooks/useMetadata";
+import { auth } from "../../../../firebase";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [ modalType, setModalType ] = useState("");
@@ -26,10 +27,13 @@ export function Account({ ownData, setIsAccountVisible }) {
       navigate("/");
     }
     else if (type === "reset-password") {
-      resetPassword(ownData.email, setModalType);
+      await resetPassword(ownData.email, setModalType);
     }
     else if (type === "delete-account") {
       setModalType("delete-account-confirmation");
+    }
+    else if (type === "verify-email") {
+      await verifyEmail(setModalType);
     }
     else {
       return null;
@@ -94,7 +98,24 @@ export function Account({ ownData, setIsAccountVisible }) {
           </div>
           <div id="account-email">
             <EmailSVG />
-            <span id="email">{ownData.email}</span>
+            <span>{ownData.email}</span>
+            <span 
+              style={{color: auth.currentUser.emailVerified ? "lime" : "red"}}
+            >
+              {
+                auth.currentUser.emailVerified ?
+                  "[Verified]"
+                : "[Not Verified]"
+              }
+            </span>
+            {
+              !auth.currentUser.emailVerified &&
+                <button
+                  onClick={() => buttonOnClick("verify-email")}
+                >
+                  Verify
+                </button>
+            }
           </div>
           <div id="account-buttons">
             <button
