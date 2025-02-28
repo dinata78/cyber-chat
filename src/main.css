@@ -195,6 +195,163 @@ body {
   background-color: lightgray;
 }
 
+#pop-up {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000dd;
+  display: grid;
+  place-content: center;
+}
+
+#pop-up > div {
+  background-color: #aaddff35;
+  width: 480px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+#pop-up h1 {
+  margin: 0;
+  padding-block: 16px;
+  text-align: center;
+  color: #aaddff99;
+  font-size: 21px;
+}
+
+#pop-up hr {
+  margin: 0;
+  border-color: #aaddff50;
+}
+
+#pop-up .bottom {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pop-up span {
+  flex-grow: 1;
+  padding-inline: 18px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: #aaddff;
+  font-size: 18px;
+}
+
+#pop-up .buttons {
+  width: 100%;
+  padding-right: 24px;
+  padding-bottom: 24px;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 12px;
+}
+
+#pop-up .buttons button {
+  background-color: transparent;
+  padding: 8px 16px;
+  border: 1px solid #aaddff50;
+  color: red;
+  font-family: inherit;
+  font-size: 18px;
+}
+
+#pop-up .buttons button.first-button {
+  background-color: #aaddff50;
+  color: #aaddff;
+}
+
+#pop-up .buttons button:hover,
+#pop-up .buttons button:active {
+  opacity: 70%;
+}
+
+#pop-up .confirm-delete {
+  position: relative;
+  width: 100%;
+  margin-bottom: 64px;
+  padding-inline: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+#pop-up .confirm-delete span {
+  margin-left: 6px;
+  padding: 0;
+  color: #aaddffbb;
+  font-size: 13px;
+}
+
+#pop-up .confirm-delete input {
+  background-color: transparent;
+  width: 70%;
+  height: 35px;
+  padding-left: 8px;
+  padding-right: 36px;
+  border: 2px solid #aaddff99;
+  color: #aaddff;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#pop-up .confirm-delete input:focus {
+  outline: none;
+}
+
+#pop-up .confirm-delete .password-visibility {
+  position: absolute;
+  right: 155px;
+  bottom: 0;
+  padding: 6px;
+  width: 35px;
+  height: 35px;
+}
+
+#pop-up .confirm-delete .password-visibility svg {
+  fill: #aaddff99;
+}
+
+#pop-up .confirm-delete .password-visibility svg:hover,
+#pop-up .confirm-delete .password-visibility svg:active {
+  fill: #aaddff;
+}
+
+#pop-up .confirm-delete button {
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  background-color: transparent;  
+  height: 35px;
+  padding-inline: 12px;
+  border: 2px solid red;
+  color: red;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+#pop-up .confirm-delete button:hover,
+#pop-up .confirm-delete button:active {
+  background-color: #ff000033;
+}
+
+#pop-up .confirm-delete .error-info {
+  position: absolute;
+  top: 72px;
+  left: 0;
+  margin: 0;
+  padding-inline: 28px;
+  text-align: start;
+  color: red;
+}
+
 #cyber-page {
   background-color: #000000e0;
   height: 100vh;
@@ -629,12 +786,12 @@ button#add-friend:active {
 }
 
 #add-friend-top > div {
+  position: absolute;
+  right: 0;
   width: 60px;
   height: 100%;
   display: grid;
   place-content: center;
-  position: absolute;
-  right: 0;
 }
 
 #add-friend-top button {
@@ -745,7 +902,7 @@ button#add-friend:active {
 }
 
 #add-friend-profile-left {
-  width: 45%;
+  max-width: 185px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -753,7 +910,7 @@ button#add-friend:active {
 }
 
 #add-friend-profile-left img {
-  max-width: 200px;
+  width: 100%;
   border: 2px solid #aaddff;
 }
 
@@ -1171,7 +1328,7 @@ button#add-friend:active {
 
 #cyber-account > div {
   position: relative;
-  background-color: #ffffff25;
+  background-color: #22222fcc;
   width: 640px;
   height: 640px;
   display: flex;
@@ -1257,14 +1414,14 @@ button#add-friend:active {
 
 #account-data img {
   width: 240px;
-  border: 2px solid #999;
+  border: 2px solid #aaddff77;
 }
 
 .account-data-card {
   max-width: 100%;
   min-height: 75px;
   padding: 12px;
-  border: 2px solid #999;
+  border: 2px solid #aaddff77;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1441,160 +1598,4 @@ button#add-friend:active {
 #account-buttons button:hover,
 #account-buttons button:active {
   color: #aaddff;
-}
-
-#account-modal {
-  position: absolute;
-  background-color: #000000dd;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-content: center;
-}
-
-#account-modal > div {
-  background-color: #aaddff35;
-  width: 480px;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-}
-
-#account-modal h1 {
-  margin: 0;
-  padding-block: 16px;
-  text-align: center;
-  color: #aaddffbb;
-  font-size: 24px;
-}
-
-#account-modal hr {
-  margin: 0;
-  border-color: #aaddff50;
-}
-
-#account-modal .bottom {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#account-modal span {
-  flex-grow: 1;
-  padding-inline: 18px;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  color: #aaddff;
-  font-size: 18px;
-}
-
-#account-modal .buttons {
-  width: 100%;
-  padding-right: 24px;
-  padding-bottom: 24px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-#account-modal .buttons button {
-  background-color: transparent;
-  padding: 8px 16px;
-  border: 1px solid #aaddff50;
-  color: red;
-  font-family: inherit;
-  font-size: 18px;
-}
-
-#account-modal .buttons button:last-child {
-  background-color: #aaddff50;
-  color: #aaddff;
-}
-
-#account-modal .buttons button:hover,
-#account-modal .buttons button:active {
-  opacity: 70%;
-}
-
-#account-modal .confirm-delete {
-  position: relative;
-  width: 100%;
-  margin-bottom: 64px;
-  padding-inline: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-#account-modal .confirm-delete span {
-  margin-left: 6px;
-  padding: 0;
-  color: #aaddffbb;
-  font-size: 13px;
-}
-
-#account-modal .confirm-delete input {
-  background-color: transparent;
-  width: 70%;
-  height: 35px;
-  padding-left: 8px;
-  padding-right: 36px;
-  border: 2px solid #aaddff99;
-  color: #aaddff;
-  font-family: inherit;
-  font-size: 14px;
-}
-
-#account-modal .confirm-delete input:focus {
-  outline: none;
-}
-
-#account-modal .confirm-delete .password-visibility {
-  position: absolute;
-  right: 155px;
-  bottom: 0;
-  padding: 6px;
-  width: 35px;
-  height: 35px;
-}
-
-#account-modal .confirm-delete .password-visibility svg {
-  fill: #aaddff99;
-}
-
-#account-modal .confirm-delete .password-visibility svg:hover,
-#account-modal .confirm-delete .password-visibility svg:active {
-  fill: #aaddff;
-}
-
-#account-modal .confirm-delete button {
-  position: absolute;
-  right: 24px;
-  bottom: 0;
-  background-color: transparent;  
-  height: 35px;
-  padding-inline: 12px;
-  border: 2px solid red;
-  color: red;
-  font-family: inherit;
-  font-size: 12px;
-}
-
-#account-modal .confirm-delete button:hover,
-#account-modal .confirm-delete button:active {
-  background-color: #ff000033;
-}
-
-#account-modal .confirm-delete .error-info {
-  position: absolute;
-  top: 72px;
-  left: 0;
-  margin: 0;
-  padding-inline: 28px;
-  text-align: start;
-  color: red;
 }

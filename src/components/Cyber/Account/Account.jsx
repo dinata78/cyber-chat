@@ -3,23 +3,23 @@ import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
-import { AccountModal } from "./AccountModal";
 import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
 import { useMetadata } from "../../../custom-hooks/useMetadata";
 import { auth } from "../../../../firebase";
+import { PopUp } from "../../PopUp";
+import { AccountConfirmDelete } from "./AccountConfirmDelete";
 
 export function Account({ ownData, setIsAccountVisible }) {
-  const [ modalType, setModalType ] = useState("");
-  const [ isModalVisible, setIsModalVisible ] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [textContent, setTextContent] = useState("");
+  const [modalHasTwoButtons, setModalHasTwoButtons] = useState(false);
+  const [firstButton, setFirstButton] = useState({});
+  const [secondButton, setSecondButton] = useState({}); 
 
   const { hiddenUsers } = useMetadata();
 
   const navigate = useNavigate();
-
-  const buttonOnClick = (type) => {
-    setModalType(type);
-    setIsModalVisible(true);
-  }
 
   const executeButton = async (type) => {
     if (type === "log-out") {
@@ -27,18 +27,133 @@ export function Account({ ownData, setIsAccountVisible }) {
       navigate("/");
     }
     else if (type === "reset-password") {
-      await resetPassword(ownData.email, setModalType);
+      try {
+        await resetPassword(ownData.email);
+        setCaption("Reset Password")
+        setTextContent("Password reset link sent. Please check your email.")
+        setModalHasTwoButtons(false);
+        setFirstButton({
+          label: "Okay",
+          function: () => setIsModalVisible(false)
+        });
+        setSecondButton({});
+      }
+      catch (error) {
+        if (error.message === "email-not-verified") {
+          setCaption("Account Not Verified");
+          setTextContent("Please verify your email before attempting to reset your password.");
+          setModalHasTwoButtons(false);
+          setFirstButton({
+            label: "Okay",
+            function: () => setIsModalVisible(false)
+          });
+          setSecondButton({});
+        }
+        else {
+          setCaption("Reset Password")
+          setTextContent("Password reset link not sent. This might be caused by an internal server error. Please try again later.")
+          setModalHasTwoButtons(false);
+          setFirstButton({
+            label: "Okay",
+            function: () => setIsModalVisible(false)
+          });
+          setSecondButton({});
+        }
+      }
     }
     else if (type === "delete-account") {
-      setModalType("delete-account-confirmation");
+      setCaption("Confirm Account Deletion");
+      setTextContent("Deleting your account will remove all of your data on Cyber Chat.");
     }
     else if (type === "verify-email") {
-      await verifyEmail(setModalType);
-    }
-    else {
-      return null;
+      try {
+        await verifyEmail();
+        setCaption("Verify Email");
+        setTextContent("Email verification link sent. Please check your email.");
+        setModalHasTwoButtons(false);
+        setFirstButton({
+          label: "Okay",
+          function: () => setIsModalVisible(false)
+        });
+        setSecondButton({});        
+      }
+      catch (error) {
+        setCaption("Verify Email");
+        setTextContent("Email verification link not sent. This might be caused by an internal server error. Please try again later.");
+        setModalHasTwoButtons(false);
+        setFirstButton({
+          label: "Okay",
+          function: () => setIsModalVisible(false)
+        });
+        setSecondButton({});
+
+        if (error.message === "auth/too-many-requests") {
+          setTextContent("Too many request at once. Please try again later.")
+        }
+      }
     }
   }
+  const buttonOnClick = (type) => {
+    if (type === "log-out") {
+      setCaption("Log Out");
+      setTextContent("Are you sure you want to log out?");
+      setModalHasTwoButtons(true);
+      setFirstButton({
+        label: "Log out",
+        function: () => executeButton("log-out")
+      });
+      setSecondButton({
+        label: "Cancel",
+        function: () => setIsModalVisible(false)
+      });
+    }
+
+    else if (type === "reset-password") {
+      setCaption("Reset Password");
+      setTextContent("Are you sure you want to reset your password?");
+      setModalHasTwoButtons(true);
+      setFirstButton({
+        label: "Send reset password link",
+        function: () => executeButton("reset-password")
+      });
+      setSecondButton({
+        label: "Cancel",
+        function: () => setIsModalVisible(false)
+      });
+    }
+
+    else if (type === "delete-account") {
+      setCaption("Delete Account");
+      setTextContent("Are you sure you want to delete your account?");
+      setModalHasTwoButtons(true);
+      setFirstButton({
+        label: "Delete account",
+        function: () => executeButton("delete-account")
+      });
+      setSecondButton({
+        label: "Cancel",
+        function: () => setIsModalVisible(false)
+      })
+    }
+
+    else if (type === "verify-email") {
+      setCaption("Verify Email");
+      setTextContent("An email verification link will be sent to your email.");
+      setModalHasTwoButtons(true);
+      setFirstButton({
+        label: "Send link",
+        function: () => executeButton("verify-email")
+      });
+      setSecondButton({
+        label: "Cancel",
+        function: () => setIsModalVisible(false)
+      });
+    }
+
+    setIsModalVisible(true);
+  }
+
+  
   
   return (
     <div
@@ -104,35 +219,27 @@ export function Account({ ownData, setIsAccountVisible }) {
             >
               {
                 auth.currentUser.emailVerified ?
-                  "[Verified]"
-                : "[Not Verified]"
+                  "(Verified)"
+                : "(Not Verified)"
               }
             </span>
             {
               !auth.currentUser.emailVerified &&
-                <button
-                  onClick={() => buttonOnClick("verify-email")}
-                >
-                  Verify
+                <button onClick={() => buttonOnClick("verify-email")}>
+                  [Verify]
                 </button>
             }
           </div>
           <div id="account-buttons">
-            <button
-              onClick={() => buttonOnClick("log-out")}
-            >
+            <button onClick={() => buttonOnClick("log-out")}>
               Log Out
             </button>
 
-            <button
-              onClick={() => buttonOnClick("reset-password")}
-            >
+            <button onClick={() => buttonOnClick("reset-password")}>
               Reset Password
             </button>
 
-            <button
-              onClick={() => buttonOnClick("delete-account")}
-            >
+            <button onClick={() => buttonOnClick("delete-account")}>
               Delete Account
             </button>
 
@@ -141,11 +248,15 @@ export function Account({ ownData, setIsAccountVisible }) {
 
         {
           isModalVisible &&
-            <AccountModal
-              type={modalType}
-              executeButton={executeButton}
-              closeModal={() => setIsModalVisible(false)}
-            />
+          <PopUp
+            children={<AccountConfirmDelete />}
+            closePopUp={() => setIsModalVisible(false)}
+            caption={caption}
+            textContent={textContent}
+            hasTwoButtons={modalHasTwoButtons}
+            firstButton={firstButton}
+            secondButton={secondButton}
+          />
         }
       </div>
 

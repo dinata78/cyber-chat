@@ -16,19 +16,16 @@ export async function logOut() {
   }
 }
 
-export async function resetPassword(email, setModalType) {
+export async function resetPassword(email) {
   if (!auth.currentUser.emailVerified) {
-    setModalType("reset-password-not-allowed");
-    return;
-  } 
+    throw new Error("email-not-verified");
+  }
 
   try {
     await sendPasswordResetEmail(auth, email);
-    setModalType("reset-password-sent");
   }
   catch (error) {
-    setModalType("reset-password-failed");
-    console.error(error);
+    throw new Error(error.code);
   }
 }
 
@@ -45,13 +42,11 @@ export async function deleteAccount(){
   }
 }
 
-export async function verifyEmail(setModalType) {
+export async function verifyEmail() {
   try {
     await sendEmailVerification(auth.currentUser);
-    setModalType("verify-email-sent");
   }
   catch (error) {
-    setModalType("verify-email-failed");
-    console.error(error);
+    throw new Error(error.code);
   }
 }
