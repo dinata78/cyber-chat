@@ -206,7 +206,7 @@ body {
   place-content: center;
 }
 
-#pop-up > div {
+#pop-up > div.main-container {
   background-color: #aaddff35;
   width: 480px;
   height: 300px;
@@ -214,7 +214,7 @@ body {
   flex-direction: column;
 }
 
-#pop-up h1 {
+#pop-up .caption {
   margin: 0;
   padding-block: 16px;
   text-align: center;
@@ -222,7 +222,7 @@ body {
   font-size: 21px;
 }
 
-#pop-up hr {
+#pop-up .line {
   margin: 0;
   border-color: #aaddff50;
 }
@@ -234,7 +234,7 @@ body {
   align-items: center;
 }
 
-#pop-up span {
+#pop-up .text-content {
   flex-grow: 1;
   padding-inline: 18px;
   display: grid;
@@ -1206,25 +1206,30 @@ button#add-friend:active {
 #friends-inbox .top {
   margin-bottom: 24px;
   display: flex;
-  gap: 12px;
+  justify-content: space-between;
 }
 
 #friends-inbox .top button {
   background-color: transparent;
-  width: 27px;
-  height: 27px;
+  height: 32px;
   padding: 0;
   border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: red;
+  font-size: 21px;
+  font-family: inherit;
 }
 
-#friends-inbox .top button:hover {
-  svg {
-    fill: #ff000099;
-  }
-}
-
-#friends-inbox .top svg {
+#friends-inbox .top button svg {
   fill: red;
+  width: 24px;
+}
+
+#friends-inbox .top button:hover,
+#friends-inbox .top button:active {
+  opacity: 65%;
 }
 
 #friends-inbox h1 {

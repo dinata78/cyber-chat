@@ -22,7 +22,7 @@ export async function resetPassword(email) {
   }
 
   try {
-    await sendPasswordResetEmail(auth, email);
+    await sendPasswordResetEmail(auth, null);
   }
   catch (error) {
     throw new Error(error.code);

@@ -1,14 +1,18 @@
+import { AccountConfirmDelete } from "./Cyber/Account/AccountConfirmDelete"
 
-export function PopUp({ children, closePopUp, caption, textContent, hasTwoButtons, firstButton, secondButton }) {
+export function PopUp({ closePopUp, caption, textContent, hasTwoButtons, firstButton, secondButton }) {
   if (caption === "Confirm Account Deletion") {
     return (
       <div id="pop-up" onClick={closePopUp}>
-        <div onClick={(e) => e.stopPropagation()}>
-          <h1>{caption}</h1>
-          <hr />
+        <div 
+          className="main-container"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span className="caption">{caption}</span>
+          <hr className="line" />
           <div className="bottom">
-            <span>{textContent}</span>
-            {children}
+            <span className="text-content">{textContent}</span>
+              <AccountConfirmDelete />
           </div>
         </div>
       </div>
@@ -17,11 +21,14 @@ export function PopUp({ children, closePopUp, caption, textContent, hasTwoButton
  
   return (
     <div id="pop-up" onClick={closePopUp}> 
-      <div onClick={(e) => e.stopPropagation()}>
-        <h1>{caption}</h1>
-        <hr />
+      <div
+        className="main-container" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <span className="caption">{caption}</span>
+        <hr className="line" />
         <div className="bottom">
-          <span>{textContent}</span>
+          <span className="text-content">{textContent}</span>
           <div className="buttons">
             <button
               className="first-button"
