@@ -1,5 +1,6 @@
 import { cancelRequest, handleRequest } from "./handleRequest";
 import { useName } from "../../../custom-hooks/useName";
+import { groupNames } from "../../../utils";
 
 export function PendingCard({ ownUid, type, uid }) {
   const { displayName, username } = useName(uid);  
@@ -12,19 +13,13 @@ export function PendingCard({ ownUid, type, uid }) {
         type === "received" ?
           <>
             <span>
-              <b style={{color:"#aaddff"}}>{displayName} (@{username})</b> sent you a friend request!
+              {groupNames(displayName, username)} sent you a friend request!
             </span>
             <div className="pending-card-buttons">
-              <button
-                style={{color: "#00ff62"}}
-                onClick={() => handleRequest("accept", ownUid, uid)}
-              >
+              <button style={{color: "#00ff62"}} onClick={() => handleRequest("accept", ownUid, uid)}>
                 ACCEPT
               </button>
-              <button
-                style={{color: "red"}}
-                onClick={() => handleRequest("reject", ownUid, uid)}
-              >
+              <button style={{color: "red"}} onClick={() => handleRequest("reject", ownUid, uid)}>
                 REJECT
               </button>
             </div>
@@ -32,13 +27,10 @@ export function PendingCard({ ownUid, type, uid }) {
         :
           <>
             <span>
-              You sent <b style={{color: "#aaddff"}}>{displayName} (@{username})</b> a friend request!
+              You sent {groupNames(displayName, username)} a friend request!
             </span>
             <div className="pending-card-buttons">
-              <button
-                style={{color: "red"}}
-                onClick={() => cancelRequest(ownUid, uid)}
-              >
+              <button style={{color: "red"}} onClick={() => cancelRequest(ownUid, uid)}>
                 CANCEL
               </button>
             </div>

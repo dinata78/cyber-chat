@@ -36,7 +36,6 @@ export async function handleRequest(type, ownUid, requestUid) {
       friendList: [...requestDocData.friendList, ownUid],
     });
 
-    await addInbox(requestUid, "request-accepted", ownUid);
     await addInbox(requestUid, "friend-added", ownUid);
     await addInbox(ownUid, "friend-added", requestUid);
 
@@ -90,7 +89,7 @@ export async function cancelRequest(ownUid, requestedUid) {
     friendRequestReceived: requestedFriendRequestReceived,
   })
 
-  await addInbox(ownUid, "cancel-request", requestedUid);
+  await addInbox(ownUid, "request-cancel", requestedUid);
   await addInbox(requestedUid, "request-cancelled", ownUid);
   
 }

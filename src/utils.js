@@ -64,6 +64,11 @@ export function normalizeSpaces(str) {
   return str.replace(/\s+/g, ' ').trim();
 }
 
+export function groupNames(displayName, username) {
+  return `[ ${displayName} (@${username}) ]`;
+}
+
+
 export async function deleteUserConversation(uid) {
   const conversationsRef = collection(db, "conversations");
   

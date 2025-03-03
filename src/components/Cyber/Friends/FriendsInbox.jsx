@@ -9,7 +9,6 @@ import { PopUp } from "../../PopUp";
 export function FriendsInbox({ ownUid, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
-  
 
   const clearInbox = async () => {
     const ownDocRef = doc(db, "users", ownUid);
@@ -61,8 +60,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
             return (
               <InboxCard
                 key={index + item.uid}
-                type={item.type}
-                uid={item.uid}
+                content={item.content}
               />
             )
           })
