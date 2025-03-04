@@ -12,7 +12,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
-  const { friendUidList, friendDataList } = useFriendList(ownData);
+  const { friendUidList, friendDataList } = useFriendList(ownData.uid);
   const { friendRequestList } = useFriendRequestList(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 

@@ -59,7 +59,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
           inboxItems.map((item, index) => {
             return (
               <InboxCard
-                key={index + item.uid}
+                key={index + item.timeCreated + index}
                 content={item.content}
               />
             )

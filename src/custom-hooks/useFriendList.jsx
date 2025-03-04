@@ -3,35 +3,39 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { fetchDataFromUid } from "../utils";
 
-export function useFriendList(userData) {
+export function useFriendList(uid) {
   const [friendUidList, setFriendUidList] = useState([]);
   const [friendDataList, setFriendDataList] = useState([]);
   
   useEffect(() => {
-    if (!userData.uid) return;
+    if (!uid) return;
 
-    let unsubscribe;
+    let unsubscribe = null;
 
     const fetchFriendList = async () => {
-      const userDocRef = doc(db, "users", userData.uid);
+      const userDocRef = doc(db, "users", uid);
 
       unsubscribe = onSnapshot(userDocRef, (snapshot) => {
-        const friendList = snapshot.data().friendList;
-        setFriendUidList(friendList);
+        const data = snapshot.data();
+        if (data.friendList) {
+          setFriendUidList(data.friendList)
+        }
       });
     }
 
     fetchFriendList();
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
     }
 
-  }, [userData]);
+  }, [uid]);
 
   useEffect(() => {
-    if (friendUidList.length < 1) {
-      setFriendDataList([]);
+    if (!friendUidList.length) {
       return;
     };
 
