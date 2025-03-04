@@ -2,12 +2,12 @@ import { useState } from "react";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { SearchSVG } from "../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
 
-export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList, friendRequestSentList, friendRequestReceivedList }) {
+export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList, friendRequestList }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
@@ -73,8 +73,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList,
                   ownUid={ownUid}
                   searchedUserData={searchedUserData}
                   friendList={friendList}
-                  friendRequestSentList={friendRequestSentList}
-                  friendRequestReceivedList={friendRequestReceivedList}
+                  friendRequestList={friendRequestList}
                 />
               </>
             : <AddFriendNoResult type={resultStatus} />

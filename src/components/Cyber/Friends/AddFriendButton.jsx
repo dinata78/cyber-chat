@@ -1,18 +1,24 @@
 import { addInbox } from "./addInbox";
-import { requestFriend } from "./requestFriend";
+import { sendFriendRequest } from "./sendFriendRequest";
 
-export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequestSentList, friendRequestReceivedList }) {
+export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequestList }) {
+
+  const friendRequestSentList = friendRequestList.filter((request) => request.type === "sent");
+  const friendRequestReceivedList = friendRequestList.filter((request) => request.type === "received");
+
+  const friendRequestSentUidList = friendRequestSentList.map((request) => request.uid);
+  const friendRequestReceivedUidList = friendRequestReceivedList.map((request) => request.uid);
 
   const addFriendOnClick = async (newFriendUid) => {
     if (
-      friendRequestSentList.includes(newFriendUid) 
-      || friendRequestReceivedList.includes(newFriendUid)
+      friendRequestSentUidList.includes(newFriendUid) 
+      || friendRequestReceivedUidList.includes(newFriendUid)
       || friendList.includes(newFriendUid)
       || newFriendUid === ownUid
       || newFriendUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1"
       ) return;
     
-    await requestFriend(ownUid, newFriendUid);
+    await sendFriendRequest(ownUid, newFriendUid);
     await addInbox(ownUid, "request-sent", newFriendUid);
     await addInbox(newFriendUid, "request-received", ownUid);
     
@@ -21,8 +27,8 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
   return (
     <button id="add-friend-button" 
       className={ 
-        friendRequestSentList.includes(searchedUserData.uid) ? "sent no-effect"
-        : friendRequestReceivedList.includes(searchedUserData.uid) ? "received no-effect"
+        friendRequestSentUidList.includes(searchedUserData.uid) ? "sent no-effect"
+        : friendRequestReceivedUidList.includes(searchedUserData.uid) ? "received no-effect"
         : friendList.includes(searchedUserData.uid) ? "is-friend no-effect"
         : searchedUserData.uid === ownUid ? "self no-effect"
         : searchedUserData.uid === "28qZ6LQQi3g76LLRd20HXrkQIjh1" ? "dev no-effect"
@@ -31,9 +37,9 @@ export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRe
       onClick={() => addFriendOnClick(searchedUserData.uid)}
     >
       {
-        friendRequestSentList.includes(searchedUserData.uid) ?
+        friendRequestSentUidList.includes(searchedUserData.uid) ?
           "FRIEND REQUEST SENT"
-        : friendRequestReceivedList.includes(searchedUserData.uid) ?
+        : friendRequestReceivedUidList.includes(searchedUserData.uid) ?
           "USER SENT YOU A FRIEND REQUEST"
         : searchedUserData.uid === ownUid ?
           "CAN'T ADD YOURSELF"

@@ -2,22 +2,20 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
-export function useFriendRequestList(userData) {
-  const [friendRequestSentList, setFriendRequestSentList] = useState([]);
-  const [friendRequestReceivedList, setFriendRequestReceivedList] = useState([]);
-  
+export function useFriendRequestList(uid) {
+  const [friendRequestList, setFriendRequestList] = useState([]);
+
   useEffect(() => {
-    if (!userData.uid) return;
+    if (!uid) return;
 
     let unsubscribe;
 
     const fetchFriendRequestList = async () => {
-      const userDocRef = doc(db, "users", userData.uid);
+      const userDocRef = doc(db, "users", uid);
       unsubscribe = onSnapshot(userDocRef, (snapshot) => {
         const data = snapshot.data();
 
-        setFriendRequestSentList(data.friendRequestSent);
-        setFriendRequestReceivedList(data.friendRequestReceived);
+        setFriendRequestList(data.friendRequest);        
       })
     }
 
@@ -27,11 +25,10 @@ export function useFriendRequestList(userData) {
       if (unsubscribe) unsubscribe();
     } 
 
-  }, [userData]);
+  }, [uid]);
 
   return {
-    friendRequestSentList,
-    friendRequestReceivedList,
+    friendRequestList
   }
     
 }

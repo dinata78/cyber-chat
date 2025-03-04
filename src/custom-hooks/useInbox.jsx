@@ -15,11 +15,15 @@ export function useInbox(uid) {
       
       unsubscribe = onSnapshot(docRef, (snapshot) => {
         const data = snapshot.data().inbox;
-        setInboxItems(data);
+        setInboxItems(data.reverse());
       });
     }
 
     fetchData();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    }
 
   }, [uid]);
 

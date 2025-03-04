@@ -13,7 +13,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
   const [currentNav, setCurrentNav] = useState("all");
 
   const { friendUidList, friendDataList } = useFriendList(ownData);
-  const { friendRequestSentList, friendRequestReceivedList } = useFriendRequestList(ownData);
+  const { friendRequestList } = useFriendRequestList(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
   const friendsButtonOnClick = (navType) => {
@@ -69,8 +69,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
           : currentNav === "pending" ?
             <FriendsPending
               ownUid={ownData.uid}
-              friendRequestSentList={friendRequestSentList}
-              friendRequestReceivedList={friendRequestReceivedList}
+              friendRequestList={friendRequestList}
             />
           : currentNav === "inbox" ?
             <FriendsInbox
@@ -86,8 +85,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible}
           friendList={friendUidList}
-          friendRequestSentList={friendRequestSentList}
-          friendRequestReceivedList={friendRequestReceivedList}
+          friendRequestList={friendRequestList}
         />
       }
     </div>

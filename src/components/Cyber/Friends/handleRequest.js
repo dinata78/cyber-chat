@@ -10,53 +10,39 @@ export async function handleRequest(type, ownUid, requestUid) {
   const ownDocData = await fetchDataFromUid(ownUid);
   const requestDocData = await fetchDataFromUid(requestUid);
 
-  const ownFriendRequestReceived = ownDocData.friendRequestReceived;
-  const requestFriendRequestSent = requestDocData.friendRequestSent;    
+  const ownFriendRequest = ownDocData.friendRequest;
+  const requestFriendRequest = requestDocData.friendRequest;
   
-  ownFriendRequestReceived.splice(
-    ownFriendRequestReceived.indexOf(requestUid)
+  ownFriendRequest.splice(
+    ownFriendRequest.findIndex((request) => request.type === "received" && request.uid === requestUid)
     , 1
   );
+  requestFriendRequest.splice(
+    requestFriendRequest.findIndex((request) => request.type === "sent" && request.uid === ownUid)
+    , 1
+  )
 
-  requestFriendRequestSent.splice(
-    requestFriendRequestSent.indexOf(ownUid)
-    , 1
-  );
+  await updateDoc(ownDocRef, {
+    ...ownDocData,
+    friendRequest: ownFriendRequest,
+    friendList: [...ownDocData.friendList, requestUid],
+  });
+
+  await updateDoc(requestDocRef, {
+    ...requestDocData,
+    friendRequest: requestFriendRequest,
+    friendList: [...requestDocData.friendList, ownUid],
+  });
 
   if (type === "accept") {
-    await updateDoc(ownDocRef, {
-      ...ownDocData,
-      friendRequestReceived: ownFriendRequestReceived,
-      friendList: [...ownDocData.friendList, requestUid],
-    });
-  
-    await updateDoc(requestDocRef, {
-      ...requestDocData,
-      friendRequestSent: requestFriendRequestSent,
-      friendList: [...requestDocData.friendList, ownUid],
-    });
-
     await addInbox(requestUid, "friend-added", ownUid);
     await addInbox(ownUid, "friend-added", requestUid);
-
-    await addNewConversationToDb(ownUid, requestUid);
-
+    
+    await addNewConversationToDb(ownUid, requestUid);  
   }
-
   else if (type === "reject") {
-    await updateDoc(ownDocRef, {
-      ...ownDocData,
-      friendRequestReceived: ownFriendRequestReceived,
-    });
-  
-    await updateDoc(requestDocRef, {
-      ...requestDocData,
-      friendRequestSent: requestFriendRequestSent,
-    });
-
     await addInbox(requestUid, "request-rejected", ownUid);
   }
-  
 }
 
 export async function cancelRequest(ownUid, requestedUid) {
@@ -66,27 +52,27 @@ export async function cancelRequest(ownUid, requestedUid) {
   const ownDocData = await fetchDataFromUid(ownUid);
   const requestedDocData = await fetchDataFromUid(requestedUid);
 
-  const ownFriendRequestSent = ownDocData.friendRequestSent;
-  const requestedFriendRequestReceived = requestedDocData.friendRequestReceived;
+  const ownFriendRequest = ownDocData.friendRequest;
+  const requestedFriendRequest = requestedDocData.friendRequest;
 
-  ownFriendRequestSent.splice(
-    ownFriendRequestSent.indexOf(requestedUid)
+  ownFriendRequest.splice(
+    ownFriendRequest.findIndex((request) => request.type === "sent" && request.uid === requestedUid)
     , 1
-  )
+  );
 
-  requestedFriendRequestReceived.splice(
-    requestedFriendRequestReceived.indexOf(ownUid)
+  requestedFriendRequest.splice(
+    requestedFriendRequest.findIndex((request) => request.type === "received" && request.uid === ownUid)
     , 1
   )
 
   await updateDoc(ownDocRef, {
     ...ownDocData,
-    friendRequestSent: ownFriendRequestSent,
+    friendRequest: ownFriendRequest,
   });
 
   await updateDoc(requestedDocRef, {
     ...requestedDocData,
-    friendRequestReceived: requestedFriendRequestReceived,
+    friendRequest: requestedFriendRequest,
   })
 
   await addInbox(ownUid, "request-cancel", requestedUid);
