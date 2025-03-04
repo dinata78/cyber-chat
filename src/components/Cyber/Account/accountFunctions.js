@@ -22,7 +22,7 @@ export async function resetPassword(email) {
   }
 
   try {
-    await sendPasswordResetEmail(auth, null);
+    await sendPasswordResetEmail(auth, email);
   }
   catch (error) {
     throw new Error(error.code);
@@ -31,8 +31,8 @@ export async function resetPassword(email) {
 
 export async function deleteAccount(){
   try {    
-    await deleteUserData(auth.currentUser.uid);
     await deleteUserConversation(auth.currentUser.uid);
+    await deleteUserData(auth.currentUser.uid);
 
     await deleteUser(auth.currentUser);
   }

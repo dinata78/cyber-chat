@@ -91,7 +91,6 @@ export function groupNames(displayName, username) {
   return `[ ${displayName} (@${username}) ]`;
 }
 
-
 export async function deleteUserConversation(uid) {
   const conversationsRef = collection(db, "conversations");
   
@@ -102,45 +101,15 @@ export async function deleteUserConversation(uid) {
 
   const userConversationDocs = await getDocs(userConversationsQuery);
 
-  userConversationDocs.docs.map((conversationDoc) => {
-    const data = conversationDoc.data();
-    const conversationParticipants = data.participants;
+  await Promise.all(
+    userConversationDocs.docs.map(async (conversationDoc) => {
+      const data = conversationDoc.data();
+      const conversationParticipants = data.participants;
 
-    if (conversationDoc.id === "globalChat") {
-      (async () => {
-        conversationParticipants.splice(
-          conversationParticipants.indexOf(uid)  
-          , 1
-        );
-
-        const globalChatDocRef = doc(db, "conversations", "globalChat");
-        const globalChatDocData = await fetchDataFromUid("globalChat");
-
-        await updateDoc(globalChatDocRef, {
-          ...globalChatDocData,
-          participants: conversationParticipants,
-        })
-      })();
-
-      return;
-    }
-
-    if (conversationDoc.id !== uid) {
-      conversationParticipants.splice(
-        conversationParticipants.indexOf(uid)
-        , 1
-      )
-
-      removeFriend(conversationParticipants[0], uid);
-    }
-
-    (async () => {
-      const conversationDocRef = doc(db, "conversations", conversationDoc.id);
-
-      await deleteDoc(conversationDocRef);
-    })();
-
-  })
+      await removeFriend(conversationParticipants[0], uid);
+      await deleteDoc(conversationDoc.ref);
+    })
+  );
 }
 
 export async function deleteUserData(uid) {
@@ -158,6 +127,4 @@ export async function deleteUserData(uid) {
   const userDocRef = doc(db, "users", uid);
   
   await deleteDoc(userDocRef);
-
-
 }

@@ -30,8 +30,7 @@ export function useAuth(setIsLoading) {
         title: "Newcomer",
         email: auth.currentUser.email,
         friendList: [],
-        friendRequestSent: [],
-        friendRequestReceived: [],
+        friendRequest: [],
         inbox: [],
       });
 
