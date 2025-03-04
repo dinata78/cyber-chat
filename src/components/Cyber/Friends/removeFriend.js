@@ -1,6 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { fetchDataFromUid } from "../../../utils";
+import { fetchDataFromUid, removeConversationFromDb } from "../../../utils";
 
 export async function removeFriend(ownUid, friendUid) {
   const ownDocRef = doc(db, "users", ownUid);
@@ -17,4 +17,6 @@ export async function removeFriend(ownUid, friendUid) {
     ...ownDocData,
     friendList: ownFriendList,
   });
+
+  await removeConversationFromDb(ownUid, friendUid);
 }

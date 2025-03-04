@@ -39,6 +39,29 @@ export async function addNewConversationToDb(uid1, uid2) {
   
 }
 
+export async function removeMessagesFromDb(conversationUid) {
+  const messagesCollectionRef = collection(db, "conversations", conversationUid, "messages");
+  
+  const messagesDocs = await getDocs(messagesCollectionRef);
+  await Promise.all(messagesDocs.docs.map((doc) => deleteDoc(doc.ref)));
+}
+
+export async function removeConversationFromDb(uid1, uid2) {
+  if (uid2 === undefined) {
+    const conversationDocRef = doc(db, "conversations", uid1);
+    
+    await removeMessagesFromDb(uid1);
+    await deleteDoc(conversationDocRef);
+  }
+  else {
+    const conversationDocId = getConversationId(uid1, uid2);
+    const conversationDocRef = doc(db, "conversations", conversationDocId);
+
+    await removeMessagesFromDb(conversationDocId);
+    await deleteDoc(conversationDocRef);
+  }
+}
+
 export async function fetchDataFromUid(uid) {
   const docRef = doc(db, "users", uid);
   const response = await getDoc(docRef);

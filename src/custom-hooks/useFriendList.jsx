@@ -20,6 +20,9 @@ export function useFriendList(uid) {
         if (data.friendList) {
           setFriendUidList(data.friendList)
         }
+        else {
+          setFriendUidList([]);
+        }
       });
     }
 
@@ -36,6 +39,7 @@ export function useFriendList(uid) {
 
   useEffect(() => {
     if (!friendUidList.length) {
+      setFriendDataList([]);
       return;
     };
 

@@ -4,7 +4,7 @@ import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
-import { auth, db } from "../../../../firebase";
+import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
@@ -15,7 +15,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
 
-  const { friendDataList } = useFriendList(ownData);
+  const { friendDataList } = useFriendList(ownData.uid);
 
   const messageEndRef = useRef(null);
 
