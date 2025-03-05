@@ -88,7 +88,30 @@ export function normalizeSpaces(str) {
 }
 
 export function groupNames(displayName, username) {
-  return `[ ${displayName} (@${username}) ]`;
+  return `*${displayName} (@${username})*`;
+}
+
+export function returnTwoDigitNumInString(num) {
+  const numInString = num.toString();
+
+  if (numInString.length === 1) {
+    return `0${num}`;
+  }
+  else {
+    return numInString;
+  }
+}
+
+export function processDate(dateObject) {
+  const time = {year: dateObject.getFullYear(), month: dateObject.getMonth() + 1, date: dateObject.getDate(), hour: dateObject.getHours(), minute: dateObject.getMinutes()}
+
+  const year = time.year.toString();
+  const month = returnTwoDigitNumInString(time.month);
+  const date = returnTwoDigitNumInString(time.date);
+  const hour = returnTwoDigitNumInString(time.hour);
+  const minute = returnTwoDigitNumInString(time.minute);
+
+  return `${year}/${month}/${date} ${hour}:${minute}`;
 }
 
 export async function deleteUserConversation(uid) {

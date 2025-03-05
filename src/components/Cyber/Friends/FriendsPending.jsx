@@ -18,6 +18,7 @@ export function FriendsPending({ ownUid, friendRequestList }) {
                   ownUid={ownUid}
                   type={pendingRequest.type}
                   uid={pendingRequest.uid}
+                  timeCreated={pendingRequest.timeCreated}
                 />
               )
             })

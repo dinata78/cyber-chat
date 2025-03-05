@@ -1,8 +1,8 @@
 import { cancelRequest, handleRequest } from "./handleRequest";
 import { useName } from "../../../custom-hooks/useName";
-import { groupNames } from "../../../utils";
+import { groupNames, processDate } from "../../../utils";
 
-export function PendingCard({ ownUid, type, uid }) {
+export function PendingCard({ ownUid, type, uid, timeCreated }) {
   const { displayName, username } = useName(uid);  
 
   if (!displayName || !username) return null;
@@ -13,7 +13,7 @@ export function PendingCard({ ownUid, type, uid }) {
         type === "received" ?
           <>
             <span>
-              {groupNames(displayName, username)} sent you a friend request!
+              [ {processDate(timeCreated.toDate())} ] {groupNames(displayName, username)} sent you a friend request!
             </span>
             <div className="pending-card-buttons">
               <button style={{color: "#00ff62"}} onClick={() => handleRequest("accept", ownUid, uid)}>
@@ -27,7 +27,7 @@ export function PendingCard({ ownUid, type, uid }) {
         :
           <>
             <span>
-              You sent {groupNames(displayName, username)} a friend request!
+              [ {processDate(timeCreated.toDate())} ] You sent {groupNames(displayName, username)} a friend request!
             </span>
             <div className="pending-card-buttons">
               <button style={{color: "red"}} onClick={() => cancelRequest(ownUid, uid)}>

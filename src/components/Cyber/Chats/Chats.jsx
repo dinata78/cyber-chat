@@ -186,13 +186,14 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
         </div>
         
         <div id="chats-content-bottom">
-          <div id="chat-display" className="overflow-y-support">
+          <div id="chat-messages" className="overflow-y-support">
             {currentChatContent.map((chatContent, index) => {
             return ( 
               <MessageCard
                 key={index + chatContent.senderId}
                 senderName={usernamesMap[chatContent.senderId]} 
-                content={chatContent.content} 
+                content={chatContent.content}
+                timeCreated={chatContent.timeCreated}
                 isOwnMessage={chatContent.senderId === ownData.uid}
               />
             )

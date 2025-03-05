@@ -61,6 +61,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
               <InboxCard
                 key={index + item.timeCreated + index}
                 content={item.content}
+                timeCreated={item.timeCreated}
               />
             )
           })

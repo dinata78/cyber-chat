@@ -1,8 +1,10 @@
+import { processDate } from "../../../utils";
 
-export function InboxCard({ content }) {
+export function InboxCard({ content, timeCreated }) {
+
   return (
     <div className="inbox-card">
-      <span>{content}</span>
+      <span>[ {processDate(timeCreated.toDate())} ] {content}</span>
     </div>
   )
 }

@@ -607,54 +607,67 @@ button#toggle-theme svg {
   flex-direction: column;
 }
 
-#chat-display {
+#chat-messages {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 30px;
 }
 
-.message-card {
+#chat-messages .message-card {
   display: flex;
   justify-content: flex-start;
 }
 
-.message-card.own-message {
+#chat-messages .message-card.own {
   justify-content: flex-end;
 }
 
-.message-card > div {
-  width: 600px;
+#chat-messages .message-card > div {
+  width: 700px;
   height: max-content;
   display: flex;
   flex-direction: column;
 }
 
-.message-card > div.own-message {
+#chat-messages .message-card > div.own {
   align-items: flex-end;
 }
 
-.message-sender-name {
-  background-color: #0099bb;
+#chat-messages .message-card .sender-name {
+  background-color: #aaddff50;
   width: max-content;
   min-height: 30px;
   padding-inline: 12px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 18px;
 }
 
-.message-sender-name.own-message {
+#chat-messages .message-info {
+  position: relative;
+}
+
+#chat-messages .message-info .sender-name.own {
   justify-content: flex-end;
 }
 
-.message-content {
+#chat-messages .message-info .content {
   flex-grow: 1;
   width: 100%;
   padding: 12px;
-  border: 1px solid #0099bb;
-  font-size: 1rem;
+  border: 1px solid #aaddff50;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+#chat-messages .message-info .time {
+  position: absolute;
+  bottom: -18px;
+  right: 4px;
+  color: #aaddff99;
+  font-size: 10px;
 }
 
 #chat-input {
@@ -1157,7 +1170,7 @@ button#add-friend:active {
   font-weight: lighter;
 }
 
-.pending-cards {
+#friends-pending .pending-cards {
   flex-grow: 1;
   height: 0;
   padding-bottom: 24px;
@@ -1166,24 +1179,29 @@ button#add-friend:active {
   gap: 12px;
 }
 
-.pending-card {
+#friends-pending .pending-card {
   background-color: #ffffff15;
   padding: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  line-height: 1.5;
   color: #aaddff;
   font-size: 16px;
 }
 
-.pending-card-buttons {
+#friends-pending .pending-card-buttons {
+  background-color: transparent;
+  margin-left: 1.25rem;
+  width: max-content;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.pending-card-buttons button {
+#friends-pending .pending-card-buttons button {
   background-color: transparent;
+  width: max-content;
   border: none;
   color: inherit;
   font-family: inherit;
@@ -1191,8 +1209,8 @@ button#add-friend:active {
   font-weight: 700;
 }
 
-.pending-card-buttons button:hover,
-.pending-card-buttons button:active {
+#friends-pending .pending-card-buttons button:hover,
+#friends-pending .pending-card-buttons button:active {
   opacity: 60%;
 }
 
@@ -1249,12 +1267,22 @@ button#add-friend:active {
 }
 
 #friends-inbox .inbox-card {
+  position: relative;
   background-color: #ffffff15;
   padding: 1.25rem;
   display: flex;
   align-items: center;
+  line-height: 1.5;
   color: #aaddff;
   font-size: 16px;
+}
+
+#friends-inbox .inbox-card .time {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  color: #aaddff99;
+  font-size: 10px;
 }
 
 #cyber-settings {
