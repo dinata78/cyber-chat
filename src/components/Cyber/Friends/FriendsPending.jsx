@@ -1,3 +1,4 @@
+import { FriendsEmptyUI } from "./FriendsEmptyUI";
 import { PendingCard } from "./PendingCard"
 
 export function FriendsPending({ ownUid, friendRequestList }) {
@@ -7,24 +8,30 @@ export function FriendsPending({ ownUid, friendRequestList }) {
     <div id="friends-pending">
 
         <h1>
-          Pending Request - {pendingRequestList.length}
+          Pending Requests - {pendingRequestList.length}
         </h1>
-        <div className="pending-cards overflow-y-support">
-          {
-            pendingRequestList.map((pendingRequest, index) => {
-              return (
-                <PendingCard
-                  key={index + pendingRequest.uid}
-                  ownUid={ownUid}
-                  type={pendingRequest.type}
-                  uid={pendingRequest.uid}
-                  timeCreated={pendingRequest.timeCreated}
-                />
-              )
-            })
-          }
-        </div>
 
+        {
+          pendingRequestList.length > 0 ?
+            <div className="pending-cards overflow-y-support">
+              {
+                pendingRequestList.map((pendingRequest, index) => {
+                  return (
+                    <PendingCard
+                      key={index + pendingRequest.uid}
+                      ownUid={ownUid}
+                      type={pendingRequest.type}
+                      uid={pendingRequest.uid}
+                      timeCreated={pendingRequest.timeCreated}
+                    />
+                  )
+                })
+              }
+            </div>
+          : <FriendsEmptyUI type={"pending"} />
+        }
+        
     </div>
   )
 }
+

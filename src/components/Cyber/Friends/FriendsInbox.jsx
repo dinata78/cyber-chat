@@ -5,6 +5,7 @@ import { InboxCard } from "./InboxCard";
 import { fetchDataFromUid } from "../../../utils";
 import { useState } from "react";
 import { PopUp } from "../../PopUp";
+import { FriendsEmptyUI } from "./FriendsEmptyUI";
 
 export function FriendsInbox({ ownUid, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
@@ -54,19 +55,23 @@ export function FriendsInbox({ ownUid, inboxItems }) {
         </button>
       </div>
 
-      <div className="inbox-cards overflow-y-support">
-        {
-          inboxItems.map((item, index) => {
-            return (
-              <InboxCard
-                key={index + item.timeCreated + index}
-                content={item.content}
-                timeCreated={item.timeCreated}
-              />
-            )
-          })
-        }
-      </div>
+      {
+        inboxItems.length > 0 ?
+          <div className="inbox-cards overflow-y-support">
+            {
+              inboxItems.map((item, index) => {
+                return (
+                  <InboxCard
+                    key={index + item.timeCreated + index}
+                    content={item.content}
+                    timeCreated={item.timeCreated}
+                  />
+                )
+              })
+            }
+          </div>
+        : <FriendsEmptyUI type="inbox" />
+      }
 
       {
         isPopUpVisible &&

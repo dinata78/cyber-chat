@@ -1230,7 +1230,7 @@ button#add-friend:active {
 
 #friends-inbox .top button {
   background-color: transparent;
-  height: 32px;
+  height: 24px;
   padding: 0;
   border: none;
   display: flex;
@@ -1243,7 +1243,7 @@ button#add-friend:active {
 
 #friends-inbox .top button svg {
   fill: red;
-  width: 24px;
+  width: 21px;
 }
 
 #friends-inbox .top button:hover,
@@ -1283,6 +1283,33 @@ button#add-friend:active {
   right: 8px;
   color: #aaddff99;
   font-size: 10px;
+}
+
+#friends-empty-ui {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+#friends-empty-ui img {
+  width: 350px;
+}
+
+#friends-empty-ui > div {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+#friends-empty-ui span {
+  width: 450px;
+  color: #8a00fc;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1.25;
 }
 
 #cyber-settings {
