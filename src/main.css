@@ -385,12 +385,20 @@ body {
 }
 
 .nav-button {
-  fill: white;
+  position: relative;
+  background-color: transparent;
   width: 60px;
-  padding: 10px;
+  height: 60px;
+  padding: 0;
+  border: none;
   border-radius: 100%;
   display: grid;
   place-content: center;
+}
+
+.nav-button svg {
+  fill: white;
+  width: 40px;
 }
 
 .nav-button:hover {
@@ -411,8 +419,8 @@ button#nav-pfp {
 }
 
 button#nav-pfp img {
-  width: 54px;
-  height: 54px;
+  width: 60px;
+  height: 60px;
   border: 3px solid #ffffff30;
   border-radius: 100%;
 }
@@ -426,17 +434,28 @@ button#toggle-theme {
   background-color: transparent;
   width: 60px;
   height: 60px;
-  border: none;
+  padding: 0;
+  border: 3px solid #ffffff30;
   border-radius: 100%;
 }
 
 button#toggle-theme:hover {
-  background-color: #ffffff22;
+  background-color: #ffffff20;
 }
 
 button#toggle-theme svg {
   fill: white;
-  width: 45px;
+  width: 35px;
+}
+
+#cyber-notif {
+  position: absolute;
+  top: 11px;
+  right: 8px;
+  background-color: #ff424299;
+  width: 11px;
+  height: 11px;
+  border-radius: 100%;
 }
 
 #cyber-chats {

@@ -9,7 +9,7 @@ import { FriendsInbox } from "./FriendsInbox";
 import { useInbox } from "../../../custom-hooks/useInbox"
 import { FriendsNotifUI } from "./FriendsNotifUI";
 
-export function Friends({ ownData, setSelectedChatUid }) {
+export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
@@ -43,6 +43,15 @@ export function Friends({ ownData, setSelectedChatUid }) {
       setInboxNotifCount(0);
     }
   }, [inboxItems]);
+
+  useEffect(() => {
+    if (pendingNotifCount || inboxNotifCount) {
+      setFriendsHasNotif(true);
+    }
+    else {
+      setFriendsHasNotif(false);
+    }
+  }, [pendingNotifCount, inboxNotifCount]);
 
   return (
     <div id="cyber-friends">

@@ -19,8 +19,10 @@ export function Cyber() {
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [ownData, setOwnData] = useState({});
 
-  const [ selectedChatUid, setSelectedChatUid ] = useState("globalChat");
-  const [ isAccountVisible, setIsAccountVisible ] = useState(false);
+  const [selectedChatUid, setSelectedChatUid] = useState("globalChat");
+  const [isAccountVisible, setIsAccountVisible] = useState(false);
+
+  const [friendsHasNotif, setFriendsHasNotif] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -65,14 +67,21 @@ export function Cyber() {
       <div id="cyber-container">
         <nav>
           <div id="top-nav">
-            <Link to="/cyber/chats">
-              <ChatsSVG currentParameter={parameter} />
+            <Link to="/cyber/chats" tabIndex={-1}>
+              <button className={parameter === "chats" ? "nav-button selected" : "nav-button"}>
+                <ChatsSVG />
+              </button>
             </Link>
-            <Link to="/cyber/friends">
-              <FriendsSVG currentParameter={parameter} />
+            <Link to="/cyber/friends" tabIndex={-1}>
+              <button className={parameter === "friends" ? "nav-button selected" : "nav-button"}>
+                <FriendsSVG />
+                {friendsHasNotif && <div id="cyber-notif"></div>}
+              </button>
             </Link>
-            <Link to="/cyber/settings">
-              <SettingsSVG currentParameter={parameter} />
+            <Link to="/cyber/settings" tabIndex={-1}>
+              <button className={parameter === "settings" ? "nav-button selected" : "nav-button"}>
+                <SettingsSVG />
+              </button>
             </Link>
           </div>
 
@@ -108,6 +117,7 @@ export function Cyber() {
             <Friends
               ownData={ownData}
               setSelectedChatUid={setSelectedChatUid}
+              setFriendsHasNotif={setFriendsHasNotif}
             />
           : parameter === "settings" ?
             <Settings
