@@ -40,8 +40,10 @@ export async function addInbox(recipientUid, inboxType, inboxUid) {
     inbox: [
       ...recipientDocData.inbox,
       {
+        id: recipientDocData.inbox.length,
         content: newInbox,
         timeCreated: new Date(),
+        isUnread: true,
       }
     ],
   });

@@ -10,13 +10,13 @@ export function FriendsEmptyUI({ type }) {
             "You don't have any friend yet."  
           : type === "pending" ?
             "There are no pending friend requests."
-          : "There are nothing in your inbox."
+          : "There is nothing in your inbox."
         }
       </span>
       <span>
         {
           type === "all" ?
-            'You can go to "Pending" and check incoming friend requests.'
+            'You can go to "Pending" to check incoming and outgoing friend requests.'
           : type === "pending" ?
             'Click "Add Friend" above to send friend requests.'
           : "You will be notified of everything here. Please check back later! " 

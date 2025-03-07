@@ -13,7 +13,13 @@ export async function sendFriendRequest(ownUid, newFriendUid) {
     ...ownDocData,
     friendRequest: [
       ...ownDocData.friendRequest,
-      {type: "sent", timeCreated: new Date(), uid: newFriendUid}
+      {
+        id: ownDocData.friendRequest.length,
+        type: "sent",
+        timeCreated: new Date(),
+        uid: newFriendUid,
+        isUnread: true,
+      }
     ],
   });
 
@@ -21,7 +27,13 @@ export async function sendFriendRequest(ownUid, newFriendUid) {
     ...friendDocData,
     friendRequest: [
       ...friendDocData.friendRequest,
-      {type: "received", timeCreated: new Date(), uid: ownUid}
+      {
+        id: friendDocData.friendRequest.length,
+        type: "received",
+        timeCreated: new Date(),
+        uid: ownUid,
+        isUnread: true,
+      }
     ],
   });
 }

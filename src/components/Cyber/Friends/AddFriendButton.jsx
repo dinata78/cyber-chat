@@ -1,10 +1,10 @@
 import { addInbox } from "./addInbox";
 import { sendFriendRequest } from "./sendFriendRequest";
 
-export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequestList }) {
+export function AddFriendButton({ ownUid, searchedUserData, friendList, friendRequest }) {
 
-  const friendRequestSentList = friendRequestList.filter((request) => request.type === "sent");
-  const friendRequestReceivedList = friendRequestList.filter((request) => request.type === "received");
+  const friendRequestSentList = friendRequest.filter((request) => request.type === "sent");
+  const friendRequestReceivedList = friendRequest.filter((request) => request.type === "received");
 
   const friendRequestSentUidList = friendRequestSentList.map((request) => request.uid);
   const friendRequestReceivedUidList = friendRequestReceivedList.map((request) => request.uid);

@@ -7,7 +7,7 @@ import { db } from "../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
 
-export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList, friendRequestList }) {
+export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList, friendRequest }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
@@ -73,7 +73,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendList,
                   ownUid={ownUid}
                   searchedUserData={searchedUserData}
                   friendList={friendList}
-                  friendRequestList={friendRequestList}
+                  friendRequest={friendRequest}
                 />
               </>
             : <AddFriendNoResult type={resultStatus} />

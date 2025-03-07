@@ -1,8 +1,11 @@
+import { useUnreadFriendRequest } from "../../../custom-hooks/useUnreadFriendRequest";
 import { FriendsEmptyUI } from "./FriendsEmptyUI";
-import { PendingCard } from "./PendingCard"
+import { PendingCard } from "./PendingCard";
 
-export function FriendsPending({ ownUid, friendRequestList }) {
-  const pendingRequestList = friendRequestList.sort((a, b) => a.timeCreated - b.timeCreated).reverse();
+export function FriendsPending({ ownData, friendRequest }) {
+  const { unreadRequestIds } = useUnreadFriendRequest(ownData);
+  
+  const pendingRequestList = friendRequest.sort((a, b) => a.timeCreated - b.timeCreated).reverse();
 
   return (
     <div id="friends-pending">
@@ -15,20 +18,21 @@ export function FriendsPending({ ownUid, friendRequestList }) {
           pendingRequestList.length > 0 ?
             <div className="pending-cards overflow-y-support">
               {
-                pendingRequestList.map((pendingRequest, index) => {
+                pendingRequestList.map((request, index) => {
                   return (
                     <PendingCard
-                      key={index + pendingRequest.uid}
-                      ownUid={ownUid}
-                      type={pendingRequest.type}
-                      uid={pendingRequest.uid}
-                      timeCreated={pendingRequest.timeCreated}
+                      key={index + request.uid}
+                      ownUid={ownData.uid}
+                      type={request.type}
+                      uid={request.uid}
+                      timeCreated={request.timeCreated}
+                      isUnread={unreadRequestIds.includes(request.id)}
                     />
                   )
                 })
               }
             </div>
-          : <FriendsEmptyUI type={"pending"} />
+          : <FriendsEmptyUI type="pending" />
         }
         
     </div>

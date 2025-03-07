@@ -2,13 +2,13 @@ import { cancelRequest, handleRequest } from "./handleRequest";
 import { useName } from "../../../custom-hooks/useName";
 import { groupNames, processDate } from "../../../utils";
 
-export function PendingCard({ ownUid, type, uid, timeCreated }) {
+export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {
   const { displayName, username } = useName(uid);  
 
   if (!displayName || !username) return null;
 
   return (
-    <div className="pending-card">
+    <div className={isUnread ? "pending-card unread" : "pending-card"}>
       {
         type === "received" ?
           <>

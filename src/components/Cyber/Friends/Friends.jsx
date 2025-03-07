@@ -1,24 +1,48 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SearchSVG } from "../../svg/SearchSVG";
 import { FriendsAll } from "./FriendsAll";
 import { AddFriendModal } from "./AddFriendModal";
 import { FriendsPending } from "./FriendsPending";
 import { useFriendList } from "../../../custom-hooks/useFriendList";
-import { useFriendRequestList } from "../../../custom-hooks/useFriendRequestList";
+import { useFriendRequest } from "../../../custom-hooks/useFriendRequestList";
 import { FriendsInbox } from "./FriendsInbox";
 import { useInbox } from "../../../custom-hooks/useInbox"
+import { FriendsNotifUI } from "./FriendsNotifUI";
 
 export function Friends({ ownData, setSelectedChatUid }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
+  const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
+  const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
+
   const { friendUidList, friendDataList } = useFriendList(ownData.uid);
-  const { friendRequestList } = useFriendRequestList(ownData.uid);
+  const { friendRequest } = useFriendRequest(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
   }
+
+  useEffect(() => {
+    if (friendRequest.length) {
+      const unreadFriendRequest = friendRequest.filter((request) => request.isUnread);
+      setPendingNotifCount(unreadFriendRequest.length);
+    }
+    else {
+      setPendingNotifCount(0);
+    }
+  }, [friendRequest]);
+
+  useEffect(() => {
+    if (inboxItems.length) {
+      const unreadInboxItems = inboxItems.filter((item) => item.isUnread);
+      setInboxNotifCount(unreadInboxItems.length);
+    }
+    else {
+      setInboxNotifCount(0);
+    }
+  }, [inboxItems]);
 
   return (
     <div id="cyber-friends">
@@ -26,30 +50,43 @@ export function Friends({ ownData, setSelectedChatUid }) {
       <div id="cyber-friends-nav">
         <h1>Friends</h1>
         <div className="divider"></div>
+
         <button 
           className={currentNav === "all" ? "selected" : null}
           onClick={() => friendsButtonOnClick("all")}
         >
           All
         </button>
+
         <button
           className={currentNav === "pending" ? "selected" : null}
           onClick={() => friendsButtonOnClick("pending")}
         >
           Pending
+          {
+            pendingNotifCount > 0 &&
+            <FriendsNotifUI count={pendingNotifCount} />
+          }
         </button>
+
         <button
           className={currentNav === "inbox" ? "selected" : null}
           onClick={() => friendsButtonOnClick("inbox")}
         >
           Inbox
+          {
+            inboxNotifCount > 0 &&
+            <FriendsNotifUI count={inboxNotifCount} />
+          }
         </button>
+
         <button
           id="add-friend"
           onClick={() => setIsAddFriendModalVisible(true)}
         >
           Add Friend
         </button>
+
       </div>
 
       <div id="cyber-friends-content">
@@ -68,12 +105,12 @@ export function Friends({ ownData, setSelectedChatUid }) {
             />
           : currentNav === "pending" ?
             <FriendsPending
-              ownUid={ownData.uid}
-              friendRequestList={friendRequestList}
+              ownData={ownData}
+              friendRequest={friendRequest}
             />
           : currentNav === "inbox" ?
             <FriendsInbox
-              ownUid={ownData.uid}
+              ownData={ownData}
               inboxItems={inboxItems}
             />
           : null
@@ -85,7 +122,7 @@ export function Friends({ ownData, setSelectedChatUid }) {
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible}
           friendList={friendUidList}
-          friendRequestList={friendRequestList}
+          friendRequest={friendRequest}
         />
       }
     </div>

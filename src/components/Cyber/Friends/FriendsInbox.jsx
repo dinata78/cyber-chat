@@ -6,14 +6,17 @@ import { fetchDataFromUid } from "../../../utils";
 import { useState } from "react";
 import { PopUp } from "../../PopUp";
 import { FriendsEmptyUI } from "./FriendsEmptyUI";
+import { useUnreadInbox } from "../../../custom-hooks/useUnreadInbox";
 
-export function FriendsInbox({ ownUid, inboxItems }) {
+export function FriendsInbox({ ownData, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
+  
+  const { unreadInboxIds } = useUnreadInbox(ownData);
 
   const clearInbox = async () => {
-    const ownDocRef = doc(db, "users", ownUid);
-    const ownDocData = await fetchDataFromUid(ownUid);
+    const ownDocRef = doc(db, "users", ownData.uid);
+    const ownDocData = await fetchDataFromUid(ownData.uid);
 
     try {
       await updateDoc(ownDocRef, {
@@ -44,6 +47,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
     setIsPopUpVisible(true);
   }
 
+  
   return (
     <div id="friends-inbox">
 
@@ -65,6 +69,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
                     key={index + item.timeCreated + index}
                     content={item.content}
                     timeCreated={item.timeCreated}
+                    isUnread={unreadInboxIds.includes(item.id)}
                   />
                 )
               })
