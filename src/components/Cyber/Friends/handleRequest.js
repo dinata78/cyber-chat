@@ -1,81 +1,69 @@
-import { addNewConversationToDb, fetchDataFromUid } from "../../../utils";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { addInbox } from "./addInbox";
+import { addFriend } from "./modifyFriendList";
 
-export async function handleRequest(type, ownUid, requestUid) {
-  const ownDocRef = doc(db, "users", ownUid);
-  const requestDocRef = doc(db, "users", requestUid);
+export async function handleRequest(type, ownUid, senderUid) {
+  const batch = writeBatch(db);
 
-  const ownDocData = await fetchDataFromUid(ownUid);
-  const requestDocData = await fetchDataFromUid(requestUid);
-
-  const ownFriendRequest = ownDocData.friendRequest;
-  const requestFriendRequest = requestDocData.friendRequest;
-  
-  ownFriendRequest.splice(
-    ownFriendRequest.findIndex((request) => request.type === "received" && request.uid === requestUid)
-    , 1
+  const ownCurrentRequestQuery = query(
+    collection(db, "users", ownUid, "requests"),
+    where("type", "==", "received"),
+    where("uid", "==", senderUid),
   );
-  requestFriendRequest.splice(
-    requestFriendRequest.findIndex((request) => request.type === "sent" && request.uid === ownUid)
-    , 1
-  )
 
-  await updateDoc(ownDocRef, {
-    ...ownDocData,
-    friendRequest: ownFriendRequest,
-    friendList: [...ownDocData.friendList, requestUid],
-  });
+  const senderCurrentRequestQuery = query(
+    collection(db, "users", senderUid, "requests"),
+    where("type", "==", "sent"),
+    where("uid", "==", ownUid),
+  );
 
-  await updateDoc(requestDocRef, {
-    ...requestDocData,
-    friendRequest: requestFriendRequest,
-    friendList: [...requestDocData.friendList, ownUid],
-  });
+  const ownCurrentRequestDocs = await getDocs(ownCurrentRequestQuery);
+
+  const senderCurrentRequestDocs = await getDocs(senderCurrentRequestQuery);
+
+  batch.delete(ownCurrentRequestDocs.docs[0].ref);
+  batch.delete(senderCurrentRequestDocs.docs[0].ref);
+
+  batch.commit();
 
   if (type === "accept") {
-    await addInbox(requestUid, "friend-added", ownUid);
-    await addInbox(ownUid, "friend-added", requestUid);
+    await Promise.all([
+      addFriend(ownUid, senderUid),
+      addInbox(ownUid, "friend-added", senderUid),
+      addInbox(senderUid, "friend-added", ownUid),
+    ]);
     
-    await addNewConversationToDb(ownUid, requestUid);  
   }
   else if (type === "reject") {
-    await addInbox(requestUid, "request-rejected", ownUid);
+    await addInbox(senderUid, "request-rejected", ownUid);
   }
 }
 
-export async function cancelRequest(ownUid, requestedUid) {
-  const ownDocRef = doc(db, "users", ownUid);
-  const requestedDocRef = doc(db, "users", requestedUid);
+export async function cancelRequest(ownUid, receiverUid) {
+  const batch = writeBatch(db);
 
-  const ownDocData = await fetchDataFromUid(ownUid);
-  const requestedDocData = await fetchDataFromUid(requestedUid);
-
-  const ownFriendRequest = ownDocData.friendRequest;
-  const requestedFriendRequest = requestedDocData.friendRequest;
-
-  ownFriendRequest.splice(
-    ownFriendRequest.findIndex((request) => request.type === "sent" && request.uid === requestedUid)
-    , 1
-  );
-
-  requestedFriendRequest.splice(
-    requestedFriendRequest.findIndex((request) => request.type === "received" && request.uid === ownUid)
-    , 1
+  const ownCurrentRequestQuery = query(
+    collection(db, "users", ownUid, "requests"),
+    where("type", "==", "sent"),
+    where("uid", "==", receiverUid),
   )
 
-  await updateDoc(ownDocRef, {
-    ...ownDocData,
-    friendRequest: ownFriendRequest,
-  });
+  const receiverCurrentRequestQuery = query(
+    collection(db, "users", receiverUid, "requests"),
+    where("type", "==", "received"),
+    where("uid", "==", ownUid),
+  )
 
-  await updateDoc(requestedDocRef, {
-    ...requestedDocData,
-    friendRequest: requestedFriendRequest,
-  })
+  const ownCurrentRequestDocs = await getDocs(ownCurrentRequestQuery);
 
-  await addInbox(ownUid, "request-cancel", requestedUid);
-  await addInbox(requestedUid, "request-cancelled", ownUid);
-  
+  const receiverCurrentRequestDocs = await getDocs(receiverCurrentRequestQuery);
+
+  batch.delete(ownCurrentRequestDocs.docs[0].ref);
+  batch.delete(receiverCurrentRequestDocs.docs[0].ref);
+
+  batch.commit();
+
+  await addInbox(ownUid, "request-cancel", receiverUid);
+  await addInbox(receiverUid, "request-cancelled", ownUid);
 }

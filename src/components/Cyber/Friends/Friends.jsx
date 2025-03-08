@@ -4,10 +4,10 @@ import { FriendsAll } from "./FriendsAll";
 import { AddFriendModal } from "./AddFriendModal";
 import { FriendsPending } from "./FriendsPending";
 import { useFriendList } from "../../../custom-hooks/useFriendList";
-import { useFriendRequest } from "../../../custom-hooks/useFriendRequestList";
 import { FriendsInbox } from "./FriendsInbox";
 import { useInbox } from "../../../custom-hooks/useInbox"
 import { FriendsNotifUI } from "./FriendsNotifUI";
+import { useRequests } from "../../../custom-hooks/useRequests";
 
 export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
@@ -17,7 +17,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
   const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
   const { friendUidList, friendDataList } = useFriendList(ownData.uid);
-  const { friendRequest } = useFriendRequest(ownData.uid);
+  const { requests } = useRequests(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
   const friendsButtonOnClick = (navType) => {
@@ -25,14 +25,14 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
   }
 
   useEffect(() => {
-    if (friendRequest.length) {
-      const unreadFriendRequest = friendRequest.filter((request) => request.isUnread);
-      setPendingNotifCount(unreadFriendRequest.length);
+    if (requests.length) {
+      const unreadRequests = requests.filter((request) => request.isUnread);
+      setPendingNotifCount(unreadRequests.length);
     }
     else {
       setPendingNotifCount(0);
     }
-  }, [friendRequest]);
+  }, [requests]);
 
   useEffect(() => {
     if (inboxItems.length) {
@@ -114,8 +114,8 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
             />
           : currentNav === "pending" ?
             <FriendsPending
-              ownData={ownData}
-              friendRequest={friendRequest}
+              ownUid={ownData.uid}
+              requests={requests}
             />
           : currentNav === "inbox" ?
             <FriendsInbox
@@ -131,7 +131,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible}
           friendList={friendUidList}
-          friendRequest={friendRequest}
+          requests={requests}
         />
       }
     </div>

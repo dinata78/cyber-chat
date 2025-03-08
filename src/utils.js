@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebase";
-import { removeFriend } from "./components/Cyber/Friends/removeFriend";
+import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;

@@ -10,7 +10,7 @@ export function useInbox(uid) {
 
     let unsubscribe = null;
 
-    const fetchData = async () => {
+    const fetchAndSetInbox = async () => {
       const inboxQuery = query(
         collection(db, "users", uid, "inbox"),
         orderBy("timeCreated", "desc"),
@@ -35,11 +35,14 @@ export function useInbox(uid) {
       });
     }
 
-    fetchData();
+    fetchAndSetInbox();
     
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
     }
 
   }, [uid]);

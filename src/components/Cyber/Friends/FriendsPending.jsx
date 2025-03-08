@@ -1,28 +1,27 @@
-import { useUnreadFriendRequest } from "../../../custom-hooks/useUnreadFriendRequest";
+import { useUnreadRequests } from "../../../custom-hooks/useUnreadRequests";
 import { FriendsEmptyUI } from "./FriendsEmptyUI";
 import { PendingCard } from "./PendingCard";
 
-export function FriendsPending({ ownData, friendRequest }) {
-  const { unreadRequestIds } = useUnreadFriendRequest(ownData);
+export function FriendsPending({ ownUid, requests }) {
   
-  const pendingRequestList = friendRequest.sort((a, b) => a.timeCreated - b.timeCreated).reverse();
+  const { unreadRequestIds } = useUnreadRequests(ownUid, requests.length);
 
   return (
     <div id="friends-pending">
 
         <h1>
-          Pending Requests - {pendingRequestList.length}
+          Pending Requests - {requests.length}
         </h1>
 
         {
-          pendingRequestList.length > 0 ?
+          requests.length > 0 ?
             <div className="pending-cards overflow-y-support">
               {
-                pendingRequestList.map((request, index) => {
+                requests.map((request, index) => {
                   return (
                     <PendingCard
-                      key={index + request.uid}
-                      ownUid={ownData.uid}
+                      key={index + request.timeCreated + index}
+                      ownUid={ownUid}
                       type={request.type}
                       uid={request.uid}
                       timeCreated={request.timeCreated}

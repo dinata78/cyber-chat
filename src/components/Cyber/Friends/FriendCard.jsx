@@ -4,7 +4,7 @@ import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
 import { addInbox } from "./addInbox";
-import { removeFriend } from "./removeFriend";
+import { removeFriend } from "./modifyFriendList";
 import { useName } from "../../../custom-hooks/useName";
 import { useState } from "react";
 import { PopUp } from "../../PopUp";
@@ -23,23 +23,22 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
     navigate("/cyber/chats");
   }
 
-  const friendRemove = async () => {
+  const handleRemoveFriend = async () => {
     setIsPopUpVisible(false);
 
     await removeFriend(ownUid, friendUid);
-    await removeFriend(friendUid, ownUid);
     await addInbox(ownUid, "friend-removed", friendUid);
     await addInbox(friendUid, "friend-removed", ownUid);
   }
 
-  const friendRemovebuttonOnClick = () => {
+  const removeFriendButtonOnClick = () => {
     setPopUpData((prev) => {
       return {
         ...prev,
         caption: "Remove Friend",
         textContent: `Remove [ ${friendName} (@${username}) ] from your friend list? `,
         hasTwoButtons: true,
-        firstButton: {label: "Remove friend", function: friendRemove},
+        firstButton: {label: "Remove friend", function: handleRemoveFriend},
         secondButton: {label: "Cancel", function: () => setIsPopUpVisible(false)}
       };
     });
@@ -75,7 +74,7 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
         <button title="Chat" onClick={() => chatFriend(friendUid)}>
           <ChatSVG />
         </button>
-        <button title="Remove Friend" onClick={friendRemovebuttonOnClick}>
+        <button title="Remove Friend" onClick={removeFriendButtonOnClick}>
           <AccountMinusSVG />
         </button>
       </div>

@@ -3,7 +3,7 @@ import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { ref, update } from "firebase/database";
 import { deleteUserConversation, deleteUserData } from "../../../utils";
 import { sendEmailVerification } from "firebase/auth";
-import { removeFriend } from "../Friends/removeFriend";
+import { removeFriend } from "../Friends/modifyFriendList";
 
 export async function logOut() {
   try {

@@ -1,39 +1,24 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { fetchDataFromUid } from "../../../utils";
 
-export async function sendFriendRequest(ownUid, newFriendUid) {
-  const ownDocRef = doc(db, "users", ownUid);
-  const ownDocData = await fetchDataFromUid(ownUid);
+export async function sendFriendRequest(ownUid, newFriendUid) { 
+  const ownRequests = collection(db, "users", ownUid, "requests");
+  const newFriendRequests = collection(db, "users", newFriendUid, "requests");
+ 
+  await Promise.all([
+    addDoc(ownRequests, {
+      type: "sent",
+      uid: newFriendUid,
+      timeCreated: new Date(),
+      isUnread: true,
+    }),
+    
+    addDoc(newFriendRequests, {
+      type: "received",
+      uid: ownUid,
+      timeCreated: new Date(),
+      isUnread: true,
+    })
+  ]);
 
-  const friendDocRef = doc(db, "users", newFriendUid);
-  const friendDocData = await fetchDataFromUid(newFriendUid);
-
-  await updateDoc(ownDocRef, {
-    ...ownDocData,
-    friendRequest: [
-      ...ownDocData.friendRequest,
-      {
-        id: ownDocData.friendRequest.length,
-        type: "sent",
-        timeCreated: new Date(),
-        uid: newFriendUid,
-        isUnread: true,
-      }
-    ],
-  });
-
-  await updateDoc(friendDocRef, {
-    ...friendDocData,
-    friendRequest: [
-      ...friendDocData.friendRequest,
-      {
-        id: friendDocData.friendRequest.length,
-        type: "received",
-        timeCreated: new Date(),
-        uid: ownUid,
-        isUnread: true,
-      }
-    ],
-  });
 }
