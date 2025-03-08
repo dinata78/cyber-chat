@@ -1,51 +1,43 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid, groupNames } from "../../../utils";
 
-export async function addInbox(recipientUid, inboxType, inboxUid) {
+export async function addInbox(targetInboxUid, inboxType, contentUid) {
 
-  const recipientDocRef = doc(db, "users", recipientUid);
-  const recipientDocData = await fetchDataFromUid(recipientUid);
+  const targetInboxRef = collection(db, "users", targetInboxUid, "inbox");
 
-  const inboxSubjectDocData = await fetchDataFromUid(inboxUid);
-  const displayName = inboxSubjectDocData.displayName;
-  const username = inboxSubjectDocData.username;
+  const contentDocData = await fetchDataFromUid(contentUid);
+  const displayName = contentDocData.displayName;
+  const username = contentDocData.username;
 
-  let newInbox;
+  let newInboxContent;
 
   if (inboxType === "request-sent") {
-    newInbox = `You sent a friend request to ${groupNames(displayName, username)}.`; 
+    newInboxContent = `You sent a friend request to ${groupNames(displayName, username)}.`; 
   }
   else if (inboxType === "request-received") {
-    newInbox = `You received a friend request from ${groupNames(displayName, username)}.`; 
+    newInboxContent = `You received a friend request from ${groupNames(displayName, username)}.`; 
   }
   else if (inboxType === "request-rejected") {
-    newInbox = `${groupNames(displayName, username)} rejected your friend request.`
+    newInboxContent = `${groupNames(displayName, username)} rejected your friend request.`
   }
   else if (inboxType === "friend-added") {
-    newInbox = `${groupNames(displayName, username)} is now your friend.`;
+    newInboxContent = `${groupNames(displayName, username)} is now your friend.`;
   }
   else if (inboxType === "friend-removed") {
-    newInbox = `${groupNames(displayName, username)} is no longer your friend.`;
+    newInboxContent = `${groupNames(displayName, username)} is no longer your friend.`;
   }
   else if (inboxType === "request-cancel") {
-    newInbox = `You have cancelled your friend request to ${groupNames(displayName, username)}.`;
+    newInboxContent = `You have cancelled your friend request to ${groupNames(displayName, username)}.`;
   }
   else if (inboxType === "request-cancelled") {
-    newInbox = `${groupNames(displayName, username)} has cancelled their friend request to you.`;
+    newInboxContent = `${groupNames(displayName, username)} has cancelled their friend request to you.`;
   }
 
-  await updateDoc(recipientDocRef, {
-    ...recipientDocData,
-    inbox: [
-      ...recipientDocData.inbox,
-      {
-        id: recipientDocData.inbox.length,
-        content: newInbox,
-        timeCreated: new Date(),
-        isUnread: true,
-      }
-    ],
+  await addDoc(targetInboxRef, {
+    content: newInboxContent,
+    timeCreated: new Date(),
+    isUnread: true,
   });
   
 }

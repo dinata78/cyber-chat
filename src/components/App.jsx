@@ -1,5 +1,5 @@
 import { Auth } from "./Auth/Auth";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Cyber } from "./Cyber/Cyber";
 
 const router = createBrowserRouter([
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
   {
     path: "cyber/:parameter",
     element: <Cyber />
-  }
+  },
 ]);
 
 export function App() {

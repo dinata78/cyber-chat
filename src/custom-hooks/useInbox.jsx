@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase";
 
 export function useInbox(uid) {
@@ -11,15 +11,32 @@ export function useInbox(uid) {
     let unsubscribe = null;
 
     const fetchData = async () => {
-      const docRef = doc(db, "users", uid);
+      const inboxQuery = query(
+        collection(db, "users", uid, "inbox"),
+        orderBy("timeCreated", "desc"),
+      )
       
-      unsubscribe = onSnapshot(docRef, (snapshot) => {
-        const data = snapshot.data().inbox;
-        setInboxItems(data.reverse());
+      unsubscribe = onSnapshot(inboxQuery, (snapshot) => {
+        if (snapshot.empty) {
+          setInboxItems([]);
+        }
+        else {
+          const inboxItems = snapshot.docs.map(item => (
+            {
+              id: item.id,
+              content: item.data().content,
+              timeCreated: item.data().timeCreated,
+              isUnread: item.data().isUnread,
+            }
+          ));
+
+          setInboxItems(inboxItems);
+        }
       });
     }
 
     fetchData();
+    
 
     return () => {
       if (unsubscribe) unsubscribe();

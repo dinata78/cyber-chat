@@ -36,7 +36,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
 
   useEffect(() => {
     if (inboxItems.length) {
-      const unreadInboxItems = inboxItems.filter((item) => item.isUnread);
+      const unreadInboxItems = inboxItems.filter(item => item.isUnread);
       setInboxNotifCount(unreadInboxItems.length);
     }
     else {
@@ -119,7 +119,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
             />
           : currentNav === "inbox" ?
             <FriendsInbox
-              ownData={ownData}
+              ownUid={ownData.uid}
               inboxItems={inboxItems}
             />
           : null

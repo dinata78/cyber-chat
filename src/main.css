@@ -431,7 +431,7 @@ button#nav-pfp:active {
 }
 
 button#toggle-theme {
-  background-color: transparent;
+  background-color: #ffffff20;
   width: 60px;
   height: 60px;
   padding: 0;
@@ -440,7 +440,7 @@ button#toggle-theme {
 }
 
 button#toggle-theme:hover {
-  background-color: #ffffff20;
+  background-color: #ffffff30;
 }
 
 button#toggle-theme svg {

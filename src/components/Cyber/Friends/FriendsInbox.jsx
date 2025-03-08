@@ -1,28 +1,29 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { TrashCanSVG } from "../../svg/TrashCanSVG";
 import { InboxCard } from "./InboxCard";
-import { fetchDataFromUid } from "../../../utils";
 import { useState } from "react";
 import { PopUp } from "../../PopUp";
 import { FriendsEmptyUI } from "./FriendsEmptyUI";
 import { useUnreadInbox } from "../../../custom-hooks/useUnreadInbox";
 
-export function FriendsInbox({ ownData, inboxItems }) {
+export function FriendsInbox({ ownUid, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
-  
-  const { unreadInboxIds } = useUnreadInbox(ownData);
+
+  const { unreadInboxIds } = useUnreadInbox(ownUid, inboxItems?.length);
 
   const clearInbox = async () => {
-    const ownDocRef = doc(db, "users", ownData.uid);
-    const ownDocData = await fetchDataFromUid(ownData.uid);
+    const inboxRef = collection(db, "users", ownUid, "inbox");
+    const batch = writeBatch(db);
 
     try {
-      await updateDoc(ownDocRef, {
-        ...ownDocData,
-        inbox: [],
-      });  
+      const inboxItems = await getDocs(inboxRef);
+      inboxItems.docs.forEach(item => {
+        batch.delete(item.ref);
+      });
+
+      await batch.commit();
     }
     catch (error) {
       console.error(error);
@@ -46,7 +47,6 @@ export function FriendsInbox({ ownData, inboxItems }) {
 
     setIsPopUpVisible(true);
   }
-
   
   return (
     <div id="friends-inbox">

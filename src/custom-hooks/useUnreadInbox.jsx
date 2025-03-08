@@ -1,40 +1,38 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
-export function useUnreadInbox(userData) {
+export function useUnreadInbox(uid, inboxItemsLength) {
   const [unreadInboxIds, setUnreadInboxIds] = useState([]);
   
-  const userUid = userData.uid;
-  const userInbox = userData.inbox;
-
   useEffect(() => {
-    if (userData.inbox === undefined) return;
+    const fetchSetAndClearUnread = async () => {
+      if (!uid) return;
 
-    const unreadInboxItems = userInbox.filter((item) => item.isUnread);
-    const unreadInboxIds = unreadInboxItems.map((item) => item.id);
-    setUnreadInboxIds(unreadInboxIds);
+      const unreadInboxQuery = query(
+        collection(db, "users", uid, "inbox"),
+        where("isUnread", "==", true),
+      )
+  
+      const unreadInboxDocs = await getDocs(unreadInboxQuery);
+      const unreadInboxIds = unreadInboxDocs.docs.map(doc => doc.id);
 
-    const allReadInboxItems = userInbox.map((item) => {
-      if (!item.isUnread) {
-        return item;
-      }
-      else {
-        return {
-          ...item,
+      setUnreadInboxIds(unreadInboxIds);
+
+      const batch = writeBatch(db);
+
+      unreadInboxDocs.docs.forEach((item) => {
+        batch.update(item.ref, {
+          ...item.data(),
           isUnread: false,
-        }
-      }
-    });
+        });
+      });
 
-    const userDocRef = doc(db, "users", userUid);
+      await batch.commit();
+    }
 
-    updateDoc(userDocRef, {
-      ...userData,
-      inbox: allReadInboxItems,
-    });
-
-  }, [userData.inbox?.length]);
+    fetchSetAndClearUnread();
+  }, [uid, inboxItemsLength]);
 
   return { unreadInboxIds }
 
