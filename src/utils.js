@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where, writeBatch } from "firebase/firestore";
 import { db } from "../firebase";
 import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
 
@@ -40,10 +40,14 @@ export async function addNewConversationToDb(uid1, uid2) {
 }
 
 export async function removeMessagesFromDb(conversationUid) {
+  const batch = writeBatch(db);
+  
   const messagesCollectionRef = collection(db, "conversations", conversationUid, "messages");
   
   const messagesDocs = await getDocs(messagesCollectionRef);
-  await Promise.all(messagesDocs.docs.map((doc) => deleteDoc(doc.ref)));
+  messagesDocs.docs.forEach((doc) => batch.delete(doc.ref));
+
+  await batch.commit();
 }
 
 export async function removeConversationFromDb(uid1, uid2) {

@@ -16,7 +16,7 @@ export function useAuth(setIsLoading) {
       await createUserWithEmailAndPassword(
         auth,
         signUpData.email,
-        signUpData.password
+        signUpData.password,
       );
 
       const newDocId = auth.currentUser.uid;
@@ -29,27 +29,13 @@ export function useAuth(setIsLoading) {
         bio: "Hello world!",
         title: "Newcomer",
         email: auth.currentUser.email,
-        friendList: [],
-        friendRequest: [],
-        inbox: [],
       });
 
       await addNewConversationToDb(auth.currentUser.uid);
       await addNewConversationToDb(
         auth.currentUser.uid,
-        "28qZ6LQQi3g76LLRd20HXrkQIjh1"
+        "28qZ6LQQi3g76LLRd20HXrkQIjh1",
       );
-
-      const devDocRef = doc(db, "users", "28qZ6LQQi3g76LLRd20HXrkQIjh1");
-      const devDocData = await fetchDataFromUid("28qZ6LQQi3g76LLRd20HXrkQIjh1");
-
-      await updateDoc(devDocRef, {
-        ...devDocData,
-        friendList: [
-          ...devDocData.friendList,
-          auth.currentUser.uid
-        ],
-      });
 
       const metadataDocRef = doc(db, "users", "metadata");
       const metadataDocData = await fetchDataFromUid("metadata");
@@ -78,7 +64,7 @@ export function useAuth(setIsLoading) {
       await signInWithEmailAndPassword(
         auth,
         signInData.email,
-        signInData.password
+        signInData.password,
       );
     }
     catch (error) {
@@ -95,6 +81,6 @@ export function useAuth(setIsLoading) {
     setSignInData,
     setSignUpData,
     createAccount,
-    logIn
+    logIn,
   }
 }

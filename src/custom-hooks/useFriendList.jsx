@@ -1,32 +1,33 @@
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { fetchDataFromUid } from "../utils";
 
 export function useFriendList(uid) {
-  const [friendUidList, setFriendUidList] = useState([]);
-  const [friendDataList, setFriendDataList] = useState([]);
+  const [friendListUids, setFriendListUids] = useState([]);
+  const [friendListDatas, setFriendListDatas] = useState([]);
   
   useEffect(() => {
     if (!uid) return;
 
     let unsubscribe = null;
 
-    const fetchFriendList = async () => {
-      const userDocRef = doc(db, "users", uid);
+    const fetchandSetFriendUids = async () => {
+      const friendListRef = collection(db, "users", uid, "friendList");
 
-      unsubscribe = onSnapshot(userDocRef, (snapshot) => {
-        const data = snapshot.data();
-        if (data.friendList) {
-          setFriendUidList(data.friendList)
+      unsubscribe = onSnapshot(friendListRef, (snapshot) => {
+        if (snapshot.empty) {
+          setFriendListUids([]);
         }
         else {
-          setFriendUidList([]);
+          const friendListUids = snapshot.docs.map(doc => doc.data().uid);
+
+          setFriendListUids(friendListUids);
         }
       });
     }
 
-    fetchFriendList();
+    fetchandSetFriendUids();
 
     return () => {
       if (unsubscribe) {
@@ -38,25 +39,25 @@ export function useFriendList(uid) {
   }, [uid]);
 
   useEffect(() => {
-    if (!friendUidList.length) {
-      setFriendDataList([]);
+    if (!friendListUids.length) {
+      setFriendListDatas([]);
       return;
     };
 
-    const fetchFriendData = async () => {
-      const data = [];
-      for (const friendUid of friendUidList) {
+    const fetchAndSetFriendDatas = async () => {
+      const friendListDatas = [];
+      for (const friendUid of friendListUids) {
         const friendData = await fetchDataFromUid(friendUid);
-        data.push(friendData);
+        friendListDatas.push(friendData);
       }
-      setFriendDataList(data);
+      setFriendListDatas(friendListDatas);
     }
 
-    fetchFriendData();
-  }, [friendUidList]);
+    fetchAndSetFriendDatas();
+  }, [friendListUids]);
   
   return {
-    friendUidList,
-    friendDataList,
+    friendListUids,
+    friendListDatas,
   }
 }

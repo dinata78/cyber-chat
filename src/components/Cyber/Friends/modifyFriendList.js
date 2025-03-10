@@ -1,69 +1,46 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { addNewConversationToDb, fetchDataFromUid, removeConversationFromDb } from "../../../utils";
+import { addNewConversationToDb, removeConversationFromDb } from "../../../utils";
 
 export async function addFriend(uid1, uid2) {
-  
-  const uid1DocRef = doc(db, "users", uid1);
-  const uid1DocData = await fetchDataFromUid(uid1);
+  const uid1FriendListRef = collection(db, "users", uid1, "friendList");
 
-  const uid2DocRef = doc(db, "users", uid2);
-  const uid2DocData = await fetchDataFromUid(uid2);
+  const uid2FriendListRef = collection(db, "users", uid2, "friendList");
 
   await Promise.all([
-    updateDoc(uid1DocRef, {
-      ...uid1DocData,
-      friendList: [
-        ...uid1DocData.friendList,
-        uid2,
-      ],
+    addDoc(uid1FriendListRef, {
+      uid: uid2,
     }),
-  
-    updateDoc(uid2DocRef, {
-      ...uid2DocData,
-      friendList: [
-        ...uid2DocData.friendList,
-        uid1,
-      ],
+
+    addDoc(uid2FriendListRef, {
+      uid: uid1,
     }),
-  
-    addNewConversationToDb(uid1, uid2),
+
+    addNewConversationToDb(uid1, uid2),  
   ]);
-  
 }
 
 export async function removeFriend(uid1, uid2) {
+  const batch = writeBatch(db);
+
+  const uid1FriendListQuery = query(
+    collection(db, "users", uid1, "friendList"),
+    where("uid", "==", uid2),
+  );
   
-  const uid1DocRef = doc(db, "users", uid1);
-  const uid1DocData = await fetchDataFromUid(uid1);
-
-  const uid2DocRef = doc(db, "users", uid2);
-  const uid2DocData = await fetchDataFromUid(uid2);
-
-  const uid1FriendList = uid1DocData.friendList;
-  const uid2FriendList = uid2DocData.friendList;
-
-  uid1FriendList.splice(
-    uid1FriendList.indexOf(uid2), 1
+  const uid2FriendListQuery = query(
+    collection(db, "users", uid2, "friendList"),
+    where("uid", "==", uid1),
   );
 
-  uid2FriendList.splice(
-    uid2FriendList.indexOf(uid1), 1
-  )
+  const uid1FriendList = await getDocs(uid1FriendListQuery);
+  const uid2FriendList = await getDocs(uid2FriendListQuery);
+
+  uid1FriendList.docs.forEach(doc => batch.delete(doc.ref));
+  uid2FriendList.docs.forEach(doc => batch.delete(doc.ref));
 
   await Promise.all([
-    updateDoc(uid1DocRef, {
-      ...uid1DocData,
-      friendList: uid1FriendList,
-    }),
-  
-    updateDoc(uid2DocRef, {
-      ...uid2DocData,
-      friendList: uid2FriendList,
-    }),
-  
-    removeConversationFromDb(uid1, uid2),
+    batch.commit(),
+    removeConversationFromDb(uid1, uid2),  
   ]);
-  
 }
-

@@ -15,7 +15,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
 
-  const { friendDataList } = useFriendList(ownData.uid);
+  const { friendListDatas } = useFriendList(ownData.uid);
 
   const messageEndRef = useRef(null);
 
@@ -149,7 +149,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
             setSelectedChatUid={setSelectedChatUid}
           />
           {
-            friendDataList.map((friendData, index) => {
+            friendListDatas.map((friendData, index) => {
               return (
                 <ChatCard
                   key={index + friendData.uid}

@@ -16,7 +16,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
   const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
   const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
-  const { friendUidList, friendDataList } = useFriendList(ownData.uid);
+  const { friendListUids, friendListDatas } = useFriendList(ownData.uid);
   const { requests } = useRequests(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
@@ -109,7 +109,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
           currentNav === "all" ? 
             <FriendsAll
               ownUid={ownData.uid}
-              friendDataList={friendDataList}
+              friendListDatas={friendListDatas}
               setSelectedChatUid={setSelectedChatUid}
             />
           : currentNav === "pending" ?
@@ -130,7 +130,7 @@ export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
         <AddFriendModal
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible}
-          friendList={friendUidList}
+          friendListUids={friendListUids}
           requests={requests}
         />
       }
