@@ -4,7 +4,7 @@ import { db } from "../../firebase";
 
 export function useMetadata() {
   const [usernames, setUsernames] = useState({});
-  const [hiddenUsers, setHiddenUsers] = useState([]);
+  const [hiddenUsers, setHiddenUsers] = useState(null);
 
   useEffect(() => {
     let unsubscribe;

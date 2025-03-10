@@ -9,33 +9,20 @@ export function useOnlineStatus(uid) {
   const { hiddenUsers } = useMetadata();
 
   useEffect(() => {
-    let unTrack = null;
-
-    if (hiddenUsers.includes(uid)) {
+    if (!uid) return;
+    if (!hiddenUsers || hiddenUsers.includes(uid)) {
       setOnlineStatus("hidden");
+      return;
     }
-    else {
-      const dbRef = ref(realtimeDb, `users/${uid}`);
-      onValue(dbRef, (snapshot) => {
-        const data = snapshot.val();
-      
-        if (data?.isOnline) {
-          setOnlineStatus("online");
-        }
-        else {
-          setOnlineStatus("offline");
-        }
-      });
+    
+    const dbRef = ref(realtimeDb, `users/${uid}`);
+    onValue(dbRef, (snapshot) => {
+      const data = snapshot.val();
+    
+      setOnlineStatus(data?.isOnline ? "online" : "offline");
+    });
 
-      unTrack = () => off(dbRef);
-    }
-
-    return () => {
-      if (unTrack) {
-        unTrack();
-        unTrack = null;
-      }
-    }
+    return () => off(dbRef);
     
   }, [uid, hiddenUsers]);
 

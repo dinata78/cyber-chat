@@ -5,16 +5,14 @@ import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../svg/ChatSVG";
 import { addInbox } from "./addInbox";
 import { removeFriend } from "./modifyFriendList";
-import { useName } from "../../../custom-hooks/useName";
 import { useState } from "react";
 import { PopUp } from "../../PopUp";
 
-export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSelectedChatUid }) {
+export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, setSelectedChatUid }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
 
   const { onlineStatus } = useOnlineStatus(friendUid);
-  const { username } = useName(friendUid);
 
   const navigate = useNavigate();
 
@@ -36,7 +34,7 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
       return {
         ...prev,
         caption: "Remove Friend",
-        textContent: `Remove [ ${friendName} (@${username}) ] from your friend list? `,
+        textContent: `Remove [ ${friendDisplayName} (@${friendUsername}) ] from your friend list? `,
         hasTwoButtons: true,
         firstButton: {label: "Remove friend", function: handleRemoveFriend},
         secondButton: {label: "Cancel", function: () => setIsPopUpVisible(false)}
@@ -45,9 +43,6 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
 
     setIsPopUpVisible(true);    
   } 
-
-
-  if (!username) return;
 
   return (
     <div className="friend-card">
@@ -64,8 +59,8 @@ export function FriendCard({ ownUid, friendUid, friendName, friendTitle, setSele
 
       <div className="friend-card-info">
         <div>
-          <span className="friend-card-name">{friendName}</span>
-          <span className="friend-card-username">@{username}</span>
+          <span className="friend-card-name">{friendDisplayName}</span>
+          <span className="friend-card-username">@{friendUsername}</span>
         </div>
         <span className="friend-card-title">{friendTitle}</span>
       </div>

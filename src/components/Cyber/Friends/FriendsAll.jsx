@@ -17,7 +17,8 @@ export function FriendsAll({ ownUid, friendListDatas, setSelectedChatUid }) {
                     key={index + friendData.uid}
                     ownUid={ownUid}
                     friendUid={friendData.uid}
-                    friendName={friendData.displayName}
+                    friendDisplayName={friendData.displayName}
+                    friendUsername={friendData.username}
                     friendTitle={friendData.title}
                     setSelectedChatUid={setSelectedChatUid}
                   />

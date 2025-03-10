@@ -12,20 +12,52 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, realtimeDb } from "../../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import { onDisconnect, ref, update } from "firebase/database";
+import { useFriendList } from "../../custom-hooks/useFriendList";
+import { useRequests } from "../../custom-hooks/useRequests";
+import { useInbox } from "../../custom-hooks/useInbox";
 
 export function Cyber() {
   const { parameter } = useParams();
 
   const [isAuthChanged, setIsAuthChanged] = useState(false);
   const [ownData, setOwnData] = useState({});
-
   const [selectedChatUid, setSelectedChatUid] = useState("globalChat");
   const [isAccountVisible, setIsAccountVisible] = useState(false);
+  const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
+  const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
-  const [friendsHasNotif, setFriendsHasNotif] = useState(false);
+  const { friendListUids, friendListDatas } = useFriendList(ownData.uid);
+  const { requests } = useRequests(ownData.uid);
+  const { inboxItems } = useInbox(ownData.uid);
+
+  useEffect(() => {
+    if (!auth?.currentUser) return;
+
+    let unsubscribe = null;
+
+    const fetchAndSetOwnData = async () => {
+      const ownDocRef = doc(db, "users", auth.currentUser.uid);
+
+      unsubscribe = onSnapshot(ownDocRef, (snapshot) => {
+        const data = snapshot.data();
+        setOwnData(data);
+      });
+    }
+
+    fetchAndSetOwnData();
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
+    }
+  }, [isAuthChanged]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!auth.currentUser) return;
+      
       setIsAuthChanged((prev) => !prev);
 
       const setOnlineStatus = async () => {
@@ -42,25 +74,24 @@ export function Cyber() {
   }, []);
 
   useEffect(() => {
-    if (!auth?.currentUser) return;
-
-    let unsubscribe = null;
-
-    const fetchOwnData = async () => {
-      const ownDocRef = doc(db, "users", auth.currentUser.uid);
-
-      unsubscribe = onSnapshot(ownDocRef, (snapshot) => {
-        const data = snapshot.data();
-        setOwnData(data);
-      });
+    if (requests.length) {
+      const unreadRequests = requests.filter((request) => request.isUnread);
+      setPendingNotifCount(unreadRequests.length);
     }
-
-    fetchOwnData();
-
-    return () => {
-      if (unsubscribe) unsubscribe();
+    else {
+      setPendingNotifCount(0);
     }
-  }, [isAuthChanged]);
+  }, [requests]);
+
+  useEffect(() => {
+    if (inboxItems.length) {
+      const unreadInboxItems = inboxItems.filter(item => item.isUnread);
+      setInboxNotifCount(unreadInboxItems.length);
+    }
+    else {
+      setInboxNotifCount(0);
+    }
+  }, [inboxItems]);
 
   return (
     <div id="cyber-page">
@@ -70,12 +101,13 @@ export function Cyber() {
             <Link to="/cyber/chats" tabIndex={-1}>
               <button className={parameter === "chats" ? "nav-button selected" : "nav-button"}>
                 <ChatsSVG />
+                {true && <div id="cyber-notif"></div>}
               </button>
             </Link>
             <Link to="/cyber/friends" tabIndex={-1}>
               <button className={parameter === "friends" ? "nav-button selected" : "nav-button"}>
                 <FriendsSVG />
-                {friendsHasNotif && <div id="cyber-notif"></div>}
+                {pendingNotifCount + inboxNotifCount > 0 && <div id="cyber-notif"></div>}
               </button>
             </Link>
             <Link to="/cyber/settings" tabIndex={-1}>
@@ -112,12 +144,18 @@ export function Cyber() {
               ownData={ownData}
               selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
+              friendListDatas={friendListDatas}
             />
           : parameter === "friends" ? 
             <Friends
               ownData={ownData}
               setSelectedChatUid={setSelectedChatUid}
-              setFriendsHasNotif={setFriendsHasNotif}
+              friendListUids={friendListUids}
+              friendListDatas={friendListDatas}
+              requests={requests}
+              inboxItems={inboxItems}
+              pendingNotifCount={pendingNotifCount}
+              inboxNotifCount={inboxNotifCount}
             />
           : parameter === "settings" ?
             <Settings

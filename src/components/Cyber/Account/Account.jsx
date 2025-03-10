@@ -201,7 +201,7 @@ export function Account({ ownData, setIsAccountVisible }) {
               />
               <AccountDataCard
                 label="status"
-                content={hiddenUsers.includes(ownData.uid) ? "Hidden" : "Online"}
+                content={hiddenUsers?.includes(ownData.uid) ? "Hidden" : "Online"}
                 ownUid={ownData.uid}
               />
             </div>
@@ -228,16 +228,16 @@ export function Account({ ownData, setIsAccountVisible }) {
             <EmailSVG />
             <span>{ownData.email}</span>
             <span 
-              style={{color: auth.currentUser.emailVerified ? "lime" : "red"}}
+              style={{color: auth.currentUser?.emailVerified ? "lime" : "red"}}
             >
               {
-                auth.currentUser.emailVerified ?
+                auth.currentUser?.emailVerified ? 
                   "(Verified)"
                 : "(Not Verified)"
               }
             </span>
             {
-              !auth.currentUser.emailVerified &&
+              !auth.currentUser?.emailVerified &&
                 <button onClick={() => buttonOnClick("verify-email")}>
                   [Verify]
                 </button>

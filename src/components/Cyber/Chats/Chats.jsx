@@ -6,16 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
-import { useFriendList } from "../../../custom-hooks/useFriendList"
 import { onChatCardClick } from "./onChatCardClick";
 
-export function Chats({ ownData, selectedChatUid, setSelectedChatUid }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendListDatas }) {
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [currentChatContent, setCurrentChatContent] = useState([]);
   const [messageInput,setMessageInput] = useState("");
   const [usernamesMap, setUsernamesMap] = useState({});
-
-  const { friendListDatas } = useFriendList(ownData.uid);
 
   const messageEndRef = useRef(null);
 

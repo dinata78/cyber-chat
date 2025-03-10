@@ -1,57 +1,18 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { SearchSVG } from "../../svg/SearchSVG";
 import { FriendsAll } from "./FriendsAll";
 import { AddFriendModal } from "./AddFriendModal";
 import { FriendsPending } from "./FriendsPending";
-import { useFriendList } from "../../../custom-hooks/useFriendList";
 import { FriendsInbox } from "./FriendsInbox";
-import { useInbox } from "../../../custom-hooks/useInbox"
 import { FriendsNotifUI } from "./FriendsNotifUI";
-import { useRequests } from "../../../custom-hooks/useRequests";
 
-export function Friends({ ownData, setSelectedChatUid, setFriendsHasNotif }) {
+export function Friends({ ownData, setSelectedChatUid, friendListUids, friendListDatas, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
-
-  const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
-  const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
-
-  const { friendListUids, friendListDatas } = useFriendList(ownData.uid);
-  const { requests } = useRequests(ownData.uid);
-  const { inboxItems } = useInbox(ownData.uid);
 
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
   }
-
-  useEffect(() => {
-    if (requests.length) {
-      const unreadRequests = requests.filter((request) => request.isUnread);
-      setPendingNotifCount(unreadRequests.length);
-    }
-    else {
-      setPendingNotifCount(0);
-    }
-  }, [requests]);
-
-  useEffect(() => {
-    if (inboxItems.length) {
-      const unreadInboxItems = inboxItems.filter(item => item.isUnread);
-      setInboxNotifCount(unreadInboxItems.length);
-    }
-    else {
-      setInboxNotifCount(0);
-    }
-  }, [inboxItems]);
-
-  useEffect(() => {
-    if (pendingNotifCount || inboxNotifCount) {
-      setFriendsHasNotif(true);
-    }
-    else {
-      setFriendsHasNotif(false);
-    }
-  }, [pendingNotifCount, inboxNotifCount]);
 
   return (
     <div id="cyber-friends">
