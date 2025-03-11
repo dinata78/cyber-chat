@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { SearchSVG } from "../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
@@ -18,6 +18,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
       const userQuery = query(
         collection(db, "users"),
         where("username", "==", username),
+        limit(1)
       );
       const searchedUserDoc = await getDocs(userQuery);
       const searchedUserData = searchedUserDoc.docs[0].data();

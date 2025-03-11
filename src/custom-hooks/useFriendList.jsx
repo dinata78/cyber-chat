@@ -10,32 +10,20 @@ export function useFriendList(uid) {
   useEffect(() => {
     if (!uid) return;
 
-    let unsubscribe = null;
+    const friendListRef = collection(db, "users", uid, "friendList");
 
-    const fetchandSetFriendUids = async () => {
-      const friendListRef = collection(db, "users", uid, "friendList");
-
-      unsubscribe = onSnapshot(friendListRef, (snapshot) => {
-        if (snapshot.empty) {
-          setFriendListUids([]);
-        }
-        else {
-          const friendListUids = snapshot.docs.map(doc => doc.data().uid);
-
-          setFriendListUids(friendListUids);
-        }
-      });
-    }
-
-    fetchandSetFriendUids();
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-        unsubscribe = null;
+    const unsubscribe = onSnapshot(friendListRef, (snapshot) => {
+      if (snapshot.empty) {
+        setFriendListUids([]);
       }
-    }
+      else {
+        const friendListUids = snapshot.docs.map(doc => doc.data().uid);
 
+        setFriendListUids(friendListUids);
+      }
+    });
+
+    return () => unsubscribe();
   }, [uid]);
 
   useEffect(() => {

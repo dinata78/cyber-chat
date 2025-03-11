@@ -5,7 +5,7 @@ import { getMaxChar } from "./getMaxChar";
 import { editField } from "./editField";
 import { normalizeSpaces } from "../../../utils";
 
-export function AccountDataCard({ label, content, ownUid }) { 
+export function AccountDataCard({ label, content, ownData, usernames, hiddenUserUids }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ editedContent, setEditedContent ] = useState(content);
   const [ isContentInvalid, setIsContentInvalid ] = useState(false);
@@ -39,6 +39,7 @@ export function AccountDataCard({ label, content, ownUid }) {
         onClick={
           () => 
             editField(
+              ownData,
               isEditMode,
               setIsEditMode,
               label,
@@ -49,7 +50,8 @@ export function AccountDataCard({ label, content, ownUid }) {
               isErrorInfoVisible,
               setIsErrorInfoVisible,
               setErrorInfo,
-              ownUid
+              usernames,
+              hiddenUserUids
             )
         }
       >

@@ -1,8 +1,22 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { fetchDataFromUid } from "../../../utils"
 
-export function editField(isEditMode, setIsEditMode, label, content, editedContent, isContentInvalid, setIsContentInvalid, isErrorInfoVisible, setIsErrorInfoVisible, setErrorInfo, ownUid) {
+export function editField(
+  ownData,
+  isEditMode,
+  setIsEditMode,
+  label,
+  content,
+  editedContent,
+  isContentInvalid,
+  setIsContentInvalid,
+  isErrorInfoVisible,
+  setIsErrorInfoVisible,
+  setErrorInfo,
+  usernames,
+  hiddenUserUids
+) {
+
   
   if (isContentInvalid) setIsContentInvalid(false);
   if (isErrorInfoVisible) setIsErrorInfoVisible(false);
@@ -17,20 +31,19 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
 
   else {
     const updateField = async () => {
-      const userDocRef = doc(db, "users", ownUid);
-      const userDocData = await fetchDataFromUid(ownUid);
+      const ownDocRef = doc(db, "users", ownData.uid);
       
       if (label === "display name") {
         if (editedContent.length) {
-          await updateDoc(userDocRef, {
-            ...userDocData,
+          await updateDoc(ownDocRef, {
+            ...ownData,
             displayName: editedContent,
-          })
+          });
   
-          setIsEditMode(false);  
+          setIsEditMode(false);
         }
         else {
-          setIsContentInvalid(true);
+          setIsContentInvalid(true)
           setErrorInfo("Display name can't be empty.");
           setIsErrorInfoVisible(true);
         }
@@ -38,8 +51,8 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
       }
 
       else if (label === "title") {
-        await updateDoc(userDocRef, {
-          ...userDocData,
+        await updateDoc(ownDocRef, {
+          ...ownData,
           title: editedContent,
         })
 
@@ -47,8 +60,8 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
       }
 
       else if (label === "bio") {
-        await updateDoc(userDocRef, {
-          ...userDocData,
+        await updateDoc(ownDocRef, {
+          ...ownData,
           bio: editedContent,
         })
         
@@ -56,34 +69,26 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
       }
 
       else if (label === "status") {
-        const metadataDocRef = doc(db, "users", "metadata");
-        const metadataDocData = await fetchDataFromUid("metadata");
-
-        const metadataHiddenUsers = metadataDocData.hiddenUsers;
+        const hiddenUsersRef = collection(db, "users", "metadata", "hiddenUsers"); 
 
         if (editedContent === "Online") {
 
-          if (metadataHiddenUsers.includes(ownUid)) {
-            metadataHiddenUsers.splice(
-              metadataHiddenUsers.indexOf(ownUid)
-              , 1
+          if (hiddenUserUids.includes(ownData.uid)) {
+            const ownHiddenUserQuery = query(
+              hiddenUsersRef,
+              where("uid", "==", ownData.uid),
+              limit(1)
             )
-
-            await updateDoc(metadataDocRef, {
-              ...metadataDocData,
-              hiddenUsers: metadataHiddenUsers,
-            })
+            const ownHiddenUserDocs = await getDocs(ownHiddenUserQuery);
+            await deleteDoc(ownHiddenUserDocs.docs[0].ref);
           }
-          
         }
+
         else {
 
-          if (!metadataHiddenUsers.includes(ownUid)) {
-            metadataHiddenUsers.push(ownUid);
-
-            updateDoc(metadataDocRef, {
-              ...metadataDocData,
-              hiddenUsers: metadataHiddenUsers,
+          if (!hiddenUserUids.includes(ownData.uid)) {
+            await addDoc(hiddenUsersRef, {
+              uid: ownData.uid,
             })
           }
 
@@ -101,15 +106,11 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           return;
         }
 
-        const metadataDocRef = doc(db, "users", "metadata");
-        const metadataDocData = await fetchDataFromUid("metadata");
-        const usernamesMap = metadataDocData.usernames;
-
-        const usernamesList = Object.values(usernamesMap);
+        const usernameUids = Object.values(usernames);
 
         const filteredEditedContent = editedContent.replaceAll(" ", "").toLowerCase();
 
-        if (usernamesList.includes(filteredEditedContent)) {
+        if (usernameUids.includes(filteredEditedContent)) {
           if (filteredEditedContent === content) {
             setIsEditMode(false);
           }
@@ -120,17 +121,25 @@ export function editField(isEditMode, setIsEditMode, label, content, editedConte
           }
         }
         else {
-          usernamesMap[ownUid] = filteredEditedContent;
-          
-          await updateDoc(userDocRef, {
-            ...userDocData,
-            username: filteredEditedContent,
-          })
+          const ownUsernameQuery = query(
+            collection(db, "users", "metadata", "usernames"),
+            where("uid", "==", ownData.uid),
+            limit(1)
+          )
+
+          const ownUsernameDocs = await getDocs(ownUsernameQuery);
+
+          await Promise.all([
+            updateDoc(ownUsernameDocs.docs[0].ref, {
+              ...ownUsernameDocs.docs[0].data(),
+              username: filteredEditedContent,
+            }),
   
-          await updateDoc(metadataDocRef, {
-            ...metadataDocData,
-            usernames: usernamesMap,
-          })
+            updateDoc(ownDocRef, {
+              ...ownData,
+              username: filteredEditedContent,
+            })  
+          ]);
           
           setIsEditMode(false);
         }

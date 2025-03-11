@@ -1,11 +1,20 @@
 import { cancelRequest, handleRequest } from "./handleRequest";
-import { useName } from "../../../custom-hooks/useName";
-import { groupNames, processDate } from "../../../utils";
+import { fetchDataFromUid, groupNames, processDate } from "../../../utils";
+import { useEffect, useState } from "react";
 
 export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {
-  const { displayName, username } = useName(uid);  
+  const [displayName, setDisplayName] = useState("...");
+  const [username, setUsername] = useState("...");
 
-  if (!displayName || !username) return null;
+  useEffect(() => {
+    const fetchAndSetNames = async () => {
+      const data = await fetchDataFromUid(uid);
+      setDisplayName(data.displayName);
+      setUsername(data.username);
+    }
+
+    fetchAndSetNames();
+  }, []);
 
   return (
     <div className={isUnread ? "pending-card unread" : "pending-card"}>

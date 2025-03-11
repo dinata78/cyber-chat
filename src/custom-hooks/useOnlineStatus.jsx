@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { realtimeDb } from "../../firebase";
-import { useMetadata } from "./useMetadata";
+import { useHiddenUsers } from "./useHiddenUsers";
 
 export function useOnlineStatus(uid) {
   const [onlineStatus, setOnlineStatus] = useState(null);
 
-  const { hiddenUsers } = useMetadata();
+  const { hiddenUserUids } = useHiddenUsers();
 
   useEffect(() => {
     if (!uid) return;
-    if (!hiddenUsers || hiddenUsers.includes(uid)) {
+    if (!hiddenUserUids || hiddenUserUids.includes(uid)) {
       setOnlineStatus("hidden");
       return;
     }
@@ -24,7 +24,7 @@ export function useOnlineStatus(uid) {
 
     return () => off(dbRef);
     
-  }, [uid, hiddenUsers]);
+  }, [uid, hiddenUserUids]);
 
   return { onlineStatus };
 }

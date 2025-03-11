@@ -4,15 +4,17 @@ import { EmailSVG } from "../../svg/EmailSVG"
 import { AccountDataCard } from "./AccountDataCard";
 import { useState } from "react";
 import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
-import { useMetadata } from "../../../custom-hooks/useMetadata";
 import { auth } from "../../../../firebase";
 import { PopUp } from "../../PopUp";
+import { useUsernames } from "../../../custom-hooks/useUsernames";
+import { useHiddenUsers } from "../../../custom-hooks/useHiddenUsers";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
 
-  const { hiddenUsers } = useMetadata();
+  const { hiddenUserUids } = useHiddenUsers();
+  const { usernames } = useUsernames();
 
   const navigate = useNavigate();
 
@@ -197,12 +199,14 @@ export function Account({ ownData, setIsAccountVisible }) {
               <AccountDataCard
                 label="username"
                 content={ownData.username}
-                ownUid={ownData.uid}
+                ownData={ownData}
+                usernames={usernames}
               />
               <AccountDataCard
                 label="status"
-                content={hiddenUsers?.includes(ownData.uid) ? "Hidden" : "Online"}
-                ownUid={ownData.uid}
+                content={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
+                ownData={ownData}
+                hiddenUserUids={hiddenUserUids}
               />
             </div>
 
@@ -210,17 +214,17 @@ export function Account({ ownData, setIsAccountVisible }) {
               <AccountDataCard
                 label="display name"
                 content={ownData.displayName}
-                ownUid={ownData.uid}
+                ownData={ownData}
               />
               <AccountDataCard
                 label="title"
                 content={ownData.title}
-                ownUid={ownData.uid}
+                ownData={ownData}
               />
               <AccountDataCard
                 label="bio"
                 content={ownData.bio}
-                ownUid={ownData.uid}
+                ownData={ownData}
               />
             </div>
           </div>
