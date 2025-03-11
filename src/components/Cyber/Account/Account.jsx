@@ -1,20 +1,24 @@
+import { auth } from "../../../../firebase";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
-import { AccountDataCard } from "./AccountDataCard";
-import { useState } from "react";
 import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
-import { auth } from "../../../../firebase";
 import { PopUp } from "../../PopUp";
 import { useUsernames } from "../../../custom-hooks/useUsernames";
+import { AccountUsername } from "./account-data-cards/AccountUsername";
+import { AccountStatus } from "./account-data-cards/AccountStatus";
+import { AccountDisplayName } from "./account-data-cards/AccountDisplayName";
+import { AccountTitle } from "./account-data-cards/AccountTitle";
+import { AccountBio } from "./account-data-cards/AccountBio";
 import { useHiddenUsers } from "../../../custom-hooks/useHiddenUsers";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
-  const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
+  const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
-  const { hiddenUserUids } = useHiddenUsers();
   const { usernames } = useUsernames();
+  const { hiddenUserUids } = useHiddenUsers();
 
   const navigate = useNavigate();
 
@@ -196,33 +200,27 @@ export function Account({ ownData, setIsAccountVisible }) {
           <div id="account-data">
             <div className="left">
               <img src="/empty-pfp.webp" />
-              <AccountDataCard
-                label="username"
+              <AccountUsername
                 content={ownData.username}
                 ownData={ownData}
                 usernames={usernames}
               />
-              <AccountDataCard
-                label="status"
+              <AccountStatus
                 content={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
-                ownData={ownData}
-                hiddenUserUids={hiddenUserUids}
+                ownUid={ownData.uid}
               />
             </div>
 
             <div className="right">
-              <AccountDataCard
-                label="display name"
+              <AccountDisplayName
                 content={ownData.displayName}
                 ownData={ownData}
               />
-              <AccountDataCard
-                label="title"
+              <AccountTitle
                 content={ownData.title}
                 ownData={ownData}
               />
-              <AccountDataCard
-                label="bio"
+              <AccountBio
                 content={ownData.bio}
                 ownData={ownData}
               />
