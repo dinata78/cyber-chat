@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
-import { getIndicatorClass } from "../../../utils";
-import { AccountMinusSVG } from "../../svg/AccountMinusSVG";
-import { ChatSVG } from "../../svg/ChatSVG";
-import { addInbox } from "./addInbox";
-import { removeFriend } from "./modifyFriendList";
+import { useOnlineStatus } from "../../../../custom-hooks/useOnlineStatus";
+import { getIndicatorClass } from "../../../../utils";
+import { AccountMinusSVG } from "../../../svg/AccountMinusSVG";
+import { ChatSVG } from "../../../svg/ChatSVG";
+import { addInbox } from "../addInbox";
+import { removeFriend } from "../modifyFriendList";
 import { useState } from "react";
-import { PopUp } from "../../PopUp";
+import { PopUp } from "../../../PopUp";
 
 export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, setSelectedChatUid }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);

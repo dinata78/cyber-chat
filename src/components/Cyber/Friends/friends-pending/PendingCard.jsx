@@ -1,5 +1,5 @@
-import { cancelRequest, handleRequest } from "./handleRequest";
-import { fetchDataFromUid, groupNames, processDate } from "../../../utils";
+import { cancelRequest, handleRequest } from "../handleRequest";
+import { fetchDataFromUid, groupNames, processDate } from "../../../../utils";
 import { useEffect, useState } from "react";
 
 export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {

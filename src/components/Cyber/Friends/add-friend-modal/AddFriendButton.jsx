@@ -1,5 +1,5 @@
-import { addInbox } from "./addInbox";
-import { sendFriendRequest } from "./sendFriendRequest";
+import { addInbox } from "../addInbox";
+import { sendFriendRequest } from "../sendFriendRequest"
 
 export function AddFriendButton({ ownUid, searchedUserData, friendListUids, requests }) {
 

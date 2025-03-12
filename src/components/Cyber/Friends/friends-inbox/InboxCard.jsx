@@ -1,4 +1,4 @@
-import { processDate } from "../../../utils";
+import { processDate } from "../../../../utils";
 
 export function InboxCard({ content, timeCreated, isUnread }) {
 

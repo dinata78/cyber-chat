@@ -1,11 +1,11 @@
 import { collection, getDocs, writeBatch } from "firebase/firestore";
-import { db } from "../../../../firebase";
-import { TrashCanSVG } from "../../svg/TrashCanSVG";
+import { db } from "../../../../../firebase";
+import { TrashCanSVG } from "../../../svg/TrashCanSVG";
 import { InboxCard } from "./InboxCard";
 import { useState } from "react";
-import { PopUp } from "../../PopUp";
-import { FriendsEmptyUI } from "./FriendsEmptyUI";
-import { useUnreadInbox } from "../../../custom-hooks/useUnreadInbox";
+import { PopUp } from "../../../PopUp";
+import { FriendsEmptyUI } from "../FriendsEmptyUI";
+import { useUnreadInbox } from "../../../../custom-hooks/useUnreadInbox";
 
 export function FriendsInbox({ ownUid, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);

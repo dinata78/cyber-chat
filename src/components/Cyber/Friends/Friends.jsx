@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { SearchSVG } from "../../svg/SearchSVG";
-import { FriendsAll } from "./FriendsAll";
-import { AddFriendModal } from "./AddFriendModal";
-import { FriendsPending } from "./FriendsPending";
-import { FriendsInbox } from "./FriendsInbox";
+import { FriendsAll } from "./friends-all/FriendsAll";
+import { AddFriendModal } from "./add-friend-modal/AddFriendModal";
+import { FriendsPending } from "./friends-pending/FriendsPending";
+import { FriendsInbox } from "./friends-inbox/FriendsInbox";
 import { FriendsNotifUI } from "./FriendsNotifUI";
 
 export function Friends({ ownData, setSelectedChatUid, friendListUids, friendListDatas, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {

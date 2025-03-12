@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { CloseSVG } from "../../svg/CloseSVG";
-import { SearchSVG } from "../../svg/SearchSVG";
+import { CloseSVG } from "../../../svg/CloseSVG";
+import { SearchSVG } from "../../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
-import { db } from "../../../../firebase"
+import { db } from "../../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
 

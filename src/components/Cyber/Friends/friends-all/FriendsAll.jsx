@@ -1,5 +1,5 @@
 import { FriendCard } from "./FriendCard";
-import { FriendsEmptyUI } from "./FriendsEmptyUI";
+import { FriendsEmptyUI } from "../FriendsEmptyUI";
 
 export function FriendsAll({ ownUid, friendListDatas, setSelectedChatUid }) {
   

@@ -1,5 +1,5 @@
-import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
-import { capitalizeFirstLetter } from "../../../utils";
+import { useOnlineStatus } from "../../../../custom-hooks/useOnlineStatus";
+import { capitalizeFirstLetter } from "../../../../utils";
 import { FriendProfileDataCard } from "./FriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {

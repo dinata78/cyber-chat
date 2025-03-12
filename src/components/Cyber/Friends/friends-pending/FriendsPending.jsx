@@ -1,5 +1,5 @@
-import { useUnreadRequests } from "../../../custom-hooks/useUnreadRequests";
-import { FriendsEmptyUI } from "./FriendsEmptyUI";
+import { useUnreadRequests } from "../../../../custom-hooks/useUnreadRequests";
+import { FriendsEmptyUI } from "../FriendsEmptyUI";
 import { PendingCard } from "./PendingCard";
 
 export function FriendsPending({ ownUid, requests }) {
