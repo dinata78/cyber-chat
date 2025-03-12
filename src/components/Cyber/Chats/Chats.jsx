@@ -15,7 +15,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
   const [usernamesMap, setUsernamesMap] = useState({});
 
   const messageEndRef = useRef(null);
-
   const unsubscribeSnapshot = useRef(null);
 
   const addMessage = async (newMessage) => {
@@ -146,6 +145,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
             setSelectedChatUid={setSelectedChatUid}
           />
           {
+            friendListDatas.length > 0 &&
             friendListDatas.map((friendData, index) => {
               return (
                 <ChatCard

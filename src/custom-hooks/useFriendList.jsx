@@ -1,7 +1,6 @@
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { fetchDataFromUid } from "../utils";
 
 export function useFriendList(uid) {
   const [friendListUids, setFriendListUids] = useState([]);
@@ -32,16 +31,39 @@ export function useFriendList(uid) {
       return;
     };
 
-    const fetchAndSetFriendDatas = async () => {
-      const friendListDatas = [];
-      for (const friendUid of friendListUids) {
-        const friendData = await fetchDataFromUid(friendUid);
-        friendListDatas.push(friendData);
-      }
-      setFriendListDatas(friendListDatas);
+    let unsubscribeList = [];
+
+    for (const friendUid of friendListUids) {
+      const friendDocRef = doc(db, "users", friendUid);
+      
+      const unsubscribe = onSnapshot(friendDocRef, (snapshot) => {
+        setFriendListDatas((prev) => {
+          let previousDatas = prev;
+
+          const currentDataIndex = previousDatas.findIndex(data => data.uid === snapshot.data().uid);
+
+          if (currentDataIndex >= 0) {
+            previousDatas[currentDataIndex] = snapshot.data();
+          }
+          else {
+           previousDatas.push(snapshot.data());
+          }
+
+          return previousDatas.filter(data => friendListUids.includes(data.uid));
+        });
+      });
+
+      unsubscribeList.push(unsubscribe);
     }
 
-    fetchAndSetFriendDatas();
+    return () => {
+      if (unsubscribeList.length) {
+        for (const unsubscribe of unsubscribeList) {
+          unsubscribe();
+        }
+        unsubscribeList = [];
+      }
+    }
   }, [friendListUids]);
   
   return {
