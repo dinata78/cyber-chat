@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CloseSVG } from "../../../svg/CloseSVG";
 import { SearchSVG } from "../../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { collection, getDocs, limit, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
@@ -10,33 +10,58 @@ import { AddFriendButton } from "./AddFriendButton";
 export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListUids, requests }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
+
+  const [searchedUsername, setSearchedUsername] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
 
-  const searchUser = async (username) => {
-    if (!username.trim()) return;
-    try {
-      const userQuery = query(
-        collection(db, "users"),
-        where("username", "==", username),
-        limit(1)
-      );
-      const searchedUserDoc = await getDocs(userQuery);
-      const searchedUserData = searchedUserDoc.docs[0].data();
-      const filteredUserData = {
-        displayName: searchedUserData.displayName,
-        username: searchedUserData.username,
-        title: searchedUserData.title,
-        bio: searchedUserData.bio,
-        uid: searchedUserData.uid,
-      };
-      
-      setSearchedUserData(filteredUserData);
-      setResultStatus("found");
-    }
-    catch {
-      setResultStatus("not-found");
-    }
+  const inputUsername = (e) => {
+    const filteredInput = e.target.value.replaceAll(" ", "").toLowerCase();
+
+    setUsernameInput(filteredInput);
   }
+  
+  const searchUser = async () => {    
+    setSearchedUsername(usernameInput);
+  }
+
+  useEffect(() => {
+    if (!searchedUsername) return;
+
+    const userDataQuery = query(
+      collection(db, "users"),
+      where("username", "==", usernameInput),
+      limit(1)
+    );
+
+    let unsubscribeSnapshot = null;
+
+    const fetchAndSetUserData = async () => {
+      
+      const userDataDocs = await getDocs(userDataQuery)
+      const userDataDocRef = userDataDocs.docs[0]?.ref;
+
+      if (userDataDocRef) {
+        unsubscribeSnapshot = onSnapshot(userDataDocRef, (snapshot) => {
+          setSearchedUserData(snapshot.data());
+          setResultStatus("found");
+        });  
+      }
+      else {
+        setResultStatus("not-found")
+      }
+
+    }
+
+    fetchAndSetUserData();
+
+    return () => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+    }
+    
+  }, [searchedUsername]);
 
   return (
     <div 
@@ -62,9 +87,9 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
               type="text"
               placeholder="Search user with their username"
               value={usernameInput}
-              onChange={(e) => setUsernameInput(e.target.value)}
+              onChange={inputUsername}
             />
-            <button onClick={() => searchUser(usernameInput)}>Search</button>
+            <button onClick={searchUser}>Search</button>
           </div>
           {
             resultStatus === "found" ? 
