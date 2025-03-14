@@ -15,6 +15,7 @@ import { onDisconnect, ref, update } from "firebase/database";
 import { useFriendList } from "../../custom-hooks/useFriendList";
 import { useRequests } from "../../custom-hooks/useRequests";
 import { useInbox } from "../../custom-hooks/useInbox";
+import { useChats } from "../../custom-hooks/useChats";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -29,6 +30,27 @@ export function Cyber() {
   const { friendListUids, friendListDatas } = useFriendList(ownData.uid);
   const { requests } = useRequests(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
+
+  const { chatMessagesMap, chatUsernamesMap } = useChats(ownData.uid, friendListUids);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!auth.currentUser) return;
+      
+      setIsAuthChanged((prev) => !prev);
+
+      const setOnlineStatus = async () => {
+        const dbRef = ref(realtimeDb, `users/${user.uid}`);
+
+        await update(dbRef, {isOnline: true});
+        onDisconnect(dbRef).update({isOnline: false});
+      }
+
+      setOnlineStatus();
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (!auth?.currentUser) return;
@@ -53,25 +75,6 @@ export function Cyber() {
       }
     }
   }, [isAuthChanged]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!auth.currentUser) return;
-      
-      setIsAuthChanged((prev) => !prev);
-
-      const setOnlineStatus = async () => {
-        const dbRef = ref(realtimeDb, `users/${user.uid}`);
-
-        await update(dbRef, {isOnline: true});
-        onDisconnect(dbRef).update({isOnline: false});
-      }
-
-      setOnlineStatus();
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     if (requests.length) {
@@ -145,6 +148,8 @@ export function Cyber() {
               selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
               friendListDatas={friendListDatas}
+              chatMessagesMap={chatMessagesMap}
+              chatUsernamesMap={chatUsernamesMap}
             />
           : parameter === "friends" ? 
             <Friends

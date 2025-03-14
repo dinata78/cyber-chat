@@ -1,22 +1,9 @@
 import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
-import { onChatCardClick } from "./onChatCardClick";
+import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard(
-  { 
-    displayName, 
-    title, 
-    uid, 
-    ownUid, 
-    setCurrentChatData, 
-    setCurrentChatContent,
-    usernamesMap, 
-    setUsernamesMap,
-    unsubscribeSnapshot,
-    selectedChatUid,
-    setSelectedChatUid
-  }
-) {
+export function ChatCard({ ownUid, displayName, title, uid, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
+  
   let status = null;
 
   if (displayName === "Global Chat") {
@@ -29,23 +16,14 @@ export function ChatCard(
 
   return (
     <div 
-      className={
-        uid === selectedChatUid ? 
-          "chat-card selected" 
-        : "chat-card"
-      } 
+      className={uid === selectedChatUid ? "chat-card selected" : "chat-card"} 
       onClick={
         () => 
-        onChatCardClick(
-          displayName,
-          title,
-          uid,
+        chatCardOnClick(
           ownUid,
+          {displayName: displayName, title: title, uid: uid},
           setCurrentChatData,
-          setCurrentChatContent,
-          usernamesMap,
-          setUsernamesMap,
-          unsubscribeSnapshot,
+          setConversationId,
           setSelectedChatUid     
         )
       }

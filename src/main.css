@@ -479,7 +479,7 @@ button#toggle-theme svg {
   gap: 12px;
 }
 
-#chats-aside-top-top h1 {
+#chats-aside-top .top h1 {
   margin: 0;
   text-align: center;
 }
@@ -593,28 +593,28 @@ button#toggle-theme svg {
   gap: 18px;
 }
 
-#chats-content-top-pfp {
+#chats-content-top .pfp {
   display: grid;
   place-content: center;
 }
 
-#chats-content-top-pfp img {
+#chats-content-top .pfp img {
   width: 72px;
   border-radius: 100%;
 }
 
-#chats-content-top-info {
+#chats-content-top .info {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-#chats-content-top-info h1 {
+#chats-content-top .info h1 {
   margin: 0;
   font-size: 1.5rem;
 }
 
-#chats-content-top-info span {
+#chats-content-top .info span {
   color: #ffffff99;
   font-size: 1.1rem;
 }

@@ -6,25 +6,24 @@ import { useEffect, useRef, useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
-import { onChatCardClick } from "./onChatCardClick";
+import { chatCardOnClick } from "./chatCardOnClick";
 
-export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendListDatas }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendListDatas, chatMessagesMap, chatUsernamesMap }) {
+
+  const [conversationId, setConversationId] = useState(null); 
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
-  const [currentChatContent, setCurrentChatContent] = useState([]);
-  const [messageInput,setMessageInput] = useState("");
-  const [usernamesMap, setUsernamesMap] = useState({});
+  const [messageInput, setMessageInput] = useState("");
 
   const messageEndRef = useRef(null);
-  const unsubscribeSnapshot = useRef(null);
 
-  const addMessage = async (newMessage) => {
-    if (!newMessage.trim()) return;
+  const addMessage = async () => {
+    if (!messageInput.trim()) return;
 
     const conversationId = getConversationId(ownData.uid, currentChatData.uid);
-    const collectionRef = collection(db, "conversations", conversationId, "messages");
+    const messagesRef = collection(db, "conversations", conversationId, "messages");
 
-    await addDoc(collectionRef, {
-      content: newMessage,
+    await addDoc(messagesRef, {
+      content: messageInput,
       senderId: ownData.uid,
       timeCreated: new Date(),
     });
@@ -33,43 +32,31 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
   }
 
   useEffect(() => {
-    const selectChatOnFirstRender = async () => {
+    const selectChatOnRender = async () => {
       if (selectedChatUid === "globalChat") {
-        onChatCardClick(
-          "Global Chat",
-          "A global room everyone can access",
-          "globalChat",
+        chatCardOnClick(
           ownData.uid,
+          {displayName: "Global Chat", title: "A global room everyone can access", uid: "globalChat"},
           setCurrentChatData,
-          setCurrentChatContent,
-          usernamesMap,
-          setUsernamesMap,
-          unsubscribeSnapshot,
+          setConversationId,
           setSelectedChatUid
-        )  
+        );
       }
       else {
-        const data = await fetchDataFromUid(selectedChatUid);  
+        const chatData = await fetchDataFromUid(selectedChatUid);  
 
-        onChatCardClick(
-          data.uid === ownData.uid ?
-            data.displayName + " (You)"
-          : data.displayName,
-          data.title,
-          data.uid,
+        chatCardOnClick(
           ownData.uid,
+          {displayName: chatData.uid === ownData.uid ? chatData.displayName + " (You)" : chatData.displayName, title: chatData.title, uid: chatData.uid},
           setCurrentChatData,
-          setCurrentChatContent,
-          usernamesMap,
-          setUsernamesMap,
-          unsubscribeSnapshot,
+          setConversationId,
           setSelectedChatUid
-        )
+        );
       }
     }
 
-    selectChatOnFirstRender();
-  }, [ownData])
+    selectChatOnRender();
+  }, [ownData.uid]);
 
   useEffect(() => {
     if (currentChatData.displayName) {
@@ -77,20 +64,17 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
     }
   });
 
-
   return (
     <div id="cyber-chats">
       <div id="cyber-chats-aside">
 
         <div id="chats-aside-top">
-          <div id="chats-aside-top-top">
+          <div className="top">
             <h1>Chats</h1>
           </div>
-          <div id="chats-aside-top-bottom">
+          <div className="bottom">
             <div id="chats-aside-search">
-              <div>
-                <SearchSVG />
-              </div>
+              <div><SearchSVG /></div>
               <input type="text" placeholder="Search" />
             </div>
           </div>
@@ -98,36 +82,31 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
 
         <div id="chats-aside-bottom" className="overflow-y-support">
           <ChatCard
+            ownUid={ownData.uid}
             displayName="Global Chat" 
             title="A global room everyone can access" 
             uid="globalChat"
-            ownUid={ownData.uid}
             setCurrentChatData={setCurrentChatData}
-            setCurrentChatContent={setCurrentChatContent}
-            usernamesMap={usernamesMap}
-            setUsernamesMap={setUsernamesMap}
-            unsubscribeSnapshot={unsubscribeSnapshot}
+            setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
           />
           {
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
               <ChatCard 
+                ownUid={ownData.uid}
                 displayName="Steven Dinata" 
                 title="Developer of CyberChat" 
                 uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
-                ownUid={ownData.uid}
                 setCurrentChatData={setCurrentChatData}
-                setCurrentChatContent={setCurrentChatContent}
-                usernamesMap={usernamesMap}
-                setUsernamesMap={setUsernamesMap} 
-                unsubscribeSnapshot={unsubscribeSnapshot}
+                setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
               />
             : null
           }
-          <ChatCard 
+          <ChatCard
+            ownUid={ownData.uid}
             displayName={
               ownData.displayName ?
                 ownData.displayName + " (You)"
@@ -135,12 +114,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
             }
             title={ownData.title}
             uid={ownData.uid}
-            ownUid={ownData.uid}
             setCurrentChatData={setCurrentChatData}
-            setCurrentChatContent={setCurrentChatContent}
-            usernamesMap={usernamesMap}
-            setUsernamesMap={setUsernamesMap}
-            unsubscribeSnapshot={unsubscribeSnapshot}
+            setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
           />
@@ -149,16 +124,13 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
             friendListDatas.map((friendData, index) => {
               return (
                 <ChatCard
+                  ownUid={ownData.uid}
                   key={index + friendData.uid}
                   displayName={friendData.displayName}
                   title={friendData.title}
                   uid={friendData.uid}
-                  ownUid={ownData.uid}
                   setCurrentChatData={setCurrentChatData}
-                  setCurrentChatContent={setCurrentChatContent}
-                  usernamesMap={usernamesMap}
-                  setUsernamesMap={setUsernamesMap} 
-                  unsubscribeSnapshot={unsubscribeSnapshot}
+                  setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                 />
@@ -167,36 +139,42 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
           }
 
         </div>
-        
       </div>
       
       <div id="cyber-chats-content">
 
         <div id="chats-content-top">
-          <div id="chats-content-top-pfp">
+          <div className="pfp">
             <img src="/empty-pfp.webp" />
           </div>
-          <div id="chats-content-top-info">
+          <div className="info">
             <h1>{currentChatData.displayName}</h1>
             <span>{currentChatData.title}</span>
           </div>
         </div>
         
         <div id="chats-content-bottom">
+
           <div id="chat-messages" className="overflow-y-support">
-            {currentChatContent.map((chatContent, index) => {
-            return ( 
-              <MessageCard
-                key={index + chatContent.senderId}
-                senderName={usernamesMap[chatContent.senderId]} 
-                content={chatContent.content}
-                timeCreated={chatContent.timeCreated}
-                isOwnMessage={chatContent.senderId === ownData.uid}
-              />
-            )
-            })}
+
+            { 
+              chatMessagesMap[conversationId] &&
+              chatMessagesMap[conversationId].map((chatMessage, index) => {
+              return ( 
+                <MessageCard
+                  key={index + chatMessage.senderId}
+                  senderName={chatUsernamesMap[chatMessage.senderId]} 
+                  content={chatMessage.content}
+                  timeCreated={chatMessage.timeCreated}
+                  isOwnMessage={chatMessage.senderId === ownData.uid}
+                />
+              )
+              })
+            }
+
             <div id="message-end-ref" ref={messageEndRef}></div>
           </div>
+
           <div id="chat-input">
             <input 
               type="text"
@@ -204,12 +182,11 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
             />
-            <button
-              onClick={() => addMessage(messageInput)}
-            >
+            <button onClick={addMessage}>
               <ArrowLeftSVG />
             </button>
           </div>
+
         </div>
 
       </div>
