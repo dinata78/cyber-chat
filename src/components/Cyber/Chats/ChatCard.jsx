@@ -1,19 +1,8 @@
-import { useOnlineStatus } from "../../../custom-hooks/useOnlineStatus";
 import { getIndicatorClass } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, displayName, title, uid, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
+export function ChatCard({ ownUid, displayName, title, uid, status, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
   
-  let status = null;
-
-  if (displayName === "Global Chat") {
-    status = "online"
-  }
-  else {
-    const { onlineStatus } = useOnlineStatus(uid);
-    status = onlineStatus;
-  }
-
   return (
     <div 
       className={uid === selectedChatUid ? "chat-card selected" : "chat-card"} 

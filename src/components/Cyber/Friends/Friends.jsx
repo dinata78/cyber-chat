@@ -6,7 +6,7 @@ import { FriendsPending } from "./friends-pending/FriendsPending";
 import { FriendsInbox } from "./friends-inbox/FriendsInbox";
 import { FriendsNotifUI } from "./FriendsNotifUI";
 
-export function Friends({ ownData, setSelectedChatUid, friendListUids, friendListDatas, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
+export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, statusMap, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
@@ -70,7 +70,8 @@ export function Friends({ ownData, setSelectedChatUid, friendListUids, friendLis
           currentNav === "all" ? 
             <FriendsAll
               ownUid={ownData.uid}
-              friendListDatas={friendListDatas}
+              friendDatas={friendDatas}
+              statusMap={statusMap}
               setSelectedChatUid={setSelectedChatUid}
             />
           : currentNav === "pending" ?
@@ -91,7 +92,7 @@ export function Friends({ ownData, setSelectedChatUid, friendListUids, friendLis
         <AddFriendModal
           ownUid={ownData.uid}
           setIsAddFriendModalVisible={setIsAddFriendModalVisible}
-          friendListUids={friendListUids}
+          friendUids={friendUids}
           requests={requests}
         />
       }

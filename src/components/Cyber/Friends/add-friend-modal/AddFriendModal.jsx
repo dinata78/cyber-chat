@@ -7,7 +7,7 @@ import { db } from "../../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
 
-export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListUids, requests }) {
+export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids, requests }) {
   const [resultStatus, setResultStatus] = useState("initial");
   const [usernameInput, setUsernameInput] = useState("");
 
@@ -33,7 +33,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
       limit(1)
     );
 
-    let unsubscribeSnapshot = null;
+    let unsubscribe = null;
 
     const fetchAndSetUserData = async () => {
       
@@ -41,10 +41,10 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
       const userDataDocRef = userDataDocs.docs[0]?.ref;
 
       if (userDataDocRef) {
-        unsubscribeSnapshot = onSnapshot(userDataDocRef, (snapshot) => {
+        unsubscribe = onSnapshot(userDataDocRef, (snapshot) => {
           setSearchedUserData(snapshot.data());
           setResultStatus("found");
-        });  
+        });
       }
       else {
         setResultStatus("not-found")
@@ -55,9 +55,9 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
     fetchAndSetUserData();
 
     return () => {
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-        unsubscribeSnapshot = null;
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
       }
     }
     
@@ -98,7 +98,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendListU
                 <AddFriendButton
                   ownUid={ownUid}
                   searchedUserData={searchedUserData}
-                  friendListUids={friendListUids}
+                  friendUids={friendUids}
                   requests={requests}
                 />
               </>

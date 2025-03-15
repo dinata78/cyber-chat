@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
 export function useFriendList(uid) {
-  const [friendListUids, setFriendListUids] = useState([]);
-  const [friendListDatas, setFriendListDatas] = useState([]);
-  
+  const [friendUids, setFriendUids] = useState([]);
+  const [friendDatas, setFriendDatas] = useState([]);
+
   useEffect(() => {
     if (!uid) return;
 
@@ -13,12 +13,12 @@ export function useFriendList(uid) {
 
     const unsubscribe = onSnapshot(friendListRef, (snapshot) => {
       if (snapshot.empty) {
-        setFriendListUids([]);
+        setFriendUids([]);
       }
       else {
-        const friendListUids = snapshot.docs.map(doc => doc.data().uid);
+        const friendUids = snapshot.docs.map(doc => doc.data().uid);
 
-        setFriendListUids(friendListUids);
+        setFriendUids(friendUids);
       }
     });
 
@@ -26,19 +26,19 @@ export function useFriendList(uid) {
   }, [uid]);
 
   useEffect(() => {
-    if (!friendListUids.length) {
-      setFriendListDatas([]);
+    if (!friendUids.length) {
+      setFriendDatas([]);
       return;
     };
 
     let unsubscribeList = [];
 
-    for (const friendUid of friendListUids) {
+    for (const friendUid of friendUids) {
       const friendDocRef = doc(db, "users", friendUid);
       
       const unsubscribe = onSnapshot(friendDocRef, (snapshot) => {
-        setFriendListDatas((prev) => {
-          let previousDatas = prev;
+        setFriendDatas((prev) => {
+          const previousDatas = prev;
 
           const currentDataIndex = previousDatas.findIndex(data => data.uid === snapshot.data().uid);
 
@@ -49,7 +49,7 @@ export function useFriendList(uid) {
            previousDatas.push(snapshot.data());
           }
 
-          return previousDatas.filter(data => friendListUids.includes(data.uid));
+          return previousDatas.filter(data => friendUids.includes(data.uid));
         });
       });
 
@@ -64,10 +64,7 @@ export function useFriendList(uid) {
         unsubscribeList = [];
       }
     }
-  }, [friendListUids]);
-  
-  return {
-    friendListUids,
-    friendListDatas,
-  }
+  }, [friendUids]);
+
+  return { friendUids, friendDatas }
 }

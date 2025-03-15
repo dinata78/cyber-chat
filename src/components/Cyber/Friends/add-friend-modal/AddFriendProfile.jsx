@@ -1,10 +1,10 @@
-import { useOnlineStatus } from "../../../../custom-hooks/useOnlineStatus";
+import { useStatusByUid } from "../../../../custom-hooks/useStatusByUid";
 import { capitalizeFirstLetter } from "../../../../utils";
 import { FriendProfileDataCard } from "./FriendProfileDataCard";
 
 export function AddFriendProfile({ searchedUserData }) {
   
-  const { onlineStatus } = useOnlineStatus(searchedUserData.uid);
+  const { status } = useStatusByUid(searchedUserData.uid);
 
   return (
     <div id="add-friend-profile">
@@ -18,9 +18,9 @@ export function AddFriendProfile({ searchedUserData }) {
         <FriendProfileDataCard
           label="STATUS"
           content={
-            onlineStatus ? 
-              capitalizeFirstLetter(onlineStatus)
-            : "Loading..."
+            status ? 
+              capitalizeFirstLetter(status)
+            : "..."
           }
         />
       </div>

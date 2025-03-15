@@ -16,6 +16,7 @@ import { useFriendList } from "../../custom-hooks/useFriendList";
 import { useRequests } from "../../custom-hooks/useRequests";
 import { useInbox } from "../../custom-hooks/useInbox";
 import { useChats } from "../../custom-hooks/useChats";
+import { useStatus } from "../../custom-hooks/useStatus";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -27,23 +28,24 @@ export function Cyber() {
   const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
   const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
-  const { friendListUids, friendListDatas } = useFriendList(ownData.uid);
+  const { friendUids, friendDatas } = useFriendList(ownData.uid);
+  const { statusMap } = useStatus(ownData.uid, friendUids);
   const { requests } = useRequests(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
-  const { chatMessagesMap, chatUsernamesMap } = useChats(ownData.uid, friendListUids);
+  const { chatMessagesMap, chatUsernamesMap } = useChats(ownData.uid, friendUids);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!auth.currentUser) return;
       
-      setIsAuthChanged((prev) => !prev);
+      setIsAuthChanged(prev => !prev);
 
       const setOnlineStatus = async () => {
-        const dbRef = ref(realtimeDb, `users/${user.uid}`);
+        const ownStatusRef = ref(realtimeDb, `users/${user.uid}`);
 
-        await update(dbRef, {isOnline: true});
-        onDisconnect(dbRef).update({isOnline: false});
+        await update(ownStatusRef, {isOnline: true});
+        onDisconnect(ownStatusRef).update({isOnline: false});
       }
 
       setOnlineStatus();
@@ -147,16 +149,18 @@ export function Cyber() {
               ownData={ownData}
               selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
-              friendListDatas={friendListDatas}
+              friendDatas={friendDatas}
               chatMessagesMap={chatMessagesMap}
               chatUsernamesMap={chatUsernamesMap}
+              statusMap={statusMap}
             />
           : parameter === "friends" ? 
             <Friends
               ownData={ownData}
               setSelectedChatUid={setSelectedChatUid}
-              friendListUids={friendListUids}
-              friendListDatas={friendListDatas}
+              friendUids={friendUids}
+              friendDatas={friendDatas}
+              statusMap={statusMap}
               requests={requests}
               inboxItems={inboxItems}
               pendingNotifCount={pendingNotifCount}

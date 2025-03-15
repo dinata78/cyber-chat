@@ -4,17 +4,17 @@ import { db } from "../../firebase";
 import { fetchDataFromUid, getConversationId } from "../utils";
 import { query } from "firebase/database";
 
-export function useChats(uid, friendListUids) {
+export function useChats(ownUid, friendUids) {
   const [chatMessagesMap, setChatMessagesMap] = useState({});
-  const [chatUsernamesMap, setChatUsernamesMap] = useState([]);
+  const [chatUsernamesMap, setChatUsernamesMap] = useState({});
 
   useEffect(() => {
-    if (!uid || !friendListUids) return;
+    if (!ownUid) return;
 
     let unsubscribeList = [];
     
-    for (const friendUid of ["globalChat", "28qZ6LQQi3g76LLRd20HXrkQIjh1", uid, ...friendListUids]) {
-      const conversationId = getConversationId(uid, friendUid);
+    for (const uid of ["globalChat", "28qZ6LQQi3g76LLRd20HXrkQIjh1", ownUid, ...friendUids]) {
+      const conversationId = getConversationId(ownUid, uid);
 
       const messagesQuery = query(
         collection(db, "conversations", conversationId, "messages"),
@@ -26,7 +26,7 @@ export function useChats(uid, friendListUids) {
         const messages = snapshot.docs.map(doc => doc.data());
 
         setChatMessagesMap(prev => {
-          const prevMessages = prev;
+          const prevMessages = {...prev};
 
           prevMessages[conversationId] = messages.sort((a, b) => a.timeCreated - b.timeCreated);
 
@@ -50,7 +50,7 @@ export function useChats(uid, friendListUids) {
             }
           }
 
-          setChatUsernamesMap((prev) => ({...prev, ...fetchedNames}));
+          setChatUsernamesMap(prev => ({...prev, ...fetchedNames}));
         }
       });
 
@@ -65,7 +65,7 @@ export function useChats(uid, friendListUids) {
         unsubscribeList = [];
       }
     }
-  }, [uid, friendListUids]);
+  }, [ownUid, friendUids]);
 
   return { chatMessagesMap, chatUsernamesMap };
 }

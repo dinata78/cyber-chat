@@ -1,7 +1,7 @@
 import { addInbox } from "../addInbox";
 import { sendFriendRequest } from "../sendFriendRequest"
 
-export function AddFriendButton({ ownUid, searchedUserData, friendListUids, requests }) {
+export function AddFriendButton({ ownUid, searchedUserData, friendUids, requests }) {
 
   const requestSentList = requests.filter(request => request.type === "sent");
   const requestReceivedList = requests.filter(request => request.type === "received");
@@ -13,7 +13,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendListUids, requ
     if (
       requestSentUidList.includes(newFriendUid) 
       || requestReceivedUidList.includes(newFriendUid)
-      || friendListUids.includes(newFriendUid)
+      || friendUids.includes(newFriendUid)
       || newFriendUid === ownUid
       || newFriendUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1"
       ) return;
@@ -29,7 +29,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendListUids, requ
       className={ 
         requestSentUidList.includes(searchedUserData.uid) ? "sent no-effect"
         : requestReceivedUidList.includes(searchedUserData.uid) ? "received no-effect"
-        : friendListUids.includes(searchedUserData.uid) ? "is-friend no-effect"
+        : friendUids.includes(searchedUserData.uid) ? "is-friend no-effect"
         : searchedUserData.uid === ownUid ? "self no-effect"
         : searchedUserData.uid === "28qZ6LQQi3g76LLRd20HXrkQIjh1" ? "dev no-effect"
         : null
@@ -43,7 +43,7 @@ export function AddFriendButton({ ownUid, searchedUserData, friendListUids, requ
           "USER SENT YOU A FRIEND REQUEST"
         : searchedUserData.uid === ownUid ?
           "CAN'T ADD YOURSELF"
-        : friendListUids.includes(searchedUserData.uid) ?
+        : friendUids.includes(searchedUserData.uid) ?
           "USER IS ALREADY YOUR FRIEND"
         : searchedUserData.uid === "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
           "DEVELOPER OF CYBERCHAT"

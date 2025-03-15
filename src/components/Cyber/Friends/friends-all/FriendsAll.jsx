@@ -1,17 +1,17 @@
 import { FriendCard } from "./FriendCard";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
 
-export function FriendsAll({ ownUid, friendListDatas, setSelectedChatUid }) {
+export function FriendsAll({ ownUid, friendDatas, statusMap, setSelectedChatUid }) {
   
   return (
     <div id="friends-all">
-      <h1>All Friends - {friendListDatas.length}</h1>
+      <h1>All Friends - {friendDatas.length}</h1>
 
       {
-        friendListDatas.length > 0 ?
+        friendDatas.length > 0 ?
           <div className="friend-cards overflow-y-support">
             {
-              friendListDatas.map((friendData, index) => {
+              friendDatas.map((friendData, index) => {
                 return (
                   <FriendCard 
                     key={index + friendData.uid}
@@ -20,6 +20,7 @@ export function FriendsAll({ ownUid, friendListDatas, setSelectedChatUid }) {
                     friendDisplayName={friendData.displayName}
                     friendUsername={friendData.username}
                     friendTitle={friendData.title}
+                    friendStatus={statusMap[friendData.uid]}
                     setSelectedChatUid={setSelectedChatUid}
                   />
                 )

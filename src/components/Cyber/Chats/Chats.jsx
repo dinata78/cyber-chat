@@ -8,7 +8,7 @@ import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendListDatas, chatMessagesMap, chatUsernamesMap }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, statusMap }) {
 
   const [conversationId, setConversationId] = useState(null); 
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
@@ -43,7 +43,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
         );
       }
       else {
-        const chatData = await fetchDataFromUid(selectedChatUid);  
+        const chatData = await fetchDataFromUid(selectedChatUid);
 
         chatCardOnClick(
           ownData.uid,
@@ -86,6 +86,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
             displayName="Global Chat" 
             title="A global room everyone can access" 
             uid="globalChat"
+            status= "online"
             setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
@@ -97,7 +98,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
                 ownUid={ownData.uid}
                 displayName="Steven Dinata" 
                 title="Developer of CyberChat" 
-                uid="28qZ6LQQi3g76LLRd20HXrkQIjh1" 
+                uid="28qZ6LQQi3g76LLRd20HXrkQIjh1"
+                status={statusMap["28qZ6LQQi3g76LLRd20HXrkQIjh1"]}
                 setCurrentChatData={setCurrentChatData}
                 setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
@@ -110,18 +112,19 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
             displayName={
               ownData.displayName ?
                 ownData.displayName + " (You)"
-              : "Loading..." 
+              : "Loading..."
             }
             title={ownData.title}
             uid={ownData.uid}
+            status={statusMap[ownData.uid]}
             setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
           />
           {
-            friendListDatas.length > 0 &&
-            friendListDatas.map((friendData, index) => {
+            friendDatas.length > 0 &&
+            friendDatas.map((friendData, index) => {
               return (
                 <ChatCard
                   ownUid={ownData.uid}
@@ -129,6 +132,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendList
                   displayName={friendData.displayName}
                   title={friendData.title}
                   uid={friendData.uid}
+                  status={statusMap[friendData.uid]}
                   setCurrentChatData={setCurrentChatData}
                   setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}

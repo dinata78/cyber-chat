@@ -3,28 +3,27 @@ import { off, onValue, ref } from "firebase/database";
 import { realtimeDb } from "../../firebase";
 import { useHiddenUsers } from "./useHiddenUsers";
 
-export function useOnlineStatus(uid) {
-  const [onlineStatus, setOnlineStatus] = useState(null);
+export function useStatusByUid(uid) {
+  const [status, setStatus] = useState(null);
 
   const { hiddenUserUids } = useHiddenUsers();
 
   useEffect(() => {
     if (!uid) return;
     if (!hiddenUserUids || hiddenUserUids.includes(uid)) {
-      setOnlineStatus("hidden");
+      setStatus("hidden");
       return;
     }
     
-    const dbRef = ref(realtimeDb, `users/${uid}`);
-    onValue(dbRef, (snapshot) => {
-      const data = snapshot.val();
+    const statusRef = ref(realtimeDb, `users/${uid}`);
     
-      setOnlineStatus(data?.isOnline ? "online" : "offline");
+    onValue(statusRef, (snapshot) => {    
+      setStatus(snapshot.val()?.isOnline ? "online" : "offline");
     });
 
-    return () => off(dbRef);
+    return () => off(statusRef, "value");
     
   }, [uid, hiddenUserUids]);
 
-  return { onlineStatus };
+  return { status };
 }

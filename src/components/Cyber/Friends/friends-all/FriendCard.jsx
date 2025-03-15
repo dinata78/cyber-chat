@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useOnlineStatus } from "../../../../custom-hooks/useOnlineStatus";
 import { getIndicatorClass } from "../../../../utils";
 import { AccountMinusSVG } from "../../../svg/AccountMinusSVG";
 import { ChatSVG } from "../../../svg/ChatSVG";
@@ -8,11 +7,9 @@ import { removeFriend } from "../modifyFriendList";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
 
-export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, setSelectedChatUid }) {
+export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, friendStatus, setSelectedChatUid }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
-  const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
-
-  const { onlineStatus } = useOnlineStatus(friendUid);
+  const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
   const navigate = useNavigate();
 
@@ -51,7 +48,7 @@ export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsernam
         <img src="/empty-pfp.webp" />
         <div 
           className={
-            getIndicatorClass(onlineStatus)
+            getIndicatorClass(friendStatus)
           }
         >
         </div>
