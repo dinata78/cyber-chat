@@ -1,8 +1,8 @@
 import { getIndicatorClass } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, displayName, title, uid, status, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
-  
+export function ChatCard({ ownUid, displayName, title, uid, status, unreadMessagesCount, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
+
   return (
     <div 
       className={uid === selectedChatUid ? "chat-card selected" : "chat-card"} 
@@ -13,7 +13,8 @@ export function ChatCard({ ownUid, displayName, title, uid, status, setCurrentCh
           {displayName: displayName, title: title, uid: uid},
           setCurrentChatData,
           setConversationId,
-          setSelectedChatUid     
+          selectedChatUid,
+          setSelectedChatUid
         )
       }
     >
@@ -25,9 +26,17 @@ export function ChatCard({ ownUid, displayName, title, uid, status, setCurrentCh
       </div>
 
       <div className="chat-card-info">
-        <span className="chat-card-name">{displayName}</span>
-        <span className="chat-card-title">{title}</span>
+        <span className="name">{displayName}</span>
+        <span className="title">{title}</span>
       </div>
+
+      {
+        uid !== selectedChatUid &&
+        unreadMessagesCount > 0 &&
+        <label className="unread-count">
+          {unreadMessagesCount}
+        </label>
+      }
 
     </div>
   )

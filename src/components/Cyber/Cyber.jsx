@@ -25,6 +25,8 @@ export function Cyber() {
   const [ownData, setOwnData] = useState({});
   const [selectedChatUid, setSelectedChatUid] = useState("globalChat");
   const [isAccountVisible, setIsAccountVisible] = useState(false);
+
+  const [ chatsHasNotif, setChatsHasNotif ] = useState(false);
   const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
   const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
@@ -98,6 +100,30 @@ export function Cyber() {
     }
   }, [inboxItems]);
 
+  useEffect(() => {
+    const chatMessagesList = Object.values(chatMessagesMap);
+
+    let hasUnread = false;
+
+    mainLoop:
+    for (let i = 0; i < chatMessagesList.length; i++) {
+      const chatMessages = chatMessagesList[i];
+
+      for (const message of chatMessages) {
+        if (message.isUnread) {
+          hasUnread = true;
+          break mainLoop;
+        }
+      }
+      
+      hasUnread = false;
+    }
+
+    if (hasUnread) setChatsHasNotif(true);
+    else setChatsHasNotif(false);
+
+  }, [chatMessagesMap]);
+
   return (
     <div id="cyber-page">
       <div id="cyber-container">
@@ -106,7 +132,7 @@ export function Cyber() {
             <Link to="/cyber/chats" tabIndex={-1}>
               <button className={parameter === "chats" ? "nav-button selected" : "nav-button"}>
                 <ChatsSVG />
-                {true && <div id="cyber-notif"></div>}
+                {chatsHasNotif && <div id="cyber-notif"></div>}
               </button>
             </Link>
             <Link to="/cyber/friends" tabIndex={-1}>

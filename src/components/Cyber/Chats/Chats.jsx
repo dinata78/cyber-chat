@@ -3,7 +3,7 @@ import { SearchSVG } from "../../svg/SearchSVG";
 import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
@@ -26,6 +26,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       content: messageInput,
       senderId: ownData.uid,
       timeCreated: new Date(),
+      isUnread: ["globalChat", ownData.uid].includes(selectedChatUid) ? false : true,
     });
 
     setMessageInput("");
@@ -39,8 +40,19 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           {displayName: "Global Chat", title: "A global room everyone can access", uid: "globalChat"},
           setCurrentChatData,
           setConversationId,
+          null,
           setSelectedChatUid
         );
+      }
+      else if (selectedChatUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1") {
+        chatCardOnClick(
+          ownData.uid,
+          {displayName: "Steven Dinata", title: "Developer of CyberChat", uid: "28qZ6LQQi3g76LLRd20HXrkQIjh1"},
+          setCurrentChatData,
+          setConversationId,
+          null,
+          setSelectedChatUid
+        )
       }
       else {
         const chatData = await fetchDataFromUid(selectedChatUid);
@@ -50,6 +62,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           {displayName: chatData.uid === ownData.uid ? chatData.displayName + " (You)" : chatData.displayName, title: chatData.title, uid: chatData.uid},
           setCurrentChatData,
           setConversationId,
+          null,
           setSelectedChatUid
         );
       }
@@ -59,7 +72,32 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   }, [ownData.uid]);
 
   useEffect(() => {
-    if (currentChatData.displayName) {
+    const clearUnread = async () => {
+      const conversationId = getConversationId(ownData.uid, selectedChatUid);
+
+      const unreadMessagesQuery = query(
+        collection(db, "conversations", conversationId, "messages"),
+        where("senderId", "==", selectedChatUid),
+        where("isUnread", "==", true)
+      )
+    
+      const unreadMessagesDocs = await getDocs(unreadMessagesQuery);
+      
+      const batch = writeBatch(db);
+      unreadMessagesDocs.docs.forEach(doc => {
+        batch.update(doc.ref, {...doc.data(), isUnread: false});
+      })
+    
+      await batch.commit();
+    }
+
+    clearUnread();
+  }, [selectedChatUid, chatMessagesMap[conversationId]]);
+
+  useEffect(() => {
+    const conversationId = getConversationId(ownData.uid, selectedChatUid);
+
+    if (chatMessagesMap[conversationId]?.length) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   });
@@ -87,6 +125,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             title="A global room everyone can access" 
             uid="globalChat"
             status= "online"
+            unreadMessagesCount={0}
             setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
@@ -100,6 +139,13 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 title="Developer of CyberChat" 
                 uid="28qZ6LQQi3g76LLRd20HXrkQIjh1"
                 status={statusMap["28qZ6LQQi3g76LLRd20HXrkQIjh1"]}
+                unreadMessagesCount={
+                  Array.isArray(chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]) ?
+                    chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]
+                    .filter(message => message.isUnread && message.senderId !== ownData.uid)
+                    .length
+                  : 0
+                }
                 setCurrentChatData={setCurrentChatData}
                 setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
@@ -109,14 +155,11 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           }
           <ChatCard
             ownUid={ownData.uid}
-            displayName={
-              ownData.displayName ?
-                ownData.displayName + " (You)"
-              : "Loading..."
-            }
-            title={ownData.title}
+            displayName={ownData.displayName ? ownData.displayName + " (You)" : "Loading..."}
+            title={ownData.title || "Loading..."}
             uid={ownData.uid}
             status={statusMap[ownData.uid]}
+            unreadMessagesCount={0}
             setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
@@ -133,6 +176,13 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   title={friendData.title}
                   uid={friendData.uid}
                   status={statusMap[friendData.uid]}
+                  unreadMessagesCount={
+                    Array.isArray(chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]) ?
+                      chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]
+                      .filter(message => message.isUnread && message.senderId !== ownData.uid)
+                      .length
+                    : 0
+                  }
                   setCurrentChatData={setCurrentChatData}
                   setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}
@@ -159,10 +209,13 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         
         <div id="chats-content-bottom">
 
-          <div id="chat-messages" className="overflow-y-support">
+          <div 
+            id="chat-messages"
+            className="overflow-y-support"
+          >
 
             { 
-              chatMessagesMap[conversationId] &&
+              chatMessagesMap[conversationId]?.length > 0 &&
               chatMessagesMap[conversationId].map((chatMessage, index) => {
               return ( 
                 <MessageCard

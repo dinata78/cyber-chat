@@ -1,12 +1,13 @@
 import { getConversationId } from "../../../utils";
 
-export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConversationId, setSelectedChatUid) {
+export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid) {
   
   if (!ownUid) return;
+  if (selectedChatUid === chatData.uid) return;
 
   const conversationId = getConversationId(ownUid, chatData.uid);
 
-  setConversationId(conversationId);
+  setConversationId(conversationId); 
   
   setSelectedChatUid(chatData.uid);
   

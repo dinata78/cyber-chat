@@ -524,6 +524,7 @@ button#toggle-theme svg {
 }
 
 .chat-card {
+  position: relative;
   background-color: #ffffff25;
   min-height: 96px;
   display: flex;
@@ -536,7 +537,7 @@ button#toggle-theme svg {
 }
 
 .chat-card.selected {
-  background-color: #0066ff;
+  background-color: #7777df77;
 }
 
 .chat-card-pfp {
@@ -568,16 +569,31 @@ button#toggle-theme svg {
   flex-direction: column;
 }
 
-.chat-card-name {
+.chat-card-info .name {
   width: 90%;
   font-size: 1.25rem;
   font-weight: 700;
 }
 
-.chat-card-title {
+.chat-card-info .title {
   color: #ffffffbb;
   width: 90%;
   font-size: 0.9rem;
+}
+
+.chat-card .unread-count {
+  position: absolute;
+  right: 24px;
+  top: auto;
+  background-color: #ff424277;
+  width: 28px;
+  height: 28px;
+  border-radius: 100%;
+  display: grid;
+  place-content: center;
+  color: #ffffcc;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 #cyber-chats-content {
@@ -654,6 +670,7 @@ button#toggle-theme svg {
 }
 
 #chat-messages .message-card .sender-name {
+  position: relative;
   background-color: #aaddff50;
   width: max-content;
   min-height: 30px;
