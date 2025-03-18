@@ -19,16 +19,18 @@ export function useUnreadRequests(uid, requestsLength) {
 
       setUnreadRequestIds(unreadRequestIds);
 
-      const batch = writeBatch(db);
+      if (unreadRequestIds.length) {
+        const batch = writeBatch(db);
 
-      unreadRequestsDocs.docs.forEach((request) => {
-        batch.update(request.ref, {
-          ...request.data(),
-          isUnread: false,
+        unreadRequestsDocs.docs.forEach((request) => {
+          batch.update(request.ref, {
+            ...request.data(),
+            isUnread: false,
+          });
         });
-      });
-
-      await batch.commit();
+  
+        await batch.commit();
+      }  
     }
 
     fetchSetAndClearUnread();

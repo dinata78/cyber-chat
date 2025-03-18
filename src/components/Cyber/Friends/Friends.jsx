@@ -34,6 +34,7 @@ export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, 
         >
           Pending
           {
+            currentNav !== "pending" &&
             pendingNotifCount > 0 &&
             <FriendsNotifUI count={pendingNotifCount} />
           }
@@ -45,6 +46,7 @@ export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, 
         >
           Inbox
           {
+            currentNav !== "inbox" &&
             inboxNotifCount > 0 &&
             <FriendsNotifUI count={inboxNotifCount} />
           }

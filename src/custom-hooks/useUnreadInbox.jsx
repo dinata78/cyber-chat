@@ -19,16 +19,18 @@ export function useUnreadInbox(uid, inboxItemsLength) {
 
       setUnreadInboxIds(unreadInboxIds);
 
-      const batch = writeBatch(db);
+      if (unreadInboxIds.length) {
+        const batch = writeBatch(db);
 
-      unreadInboxDocs.docs.forEach((item) => {
-        batch.update(item.ref, {
-          ...item.data(),
-          isUnread: false,
+        unreadInboxDocs.docs.forEach((item) => {
+          batch.update(item.ref, {
+            ...item.data(),
+            isUnread: false,
+          });
         });
-      });
-
-      await batch.commit();
+  
+        await batch.commit();  
+      }
     }
 
     fetchSetAndClearUnread();
