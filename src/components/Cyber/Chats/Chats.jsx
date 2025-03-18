@@ -177,8 +177,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   uid={friendData.uid}
                   status={statusMap[friendData.uid]}
                   unreadMessagesCount={
-                    Array.isArray(chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]) ?
-                      chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]
+                    Array.isArray(chatMessagesMap[getConversationId(ownData.uid, friendData.uid)]) ?
+                      chatMessagesMap[getConversationId(ownData.uid, friendData.uid)]
                       .filter(message => message.isUnread && message.senderId !== ownData.uid)
                       .length
                     : 0
