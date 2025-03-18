@@ -17,19 +17,20 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const messageEndRef = useRef(null);
 
   const addMessage = async () => {
-    if (!messageInput.trim()) return;
+    const newMessage = messageInput;
+    setMessageInput("");
+    
+    if (!newMessage.trim()) return;
 
     const conversationId = getConversationId(ownData.uid, currentChatData.uid);
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
-      content: messageInput,
+      content: newMessage,
       senderId: ownData.uid,
       timeCreated: new Date(),
       isUnread: ["globalChat", ownData.uid].includes(selectedChatUid) ? false : true,
     });
-
-    setMessageInput("");
   }
 
   useEffect(() => {
@@ -41,7 +42,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setCurrentChatData,
           setConversationId,
           null,
-          setSelectedChatUid
+          setSelectedChatUid,
+          messageEndRef
         );
       }
       else if (selectedChatUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1") {
@@ -51,8 +53,9 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setCurrentChatData,
           setConversationId,
           null,
-          setSelectedChatUid
-        )
+          setSelectedChatUid,
+          messageEndRef
+        );
       }
       else {
         const chatData = await fetchDataFromUid(selectedChatUid);
@@ -63,7 +66,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setCurrentChatData,
           setConversationId,
           null,
-          setSelectedChatUid
+          setSelectedChatUid,
+          messageEndRef
         );
       }
     }
@@ -72,6 +76,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   }, [ownData.uid]);
 
   useEffect(() => {
+    if (!ownData.uid) return;
+
     const clearUnread = async () => {
       const conversationId = getConversationId(ownData.uid, selectedChatUid);
 
@@ -79,28 +85,26 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         collection(db, "conversations", conversationId, "messages"),
         where("senderId", "==", selectedChatUid),
         where("isUnread", "==", true)
-      )
+      );
     
       const unreadMessagesDocs = await getDocs(unreadMessagesQuery);
+     
+      if (unreadMessagesDocs.docs.length) {
+        const batch = writeBatch(db);
+        unreadMessagesDocs.docs.forEach(doc => {
+          batch.update(doc.ref, {...doc.data(), isUnread: false});
+        });
       
-      const batch = writeBatch(db);
-      unreadMessagesDocs.docs.forEach(doc => {
-        batch.update(doc.ref, {...doc.data(), isUnread: false});
-      })
-    
-      await batch.commit();
+        await batch.commit();  
+      }
     }
 
     clearUnread();
   }, [selectedChatUid, chatMessagesMap[conversationId]]);
 
   useEffect(() => {
-    const conversationId = getConversationId(ownData.uid, selectedChatUid);
-
-    if (chatMessagesMap[conversationId]?.length) {
-      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  });
+    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessagesMap[getConversationId(ownData.uid, selectedChatUid)]]);
 
   return (
     <div id="cyber-chats">
@@ -130,6 +134,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
+            messageEndRef={messageEndRef}
           />
           {
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
@@ -150,6 +155,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
+                messageEndRef={messageEndRef}
               />
             : null
           }
@@ -164,6 +170,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
+            messageEndRef={messageEndRef}
           />
           {
             friendDatas.length > 0 &&
@@ -187,6 +194,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
+                  messageEndRef={messageEndRef}
                 />
               )
             })
@@ -229,7 +237,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
               })
             }
 
-            <div id="message-end-ref" ref={messageEndRef}></div>
+            <div ref={messageEndRef}></div>
           </div>
 
           <div id="chat-input">

@@ -1,7 +1,7 @@
 import { getIndicatorClass } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, displayName, title, uid, status, unreadMessagesCount, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid }) {
+export function ChatCard({ ownUid, displayName, title, uid, status, unreadMessagesCount, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid, messageEndRef }) {
 
   return (
     <div 
@@ -14,7 +14,8 @@ export function ChatCard({ ownUid, displayName, title, uid, status, unreadMessag
           setCurrentChatData,
           setConversationId,
           selectedChatUid,
-          setSelectedChatUid
+          setSelectedChatUid,
+          messageEndRef
         )
       }
     >

@@ -1,13 +1,13 @@
 import { getConversationId } from "../../../utils";
 
-export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid) {
+export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid, messageEndRef) {
   
   if (!ownUid) return;
-  if (selectedChatUid === chatData.uid) return;
+  if (chatData.uid === selectedChatUid) return;
 
   const conversationId = getConversationId(ownUid, chatData.uid);
 
-  setConversationId(conversationId); 
+  setConversationId(conversationId);
   
   setSelectedChatUid(chatData.uid);
   
@@ -16,4 +16,6 @@ export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConvers
     title: chatData.title,
     uid: chatData.uid
   });
+
+  setTimeout(() => messageEndRef.current.scrollIntoView({ behavior: "smooth" }), 0);
 }
