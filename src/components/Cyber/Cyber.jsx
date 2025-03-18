@@ -110,7 +110,7 @@ export function Cyber() {
       const chatMessages = chatMessagesList[i];
 
       for (const message of chatMessages) {
-        if (message.isUnread) {
+        if (message.isUnread && message.senderId !== ownData.uid) {
           hasUnread = true;
           break mainLoop;
         }
