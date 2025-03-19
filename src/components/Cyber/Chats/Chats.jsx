@@ -14,6 +14,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [messageInput, setMessageInput] = useState("");
 
+  const prevSelectedChatUid = useRef("");
   const messageEndRef = useRef(null);
 
   const addMessage = async () => {
@@ -77,13 +78,14 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
   useEffect(() => {
     if (!ownData.uid) return;
+    if (!prevSelectedChatUid.current || ["globalChat", ownData.uid].includes(prevSelectedChatUid.current)) return;
 
     const clearUnread = async () => {
-      const conversationId = getConversationId(ownData.uid, selectedChatUid);
+      const conversationId = getConversationId(ownData.uid, prevSelectedChatUid.current);
 
       const unreadMessagesQuery = query(
         collection(db, "conversations", conversationId, "messages"),
-        where("senderId", "==", selectedChatUid),
+        where("senderId", "==", prevSelectedChatUid.current),
         where("isUnread", "==", true)
       );
     
@@ -95,12 +97,17 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           batch.update(doc.ref, {...doc.data(), isUnread: false});
         });
       
-        await batch.commit();  
+        await batch.commit();
       }
     }
 
     clearUnread();
-  }, [selectedChatUid, chatMessagesMap[conversationId]]);
+
+  }, [selectedChatUid, chatMessagesMap[getConversationId(ownData.uid, selectedChatUid)]]);
+
+  useEffect(() => {
+    prevSelectedChatUid.current = selectedChatUid;
+  }, [selectedChatUid]);
 
   useEffect(() => {
     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -225,15 +232,18 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             { 
               chatMessagesMap[conversationId]?.length > 0 &&
               chatMessagesMap[conversationId].map((chatMessage, index) => {
-              return ( 
-                <MessageCard
-                  key={index + chatMessage.senderId}
-                  senderName={chatUsernamesMap[chatMessage.senderId]} 
-                  content={chatMessage.content}
-                  timeCreated={chatMessage.timeCreated}
-                  isOwnMessage={chatMessage.senderId === ownData.uid}
-                />
-              )
+                return (
+                  <MessageCard
+                    key={index + chatMessage.senderId}
+                    senderName={chatUsernamesMap[chatMessage.senderId]} 
+                    content={chatMessage.content}
+                    timeCreated={chatMessage.timeCreated}
+                    isUnread={chatMessage.isUnread}
+                    isOwnMessage={chatMessage.senderId === ownData.uid}
+                    selectedChatUid={selectedChatUid}
+                    prevSelectedChatUid={prevSelectedChatUid}
+                  />
+                )
               })
             }
 

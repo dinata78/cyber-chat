@@ -1,10 +1,11 @@
 import { processDate } from "../../../utils";
 
-export function MessageCard({ senderName, content, timeCreated, isOwnMessage }) {
+export function MessageCard({ senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid }) {
+
   return (
     <div className={isOwnMessage ? "message-card own" : "message-card"}>
 
-      <div className={isOwnMessage ? "message-info own" : "message-info"}>
+      <div className={isOwnMessage ? "container own" : "container"}>
 
         <div className={isOwnMessage ? "sender-name own" : "sender-name"}>
           {senderName}
@@ -17,6 +18,11 @@ export function MessageCard({ senderName, content, timeCreated, isOwnMessage }) 
         <div className="time">
           {processDate(timeCreated.toDate())}
         </div>
+
+        {
+          !isOwnMessage && isUnread && selectedChatUid !== prevSelectedChatUid.current  &&
+          <label className="unread-indicator" title="Unread message">!</label>
+        }
 
       </div>
       

@@ -658,19 +658,19 @@ button#toggle-theme svg {
   justify-content: flex-end;
 }
 
-#chat-messages .message-card > div {
+#chat-messages .message-card .container {
+  position: relative;
   width: 700px;
   height: max-content;
   display: flex;
   flex-direction: column;
 }
 
-#chat-messages .message-card > div.own {
+#chat-messages .message-card .container.own {
   align-items: flex-end;
 }
 
 #chat-messages .message-card .sender-name {
-  position: relative;
   background-color: #aaddff50;
   width: max-content;
   min-height: 30px;
@@ -681,15 +681,11 @@ button#toggle-theme svg {
   font-size: 18px;
 }
 
-#chat-messages .message-info {
-  position: relative;
-}
-
-#chat-messages .message-info .sender-name.own {
+#chat-messages .container .sender-name.own {
   justify-content: flex-end;
 }
 
-#chat-messages .message-info .content {
+#chat-messages .container .content {
   flex-grow: 1;
   width: 100%;
   padding: 12px;
@@ -698,12 +694,20 @@ button#toggle-theme svg {
   font-size: 14px;
 }
 
-#chat-messages .message-info .time {
+#chat-messages .container .time {
   position: absolute;
   bottom: -18px;
   right: 4px;
   color: #aaddff99;
   font-size: 10px;
+}
+
+#chat-messages .container .unread-indicator {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  color: #aaddff;
+  font-size: 24px;
 }
 
 #chat-input {
