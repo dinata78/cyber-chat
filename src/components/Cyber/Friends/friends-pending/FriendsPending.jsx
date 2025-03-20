@@ -1,11 +1,8 @@
-import { useUnreadRequests } from "../../../../custom-hooks/useUnreadRequests";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
 import { PendingCard } from "./PendingCard";
 
 export function FriendsPending({ ownUid, requests }) {
   
-  const { unreadRequestIds } = useUnreadRequests(ownUid, requests.length);
-
   return (
     <div id="friends-pending">
 
@@ -25,7 +22,7 @@ export function FriendsPending({ ownUid, requests }) {
                       type={request.type}
                       uid={request.uid}
                       timeCreated={request.timeCreated}
-                      isUnread={unreadRequestIds.includes(request.id)}
+                      isUnread={request.isUnread}
                     />
                   )
                 })

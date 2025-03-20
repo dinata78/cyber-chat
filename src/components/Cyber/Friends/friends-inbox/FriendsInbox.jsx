@@ -5,13 +5,10 @@ import { InboxCard } from "./InboxCard";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
-import { useUnreadInbox } from "../../../../custom-hooks/useUnreadInbox";
 
 export function FriendsInbox({ ownUid, inboxItems }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
-
-  const { unreadInboxIds } = useUnreadInbox(ownUid, inboxItems?.length);
 
   const clearInbox = async () => {
     const inboxRef = collection(db, "users", ownUid, "inbox");
@@ -69,7 +66,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
                     key={index + item.timeCreated + index}
                     content={item.content}
                     timeCreated={item.timeCreated}
-                    isUnread={unreadInboxIds.includes(item.id)}
+                    isUnread={item.isUnread}
                   />
                 )
               })

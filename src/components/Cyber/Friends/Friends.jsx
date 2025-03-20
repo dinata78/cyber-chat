@@ -1,18 +1,61 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SearchSVG } from "../../svg/SearchSVG";
 import { FriendsAll } from "./friends-all/FriendsAll";
 import { AddFriendModal } from "./add-friend-modal/AddFriendModal";
 import { FriendsPending } from "./friends-pending/FriendsPending";
 import { FriendsInbox } from "./friends-inbox/FriendsInbox";
 import { FriendsNotifUI } from "./FriendsNotifUI";
+import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
+import { db } from "../../../../firebase";
 
 export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, statusMap, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
 
+  const prevNav = useRef("");
+
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
   }
+
+  useEffect(() => {
+    if (!ownData.uid) return;
+    if (!prevNav.current || prevNav.current === "all") return;
+
+    const clearUnread = async () => {
+      const unreadQuery = query(
+        collection(
+          db, "users", ownData.uid,
+          prevNav.current === "pending" ?
+            "requests"
+          : "inbox"
+        ),
+        where("isUnread", "==", true)
+      );
+
+      const unreadDocs = await getDocs(unreadQuery);
+
+      if (unreadDocs.docs.length) {
+        const batch = writeBatch(db);
+
+        unreadDocs.docs.forEach(doc => {
+          batch.update(doc.ref, {
+            ...doc.data(),
+            isUnread: false
+          });
+        });
+
+        await batch.commit();
+      }
+    }
+
+    clearUnread();
+
+  }, [currentNav]);
+
+  useEffect(() => {
+    prevNav.current = currentNav;
+  }, [currentNav]);
 
   return (
     <div id="cyber-friends">
