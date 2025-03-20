@@ -571,8 +571,20 @@ button#toggle-theme svg {
 
 .chat-card-info .name {
   width: 90%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.chat-card-info .name .display-name {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: bold;
+}
+
+.chat-card-info .name .username {
+  color: #aaddff;
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .chat-card-info .title {

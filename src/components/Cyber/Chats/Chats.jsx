@@ -132,7 +132,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         <div id="chats-aside-bottom" className="overflow-y-support">
           <ChatCard
             ownUid={ownData.uid}
-            displayName="Global Chat" 
+            displayName="Global Chat"
+            username={null}
             title="A global room everyone can access" 
             uid="globalChat"
             status= "online"
@@ -147,7 +148,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
               <ChatCard 
                 ownUid={ownData.uid}
-                displayName="Steven Dinata" 
+                displayName="Steven Dinata"
+                username={null}
                 title="Developer of CyberChat" 
                 uid="28qZ6LQQi3g76LLRd20HXrkQIjh1"
                 status={statusMap["28qZ6LQQi3g76LLRd20HXrkQIjh1"]}
@@ -169,6 +171,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           <ChatCard
             ownUid={ownData.uid}
             displayName={ownData.displayName ? ownData.displayName + " (You)" : "Loading..."}
+            username={ownData?.username}
             title={ownData.title || "Loading..."}
             uid={ownData.uid}
             status={statusMap[ownData.uid]}
@@ -187,6 +190,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   ownUid={ownData.uid}
                   key={index + friendData.uid}
                   displayName={friendData.displayName}
+                  username={friendData.username}
                   title={friendData.title}
                   uid={friendData.uid}
                   status={statusMap[friendData.uid]}
