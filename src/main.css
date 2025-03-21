@@ -603,7 +603,7 @@ button#toggle-theme svg {
   border-radius: 100%;
   display: grid;
   place-content: center;
-  color: #ffffcc;
+  color: #ffffff;
   font-size: 12px;
   font-weight: bold;
 }
@@ -659,6 +659,22 @@ button#toggle-theme svg {
   display: flex;
   flex-direction: column;
   gap: 30px;
+}
+
+#chat-messages button {
+  align-self: center;
+  background-color: #aaddff25;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  color: #aaddff99;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#chat-messages button:hover,
+#chat-messages button:active {
+  background-color: #aaddff35;
 }
 
 #chat-messages .message-card {

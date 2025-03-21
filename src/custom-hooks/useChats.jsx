@@ -7,6 +7,7 @@ import { query } from "firebase/database";
 export function useChats(ownUid, friendUids) {
   const [chatMessagesMap, setChatMessagesMap] = useState({});
   const [chatUsernamesMap, setChatUsernamesMap] = useState({});
+  const [messagesAmountMap, setMessagesAmountMap] = useState({default: 25});
 
   useEffect(() => {
     if (!ownUid) return;
@@ -19,11 +20,11 @@ export function useChats(ownUid, friendUids) {
       const messagesQuery = query(
         collection(db, "conversations", conversationId, "messages"),
         orderBy("timeCreated", "desc"),
-        limit(50)
-      )
+        limit(messagesAmountMap[conversationId] || messagesAmountMap["default"])
+      );
 
       const unsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
-        const messages = snapshot.docs.map(doc => doc.data());
+        const messages = snapshot.docs.map(doc => ({id: doc.id,...doc.data()}));
 
         setChatMessagesMap(prev => {
           const prevMessages = {...prev};
@@ -65,7 +66,7 @@ export function useChats(ownUid, friendUids) {
         unsubscribeList = [];
       }
     }
-  }, [ownUid, friendUids]);
+  }, [ownUid, friendUids, messagesAmountMap]);
 
-  return { chatMessagesMap, chatUsernamesMap };
+  return { chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap };
 }

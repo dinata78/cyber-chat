@@ -35,7 +35,7 @@ export function Cyber() {
   const { requests } = useRequests(ownData.uid);
   const { inboxItems } = useInbox(ownData.uid);
 
-  const { chatMessagesMap, chatUsernamesMap } = useChats(ownData.uid, friendUids);
+  const { chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap } = useChats(ownData.uid, friendUids);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -178,6 +178,8 @@ export function Cyber() {
               friendDatas={friendDatas}
               chatMessagesMap={chatMessagesMap}
               chatUsernamesMap={chatUsernamesMap}
+              messagesAmountMap={messagesAmountMap}
+              setMessagesAmountMap={setMessagesAmountMap}
               statusMap={statusMap}
             />
           : parameter === "friends" ? 

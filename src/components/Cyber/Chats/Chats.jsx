@@ -8,22 +8,38 @@ import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, statusMap }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 
   const [conversationId, setConversationId] = useState(null); 
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [messageInput, setMessageInput] = useState("");
+  const [hasOlderMessages, setHasOlderMessages] = useState(false);
+
+  const selectedChatMessages = chatMessagesMap[conversationId];
+  const selectedChatMessagesMaxAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
+
+  const latestMessageId = selectedChatMessages ? selectedChatMessages[selectedChatMessages.length - 1]?.id : undefined;
 
   const prevSelectedChatUid = useRef("");
-  const messageEndRef = useRef(null);
+  
+  const chatMessagesRef = useRef(null);
 
   const addMessage = async () => {
+    if (selectedChatMessages.length === selectedChatMessagesMaxAmount) {
+      setMessagesAmountMap(prev => {
+        const prevMessagesAmountMap = {...prev};
+  
+        prevMessagesAmountMap[conversationId] = selectedChatMessagesMaxAmount + 1;
+  
+        return prevMessagesAmountMap;
+      });  
+    }
+
     const newMessage = messageInput;
     setMessageInput("");
     
     if (!newMessage.trim()) return;
 
-    const conversationId = getConversationId(ownData.uid, currentChatData.uid);
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
@@ -32,6 +48,20 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       timeCreated: new Date(),
       isUnread: ["globalChat", ownData.uid].includes(selectedChatUid) ? false : true,
     });
+  }
+
+  const loadOlderMessages = () => {
+    const prevScrollHeight = chatMessagesRef.current.scrollHeight;
+
+    setMessagesAmountMap(prev => {
+      const prevMessagesAmountMap = {...prev};
+
+      prevMessagesAmountMap[conversationId] = selectedChatMessagesMaxAmount + 25; 
+
+      return prevMessagesAmountMap;
+    });
+
+    setTimeout(() => chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight - prevScrollHeight, behavior: "smooth" }), 500);
   }
 
   useEffect(() => {
@@ -44,7 +74,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setConversationId,
           null,
           setSelectedChatUid,
-          messageEndRef
+          chatMessagesRef
         );
       }
       else if (selectedChatUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1") {
@@ -55,7 +85,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setConversationId,
           null,
           setSelectedChatUid,
-          messageEndRef
+          chatMessagesRef
         );
       }
       else {
@@ -68,7 +98,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setConversationId,
           null,
           setSelectedChatUid,
-          messageEndRef
+          chatMessagesRef
         );
       }
     }
@@ -81,8 +111,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     if (!prevSelectedChatUid.current || ["globalChat", ownData.uid].includes(prevSelectedChatUid.current)) return;
 
     const clearUnread = async () => {
-      const conversationId = getConversationId(ownData.uid, prevSelectedChatUid.current);
-
       const unreadMessagesQuery = query(
         collection(db, "conversations", conversationId, "messages"),
         where("senderId", "==", prevSelectedChatUid.current),
@@ -96,22 +124,36 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         unreadMessagesDocs.docs.forEach(doc => {
           batch.update(doc.ref, {...doc.data(), isUnread: false});
         });
-      
+    
         await batch.commit();
       }
     }
 
     clearUnread();
 
-  }, [selectedChatUid, chatMessagesMap[getConversationId(ownData.uid, selectedChatUid)]]);
+  }, [selectedChatUid, selectedChatMessages]);
 
   useEffect(() => {
     prevSelectedChatUid.current = selectedChatUid;
   }, [selectedChatUid]);
 
   useEffect(() => {
-    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessagesMap[getConversationId(ownData.uid, selectedChatUid)]]);
+    if (!chatMessagesRef.current) return;
+
+    setTimeout(() => chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight, behavior: "smooth" }), 250);
+  }, [latestMessageId]);
+
+  useEffect(() => {
+    if (!selectedChatMessages?.length) return; 
+
+    if (selectedChatMessages.length >= selectedChatMessagesMaxAmount) {
+      setHasOlderMessages(true);
+    }
+    else {
+      setHasOlderMessages(false);
+    }
+
+  }, [selectedChatMessages, messagesAmountMap]);
 
   return (
     <div id="cyber-chats">
@@ -142,7 +184,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
-            messageEndRef={messageEndRef}
+            chatMessagesRef={chatMessagesRef}
           />
           {
             ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
@@ -164,7 +206,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
-                messageEndRef={messageEndRef}
+                chatMessagesRef={chatMessagesRef}
               />
             : null
           }
@@ -180,7 +222,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
-            messageEndRef={messageEndRef}
+            chatMessagesRef={chatMessagesRef}
           />
           {
             friendDatas.length > 0 &&
@@ -205,7 +247,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
-                  messageEndRef={messageEndRef}
+                  chatMessagesRef={chatMessagesRef}
                 />
               )
             })
@@ -231,8 +273,14 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           <div 
             id="chat-messages"
             className="overflow-y-support"
+            ref={chatMessagesRef}
           >
-
+            {
+              hasOlderMessages &&
+              <button onClick={loadOlderMessages}>
+                Load older messages
+              </button>
+            }
             { 
               chatMessagesMap[conversationId]?.length > 0 &&
               chatMessagesMap[conversationId].map((chatMessage, index) => {
@@ -250,8 +298,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 )
               })
             }
-
-            <div ref={messageEndRef}></div>
           </div>
 
           <div id="chat-input">
