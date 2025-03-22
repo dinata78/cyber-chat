@@ -722,6 +722,10 @@ button#toggle-theme svg {
   font-size: 14px;
 }
 
+#chat-messages .container .content.sending {
+  color: #888;
+}
+
 #chat-messages .container .time {
   position: absolute;
   bottom: -18px;

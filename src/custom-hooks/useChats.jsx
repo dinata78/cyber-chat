@@ -1,4 +1,4 @@
-import { collection, limit, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, doc, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { fetchDataFromUid, getConversationId } from "../utils";
@@ -23,8 +23,14 @@ export function useChats(ownUid, friendUids) {
         limit(messagesAmountMap[conversationId] || messagesAmountMap["default"])
       );
 
-      const unsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
-        const messages = snapshot.docs.map(doc => ({id: doc.id,...doc.data()}));
+      const unsubscribe = onSnapshot(messagesQuery, { includeMetadataChanges: true }, async (snapshot) => {
+        const messages = snapshot.docs.map(doc => {
+          return {
+            id: doc.id,
+            isSending: doc.metadata.hasPendingWrites,
+            ...doc.data()
+          }
+      });
 
         setChatMessagesMap(prev => {
           const prevMessages = {...prev};
@@ -47,7 +53,7 @@ export function useChats(ownUid, friendUids) {
               fetchedNames[senderId] = senderDocData.displayName;
             }
             else {
-              fetchedNames[senderId] = "<deleted>"
+              fetchedNames[senderId] = "<deleted>";
             }
           }
 

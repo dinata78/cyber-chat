@@ -24,7 +24,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   
   const chatMessagesRef = useRef(null);
 
-  const addMessage = async () => {
+  const addMessage = async () => {    
     if (selectedChatMessages.length === selectedChatMessagesMaxAmount) {
       setMessagesAmountMap(prev => {
         const prevMessagesAmountMap = {...prev};
@@ -32,7 +32,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         prevMessagesAmountMap[conversationId] = selectedChatMessagesMaxAmount + 1;
   
         return prevMessagesAmountMap;
-      });  
+      });
     }
 
     const newMessage = messageInput;
@@ -47,7 +47,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       senderId: ownData.uid,
       timeCreated: new Date(),
       isUnread: ["globalChat", ownData.uid].includes(selectedChatUid) ? false : true,
-    });
+    });  
   }
 
   const loadOlderMessages = () => {
@@ -110,6 +110,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     if (!ownData.uid) return;
     if (!prevSelectedChatUid.current || ["globalChat", ownData.uid].includes(prevSelectedChatUid.current)) return;
 
+    const conversationId = getConversationId(ownData.uid, prevSelectedChatUid.current)
+
     const clearUnread = async () => {
       const unreadMessagesQuery = query(
         collection(db, "conversations", conversationId, "messages"),
@@ -154,6 +156,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     }
 
   }, [selectedChatMessages, messagesAmountMap]);
+
+  useEffect(() => {
+    console.log(chatMessagesMap[conversationId]);
+  }, [conversationId, chatMessagesMap[conversationId]])
 
   return (
     <div id="cyber-chats">
@@ -287,7 +293,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 return (
                   <MessageCard
                     key={index + chatMessage.senderId}
-                    senderName={chatUsernamesMap[chatMessage.senderId]} 
+                    senderName={chatUsernamesMap[chatMessage.senderId]}
+                    isSending={chatMessage.isSending} 
                     content={chatMessage.content}
                     timeCreated={chatMessage.timeCreated}
                     isUnread={chatMessage.isUnread}
@@ -306,6 +313,9 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
               placeholder="Type something.."
               value={messageInput}
               onChange={(e) => setMessageInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addMessage();
+              }}
             />
             <button onClick={addMessage}>
               <ArrowLeftSVG />

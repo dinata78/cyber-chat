@@ -1,6 +1,6 @@
 import { processDate } from "../../../utils";
 
-export function MessageCard({ senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid }) {
+export function MessageCard({ senderName, isSending, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid }) {
 
   return (
     <div className={isOwnMessage ? "message-card own" : "message-card"}>
@@ -11,7 +11,7 @@ export function MessageCard({ senderName, content, timeCreated, isUnread, isOwnM
           {senderName}
         </div>
 
-        <div className="content">
+        <div className={isOwnMessage && isSending ? "content sending" : "content"}>
           {content}
         </div>
 
