@@ -1,4 +1,4 @@
-import { collection, doc, limit, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { fetchDataFromUid, getConversationId } from "../utils";

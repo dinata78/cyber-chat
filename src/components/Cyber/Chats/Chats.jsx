@@ -157,10 +157,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
   }, [selectedChatMessages, messagesAmountMap]);
 
-  useEffect(() => {
-    console.log(chatMessagesMap[conversationId]);
-  }, [conversationId, chatMessagesMap[conversationId]])
-
   return (
     <div id="cyber-chats">
       <div id="cyber-chats-aside">
