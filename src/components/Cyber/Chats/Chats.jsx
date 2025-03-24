@@ -5,7 +5,7 @@ import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { fetchDataFromUid, getConversationId } from "../../../utils";
+import { fetchDataFromUid, getConversationId, normalizeSpaces } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
@@ -35,14 +35,15 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       });
     }
 
-    const newMessage = messageInput;
+    const newMessage = normalizeSpaces(messageInput);
     setMessageInput("");
     
-    if (!newMessage.trim()) return;
+    if (!newMessage) return;
 
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
+      isEdited: false,
       isDeleted: false,
       content: newMessage,
       senderId: ownData.uid,
@@ -291,6 +292,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   <MessageCard
                     key={index + chatMessage.id}
                     id={chatMessage.id}
+                    isEdited={chatMessage.isEdited}
                     isDeleted={chatMessage.isDeleted}
                     isSending={chatMessage.isSending}
                     senderName={chatUsernamesMap[chatMessage.senderId]}

@@ -196,6 +196,7 @@ body {
 }
 
 #pop-up {
+  z-index: 1;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -683,6 +684,14 @@ button#toggle-theme svg {
   gap: 6px;
 }
 
+#chat-messages .message-card .container {
+  position: relative;
+  width: 700px;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+}
+
 #chat-messages .message-card .sender-name {
   background-color: #aaddff50;
   width: max-content;
@@ -700,6 +709,10 @@ button#toggle-theme svg {
   border: 1px solid #aaddff50;
   line-height: 1.5;
   font-size: 14px;
+}
+
+#chat-messages .message-card .content:focus {
+  outline: none;
 }
 
 #chat-messages .message-card .time {
@@ -766,14 +779,6 @@ button#toggle-theme svg {
 
 #chat-messages .message-card .features-container button:hover {
   background-color: #aaddff30;
-}
-
-#chat-messages .message-card .container {
-  position: relative;
-  width: 700px;
-  height: max-content;
-  display: flex;
-  flex-direction: column;
 }
 
 #chat-input {

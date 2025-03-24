@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { processDate } from "../../../utils";
+import { normalizeSpaces, processDate } from "../../../utils";
 import { MoreSVG } from "../../svg/MoreSVG";
+import { CheckSVG } from "../../svg/CheckSVG";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
-export function MessageCard({ id, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
+export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
   const [featuresContainerPosition, setFeaturesContainerPosition] = useState({top: null, bottom: null, right: null});
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
 
   const featuresContainerRef = useRef(null);
+  const contentRef= useRef(null);
 
   const showFeatures = (e) => {
     let topPosition = null;
@@ -24,16 +28,13 @@ export function MessageCard({ id, isDeleted, isSending, senderName, content, tim
   }
 
   const deleteMessage = async () => {
-    
     if (!isConfirmingDelete) {
       setIsConfirmingDelete(true);
     }
-
     else {
       setIsFeaturesVisible(false);
 
       const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
-  
       const currentMessageDoc = await getDoc(currentMessageRef);
   
       await updateDoc(currentMessageRef, {
@@ -42,7 +43,59 @@ export function MessageCard({ id, isDeleted, isSending, senderName, content, tim
         content: "This message was deleted.",
       });  
     }
+  }
 
+  const editMessage = async () => {
+    if (!isEditing) {
+      setIsFeaturesVisible(false);
+      setIsEditing(true);
+
+      requestAnimationFrame(() => {
+        const selection = window.getSelection();
+        const newRange = document.createRange();
+
+        newRange.setStart(contentRef.current.childNodes[0], contentRef.current.childNodes[0].length);
+        newRange.setEnd(contentRef.current.childNodes[0], contentRef.current.childNodes[0].length);
+
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      });
+    }
+    else {
+      setIsEditing(false);
+
+      const updatedContent = normalizeSpaces(editedContent);
+
+      if (updatedContent && updatedContent !== content) {
+        const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
+        const currentMessageDoc = await getDoc(currentMessageRef);
+  
+        await updateDoc(currentMessageRef, {
+          ...currentMessageDoc.data(),
+          isEdited: true,
+          content: editedContent,
+        });  
+      }
+    }
+  }
+
+  const handleContentEdit = (e) => {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const offset = range.startOffset;
+
+    setEditedContent(e.target.innerText);
+
+    requestAnimationFrame(() => {
+      const newRange = document.createRange();
+
+      if (contentRef.current.childNodes.length > 0) {
+        newRange.setStart(contentRef.current.childNodes[0], offset);
+        newRange.setEnd(contentRef.current.childNodes[0], offset);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
+    });
   }
 
   useEffect(() => {
@@ -100,18 +153,26 @@ export function MessageCard({ id, isDeleted, isSending, senderName, content, tim
         </div>
 
         <span 
+          contentEditable={isEditing}
+          suppressContentEditableWarning
           className="content"
           style={{
             paddingRight: isOwnMessage && !isDeleted ? "50px" : null,
-            color: isSending || isDeleted ? "#888" : null,
+            border: isEditing ? "1px solid white" : null,
+            color: isOwnMessage && isSending || isDeleted ? "#888" : null,
             fontStyle: isDeleted ? "italic" : null
           }}
+          ref={contentRef}
+          onInput={handleContentEdit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") editMessage();
+          }}
         >
-          {content}
+          {!isEditing ? content : editedContent}
         </span>
 
-        <div className="time">
-          {processDate(timeCreated.toDate())}
+        <div className="time" onClick={() => contentRef.current.focus()}>
+          {isEdited && "*EDITED*"} {processDate(timeCreated.toDate())}
         </div>
 
         {
@@ -121,8 +182,12 @@ export function MessageCard({ id, isDeleted, isSending, senderName, content, tim
 
         {
           isOwnMessage && !isDeleted &&
-          <button className="features-button" onClick={showFeatures}>
-            <MoreSVG />
+          <button
+            className="features-button"
+            style={{padding: isEditing ? "12px" : null}}
+            onClick={isEditing ? editMessage : showFeatures}
+          >
+            {isEditing ? <CheckSVG /> : <MoreSVG />}
           </button>
         }
 
@@ -140,7 +205,7 @@ export function MessageCard({ id, isDeleted, isSending, senderName, content, tim
           }}
           ref={featuresContainerRef}
         >
-          <button>Edit</button>
+          <button onClick={editMessage}>Edit</button>
           <button 
             onClick={deleteMessage}
             style={{
