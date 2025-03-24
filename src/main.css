@@ -678,14 +678,44 @@ button#toggle-theme svg {
 }
 
 #chat-messages .message-card {
-  position: relative;
   display: flex;
   justify-content: flex-start;
   gap: 6px;
 }
 
-#chat-messages .message-card.own {
-  justify-content: flex-end;
+#chat-messages .message-card .sender-name {
+  background-color: #aaddff50;
+  width: max-content;
+  min-height: 30px;
+  padding-inline: 12px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+#chat-messages .message-card .content {
+  flex-grow: 1;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #aaddff50;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+#chat-messages .message-card .time {
+  position: absolute;
+  bottom: -18px;
+  right: 4px;
+  color: #aaddff99;
+  font-size: 10px;
+}
+
+#chat-messages .message-card .unread-indicator {
+  position: absolute;
+  top: 0;
+  right: 12px;
+  color: #aaddff;
+  font-size: 24px;
 }
 
 #chat-messages .message-card .features-button {
@@ -744,58 +774,6 @@ button#toggle-theme svg {
   height: max-content;
   display: flex;
   flex-direction: column;
-}
-
-#chat-messages .message-card .container.own {
-  align-items: flex-end;
-}
-
-#chat-messages .message-card .sender-name {
-  background-color: #aaddff50;
-  width: max-content;
-  min-height: 30px;
-  padding-inline: 12px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  font-size: 18px;
-}
-
-#chat-messages .message-card .sender-name.own {
-  justify-content: flex-end;
-}
-
-#chat-messages .message-card .content {
-  flex-grow: 1;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #aaddff50;
-  line-height: 1.5;
-  font-size: 14px;
-}
-
-#chat-messages .message-card .content.own {
-  padding-right: 50px;
-}
-
-#chat-messages .message-card .content.sending {
-  color: #888;
-}
-
-#chat-messages .message-card .time {
-  position: absolute;
-  bottom: -18px;
-  right: 4px;
-  color: #aaddff99;
-  font-size: 10px;
-}
-
-#chat-messages .message-card .unread-indicator {
-  position: absolute;
-  top: 0;
-  right: 12px;
-  color: #aaddff;
-  font-size: 24px;
 }
 
 #chat-input {

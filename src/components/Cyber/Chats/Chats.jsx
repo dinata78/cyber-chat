@@ -43,6 +43,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
+      isDeleted: false,
       content: newMessage,
       senderId: ownData.uid,
       timeCreated: new Date(),
@@ -288,15 +289,18 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
               chatMessagesMap[conversationId].map((chatMessage, index) => {
                 return (
                   <MessageCard
-                    key={index + chatMessage.senderId}
+                    key={index + chatMessage.id}
+                    id={chatMessage.id}
+                    isDeleted={chatMessage.isDeleted}
+                    isSending={chatMessage.isSending}
                     senderName={chatUsernamesMap[chatMessage.senderId]}
-                    isSending={chatMessage.isSending} 
                     content={chatMessage.content}
                     timeCreated={chatMessage.timeCreated}
                     isUnread={chatMessage.isUnread}
                     isOwnMessage={chatMessage.senderId === ownData.uid}
                     selectedChatUid={selectedChatUid}
                     prevSelectedChatUid={prevSelectedChatUid}
+                    conversationId={conversationId}
                   />
                 )
               })
