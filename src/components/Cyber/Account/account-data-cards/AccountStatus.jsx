@@ -47,8 +47,10 @@ export function AccountStatus({ content, ownUid }) {
 
       <button onClick={editOnClick}>
         STATUS
-        {!isEditMode ? <EditSVG /> : <CheckSVG />}
-      </button>  
+        <div className="button-svg">
+          {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        </div>
+      </button>
 
       {
         !isEditMode ?

@@ -3,7 +3,6 @@ import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
 import { ref, update } from "firebase/database";
 import { deleteUserConversation, deleteUserData } from "../../../utils";
 import { sendEmailVerification } from "firebase/auth";
-import { removeFriend } from "../Friends/modifyFriendList";
 
 export async function logOut() {
   try {
@@ -33,14 +32,14 @@ export async function resetPassword(email) {
 export async function deleteAccount(){
   try {    
     await deleteUserConversation(auth.currentUser.uid);
-    await removeFriend("28qZ6LQQi3g76LLRd20HXrkQIjh1", auth.currentUser.uid);
+
     await deleteUserData(auth.currentUser.uid);
 
     await deleteUser(auth.currentUser);
   }
   catch (error) {
     console.error(error);
-    alert("Failed to delete the account.")
+    alert("Failed to delete the account.");
   }
 }
 

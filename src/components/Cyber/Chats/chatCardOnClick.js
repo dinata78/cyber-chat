@@ -17,6 +17,11 @@ export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConvers
     uid: chatData.uid
   });
 
-  setTimeout(() => chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight, behavior: "smooth" }), 0);
+  requestAnimationFrame(() => {
+    chatMessagesRef.current.scrollTo({
+      top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight,
+      behavior: "smooth",
+    })
+  });
   
 }

@@ -85,7 +85,9 @@ export function AccountUsername({ content, ownData, usernames }) {
 
       <button onClick={editOnClick}> 
         USERNAME
-        {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        <div className="button-svg">
+          {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        </div>
       </button>
 
       {

@@ -32,7 +32,9 @@ export function AccountTitle({ content, ownData }) {
 
       <button onClick={editOnClick}>
         TITLE
-        {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        <div className="button-svg">
+          {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        </div>
       </button>  
 
       {

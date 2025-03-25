@@ -63,7 +63,12 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       return prevMessagesAmountMap;
     });
 
-    setTimeout(() => chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight - prevScrollHeight, behavior: "smooth" }), 500);
+    requestAnimationFrame(() => {
+      chatMessagesRef.current.scrollTo({
+        top: chatMessagesRef.current.scrollHeight - prevScrollHeight,
+        behavior: "smooth",
+      });
+    });
   }
 
   useEffect(() => {
@@ -144,7 +149,12 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   useEffect(() => {
     if (!chatMessagesRef.current) return;
 
-    setTimeout(() => chatMessagesRef.current.scrollTo({ top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight, behavior: "smooth" }), 250);
+    requestAnimationFrame(() => {
+      chatMessagesRef.current.scrollTo({
+        top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight,
+        behavior: "smooth"
+      });
+    });
   }, [latestMessageId]);
 
   useEffect(() => {

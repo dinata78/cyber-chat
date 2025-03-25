@@ -52,11 +52,13 @@ export function AccountBio({ content, ownData }) {
   }
 
   return (
-    <div className="account-data-card">
+    <div className="account-data-card bio">
 
       <button onClick={editOnClick}>
         BIO
-        {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        <div className="button-svg">
+          {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        </div>
       </button>  
 
       {

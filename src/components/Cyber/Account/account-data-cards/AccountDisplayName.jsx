@@ -63,7 +63,9 @@ export function AccountDisplayName({ content, ownData }) {
 
       <button onClick={editOnClick}>
         DISPLAY NAME
-        {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        <div className="button-svg">
+          {!isEditMode ? <EditSVG /> : <CheckSVG />}
+        </div>
       </button>  
 
       {

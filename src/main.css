@@ -1517,7 +1517,7 @@ button#add-friend:active {
 }
 
 #cyber-account {
-  z-index: 1;
+  z-index: 2;
   background-color: #000000dd;
   width: 100vw;
   height: 100vh;
@@ -1593,158 +1593,103 @@ button#add-friend:active {
 }
 
 #account-data {
-  height: 72%;
+  height: 75%;
   display: flex;
   gap: 6px;
 }
 
 #account-data .left {
-  min-width: 240px;
+  width: 40%;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 #account-data .right {
-  min-width: 60%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-#account-data img {
-  width: 240px;
-  border: 2px solid #aaddff77;
+#account-pfp {
+  width: 100%;
+  border: 2px solid #aaddff99;
 }
 
-.account-data-card {
-  max-width: 100%;
-  min-height: 75px;
-  padding: 12px;
-  border: 2px solid #aaddff77;
+#account-data .account-data-card {
+  position: relative;
+  flex-grow: 1;
+  padding-inline: 8px;
+  padding-top: 12px;
+  padding-bottom: 20px;
+  border: 2px solid #aaddff99;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  position: relative;
 }
 
-.account-data-card:last-child {
-  flex-grow: 1;
-
-  .content {
-    margin-top: 6px;
-  }
+#account-data .account-data-card.bio {
+  height: 60%;
 }
 
-.account-data-card button {
+#account-data .account-data-card button {
   background-color: transparent;
-  border: none;
+  width: 100%;
   padding: 0;
+  padding-inline: 4px;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 4px;
-  color: #1177ff;
-  font-family: inherit;
-  font-size: 12px;
   font-weight: bold;
+  display: flex;
+  gap: 4px;
+  color: #0066ff;
+  font-family: inherit;
 }
 
-.account-data-card svg {
-  fill: #1177ff;
-  width: 14px;
+#account-data .account-data-card button .button-svg {
+  fill: #0066ff;
+  height: 100%;
+  width: 12px;
+  display: flex;
+  align-items: center;
 }
 
-.account-data-card button:hover,
-.account-data-card button:active {
+#account-data .account-data-card button:hover,
+#account-data .account-data-card button:active {
   color: #aaddff;
 
-  svg {
+  .button-svg {
     fill: #aaddff;
   }
 }
 
-.account-data-card .status {
-  color: #1177ff;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.account-data-card .content {
-  width: 100%;
-  margin-top: 2px;
-  font-size: 1rem;
-}
-
-.account-data-card .char-tracker {
-  color: #aaddffbb;
-  font-size: 8px;
-  position: absolute;
-  right: 12px;
-  top: 12px;
-}
-
-.account-data-card input {
-  background-color: #aaddff35;
-  width: 100%;
-  height: 50%;
-  padding: 0;
-  padding-inline: 6px;
-  border: none;
+#account-data .account-data-card .content {
+  flex-grow: 1;
+  padding-inline: 4px;
   display: flex;
   align-items: center;
-  color: white;
-  font-family: inherit;
-  font-size: 1rem;
 }
 
-.account-data-card input:focus {
-  outline: none;
+#account-data .account-data-card.bio .content {
+  padding-block: 8px;
+  align-items: flex-start;
 }
 
-.account-data-card input.invalid {
-  background-color: #ff42424f;
-}
-
-.account-data-card select {
-  background-color: #aaddff35;
-  color: white;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.account-data-card select:focus {
-  outline: none;
-}
-
-.account-data-card option {
-  background-color: #22222f;
-}
-
-.account-data-card textarea {
-  resize: none;
-  background-color: #aaddff35;
-  height: 88%;
-  padding: 6px 8px;
-  border: none;
-  color: white;
-  font-family: inherit;
-  font-size: 1rem;
-}
-
-.account-data-card textarea:focus {
-  outline: none;
-}
-
-.account-data-card textarea.invalid {
-  background-color: #ff42424f;
-}
-
-.account-data-card .error-info {
+#account-data .account-data-card .char-tracker {
   position: absolute;
-  bottom: 4px;
-  left: 16px;
+  top: 12px;
+  right: 12px;
+  color: #aaddff99;
+  font-size: 10px;
+}
+
+#account-data .account-data-card .error-info {
+  position: absolute;
+  left: 12px;
+  bottom: 2px;
   color: red;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 #account-email {

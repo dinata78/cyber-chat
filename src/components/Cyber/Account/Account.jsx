@@ -129,7 +129,6 @@ export function Account({ ownData, setIsAccountVisible }) {
         }
       });
     }
-
     else if (type === "reset-password") {
       setPopUpData((prev) => {
         return {
@@ -142,7 +141,6 @@ export function Account({ ownData, setIsAccountVisible }) {
         }
       });
     }
-
     else if (type === "delete-account") {
       setPopUpData((prev) => {
         return {
@@ -155,7 +153,6 @@ export function Account({ ownData, setIsAccountVisible }) {
         }
       });
     }
-
     else if (type === "verify-email") {
       setPopUpData((prev) => {
         return {
@@ -197,9 +194,10 @@ export function Account({ ownData, setIsAccountVisible }) {
         <hr />
         
         <div id="cyber-account-bottom">
+          
           <div id="account-data">
             <div className="left">
-              <img src="/empty-pfp.webp" />
+              <img src="/empty-pfp.webp" id="account-pfp" />
               <AccountUsername
                 content={ownData.username}
                 ownData={ownData}
@@ -210,7 +208,6 @@ export function Account({ ownData, setIsAccountVisible }) {
                 ownUid={ownData.uid}
               />
             </div>
-
             <div className="right">
               <AccountDisplayName
                 content={ownData.displayName}
@@ -226,6 +223,7 @@ export function Account({ ownData, setIsAccountVisible }) {
               />
             </div>
           </div>
+
           <div id="account-email">
             <EmailSVG />
             <span>{ownData.email}</span>
@@ -245,6 +243,7 @@ export function Account({ ownData, setIsAccountVisible }) {
                 </button>
             }
           </div>
+
           <div id="account-buttons">
             <button onClick={() => buttonOnClick("log-out")}>
               Log Out
@@ -259,6 +258,7 @@ export function Account({ ownData, setIsAccountVisible }) {
             </button>
 
           </div>
+
         </div>
 
         {
