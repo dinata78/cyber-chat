@@ -5,7 +5,6 @@ import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
 import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
 import { PopUp } from "../../PopUp";
-import { useUsernames } from "../../../custom-hooks/useUsernames";
 import { AccountUsername } from "./account-data-cards/AccountUsername";
 import { AccountStatus } from "./account-data-cards/AccountStatus";
 import { AccountDisplayName } from "./account-data-cards/AccountDisplayName";
@@ -17,7 +16,6 @@ export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
-  const { usernames } = useUsernames();
   const { hiddenUserUids } = useHiddenUsers();
 
   const navigate = useNavigate();
@@ -169,16 +167,10 @@ export function Account({ ownData, setIsAccountVisible }) {
     setIsPopUpVisible(true);
   }
 
-  
-  
   return (
-    <div
-      id="cyber-account"
-      onClick={() => setIsAccountVisible(false)}
+    <div id="cyber-account" onClick={() => setIsAccountVisible(false)}
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div onClick={(e) => e.stopPropagation()}>
         
         <div id="cyber-account-top">
           <h1>Account</h1>
@@ -199,9 +191,8 @@ export function Account({ ownData, setIsAccountVisible }) {
             <div className="left">
               <img src="/empty-pfp.webp" id="account-pfp" />
               <AccountUsername
-                content={ownData.username}
+                username={ownData.username}
                 ownData={ownData}
-                usernames={usernames}
               />
               <AccountStatus
                 content={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
@@ -210,7 +201,7 @@ export function Account({ ownData, setIsAccountVisible }) {
             </div>
             <div className="right">
               <AccountDisplayName
-                content={ownData.displayName}
+                displayName={ownData.displayName}
                 ownData={ownData}
               />
               <AccountTitle

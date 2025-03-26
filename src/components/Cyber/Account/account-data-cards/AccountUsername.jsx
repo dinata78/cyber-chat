@@ -1,121 +1,119 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EditSVG } from "../../../svg/EditSVG";
 import { CheckSVG } from "../../../svg/CheckSVG";
+import { setCursorPosition } from "../../../../utils";
 import { collection, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../../../firebase";
+import { AccountEditableSpan } from "./AccountEditableSpan";
 
-export function AccountUsername({ content, ownData, usernames }) { 
-  const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editedContent, setEditedContent ] = useState(content);
-  const [ isContentInvalid, setIsContentInvalid ] = useState(false);
-  const [ errorInfo, setErrorInfo ] = useState("");
-  const [ isErrorInfoVisible, setIsErrorInfoVisible ] = useState(false);
+export function AccountUsername({ username, ownData }) { 
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedUsername, setEditedUsername] = useState(username);
+  const [errorInfo, setErrorInfo] = useState("");
+  
+  const contentRef = useRef(null);
 
-  const editContent = (e) => {
+  const inputUsername = (e) => {
+    const offset = window.getSelection().getRangeAt(0).startOffset;
 
-    if (e.target.value.length <= 15) {
-      if (isContentInvalid) setIsContentInvalid(false);
-      if (isErrorInfoVisible) setIsErrorInfoVisible(false);
+    if (e.target.innerText.length <= 15) {
+      if (errorInfo.length) setErrorInfo("");
 
-      setEditedContent(e.target.value);
+      const filteredEditedUsername = e.target.innerText.replaceAll(" ", "").toLowerCase().trim();
+
+      setEditedUsername(filteredEditedUsername);
+      contentRef.current.innerText = editedUsername;
     }
     else {
-      setErrorInfo("Character limit reached.")
+      contentRef.current.innerText = editedUsername;
+
+      setErrorInfo("Character limit reached.");
+    }
+
+    requestAnimationFrame(() => {
+      setCursorPosition(contentRef, offset);
+    });
+  }
+
+  const updateUsername = async (newUsername) => {
+    if (newUsername === username) {
+      setIsEditMode(false);
+      return;
+    }
+
+    if (!newUsername.length) {
+      setErrorInfo("Username can't be empty.");
+      return;
+    }
+
+    const newUsernameQuery = query(
+      collection(db, "users"),
+      where("username", "==", newUsername),
+      limit(1)
+    )
+
+    const newUsernameDocs = await getDocs(newUsernameQuery);
+    
+    if (newUsernameDocs.docs.length) {
+      setErrorInfo("Username already exists.");
       setIsContentInvalid(true);
-      setIsErrorInfoVisible(true);
+    }
+    else {
+      const ownDocRef = doc(db, "users", ownData.uid);
+
+      await updateDoc(ownDocRef, {
+        ...ownData,
+        username: newUsername,
+      });
+
+      setIsEditMode(false);
     }
   }
 
-  const editOnClick = async () => {
-    if (isContentInvalid) setIsContentInvalid(false);
-    if (isErrorInfoVisible) setIsErrorInfoVisible(false);  
+  const editUsername = async () => {
+    if (errorInfo.length) setErrorInfo("");
 
     if (!isEditMode) {
       setIsEditMode(true);
     }
     else {
-      const filteredEditedContent = editedContent.replaceAll(" ", "").toLowerCase();
-
-      if (filteredEditedContent !== content) {
-        if (!filteredEditedContent.length) {
-          setErrorInfo("Username can't be empty.");
-          setIsContentInvalid(true);
-          setIsErrorInfoVisible(true);
-          return;
-        }
-        
-        const usernamesUidList = Object.values(usernames);
-
-        if (usernamesUidList.includes(filteredEditedContent)) {
-          setErrorInfo("Username already exists.");
-          setIsContentInvalid(true);
-          setIsErrorInfoVisible(true);
-          return;
-        }
-        else {
-          const ownDocRef = doc(db, "users", ownData.uid);
-          const ownUsernameQuery = query(
-            collection(db, "users", "metadata", "usernames"),
-            where("uid", "==", ownData.uid),
-            limit(1)
-          );
-
-          const ownUsernameDocs = await getDocs(ownUsernameQuery);
-
-          await Promise.all([
-            updateDoc(ownDocRef, {
-              ...ownData,
-              username: filteredEditedContent,
-            }),
-
-            updateDoc(ownUsernameDocs.docs[0].ref, {
-              ...ownUsernameDocs.docs[0].data(),
-              username: filteredEditedContent,
-            })
-          ]);
-
-        }
-      }
-      setIsEditMode(false);
+      updateUsername(editedUsername);
     }
   }
 
   return (
     <div className="account-data-card">
 
-      <button onClick={editOnClick}> 
+      <button onClick={editUsername}>
         USERNAME
         <div className="button-svg">
           {!isEditMode ? <EditSVG /> : <CheckSVG />}
         </div>
       </button>
 
-      {
-        !isEditMode ?
-          <span className="content overflow-y-support">
-            {content ? content : "(Not Set)"}
-          </span>
-        : <input 
-            type="text"
-            className={isContentInvalid ? "invalid" : ""}
-            value={editedContent}
-            onChange={editContent}
-          />
-      }
+      <AccountEditableSpan
+        contentRef={contentRef}
+        isEditMode={isEditMode}
+        errorInfo={errorInfo}
+        content={username}
+        editedContent={editedUsername}
+        inputContent={inputUsername}
+      />
 
       {
         isEditMode &&
         <span className="char-tracker">
-          {editedContent.length} / 15
+          {editedUsername.length} / 15
         </span>
       }
 
       {
-        isErrorInfoVisible &&
+        errorInfo.length > 0 &&
         <span className="error-info">
           {errorInfo}
         </span>
       }
+
     </div>
   )
 }

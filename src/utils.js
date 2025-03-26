@@ -155,3 +155,21 @@ export async function deleteUserData(uid) {
   
   await deleteDoc(userDocRef);
 }
+
+export function setCursorPosition(elementRef, offset) {
+  const selection = window.getSelection();
+  const newRange = document.createRange();
+
+  if (elementRef.current.childNodes.length > 0) {
+    newRange.setStart(
+      elementRef.current.childNodes[0],
+      Math.min(offset, elementRef.current.childNodes[0].length)
+    );
+    newRange.setEnd(
+      elementRef.current.childNodes[0],
+      Math.min(offset, elementRef.current.childNodes[0].length)
+    );
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+  }
+}

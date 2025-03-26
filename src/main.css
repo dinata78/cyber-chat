@@ -1593,58 +1593,55 @@ button#add-friend:active {
 }
 
 #account-data {
-  height: 75%;
   display: flex;
   gap: 6px;
 }
 
 #account-data .left {
-  width: 40%;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 #account-data .right {
-  width: 60%;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 #account-pfp {
-  width: 100%;
+  width: 225px;
+  height: 225px;
   border: 2px solid #aaddff99;
 }
 
 #account-data .account-data-card {
   position: relative;
-  flex-grow: 1;
-  padding-inline: 8px;
-  padding-top: 12px;
-  padding-bottom: 20px;
+  height: 75px;
+  padding: 12px 8px 20px 8px;
   border: 2px solid #aaddff99;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 #account-data .account-data-card.bio {
-  height: 60%;
+  flex-grow: 1;
 }
 
 #account-data .account-data-card button {
   background-color: transparent;
-  width: 100%;
-  padding: 0;
-  padding-inline: 4px;
+  padding: 0 4px;
   border: none;
   display: flex;
   align-items: center;
-  font-weight: bold;
   display: flex;
   gap: 4px;
   color: #0066ff;
   font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 #account-data .account-data-card button .button-svg {
@@ -1652,7 +1649,8 @@ button#add-friend:active {
   height: 100%;
   width: 12px;
   display: flex;
-  align-items: center;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 #account-data .account-data-card button:hover,
@@ -1676,12 +1674,17 @@ button#add-friend:active {
   align-items: flex-start;
 }
 
+#account-data .account-data-card .content:focus {
+  outline: none;
+}
+
 #account-data .account-data-card .char-tracker {
   position: absolute;
   top: 12px;
   right: 12px;
   color: #aaddff99;
   font-size: 10px;
+  font-weight: bold;
 }
 
 #account-data .account-data-card .error-info {
