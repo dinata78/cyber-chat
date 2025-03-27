@@ -1,95 +1,101 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EditSVG } from "../../../svg/EditSVG";
 import { CheckSVG } from "../../../svg/CheckSVG";
-import { normalizeSpaces } from "../../../../utils";
+import { normalizeSpaces, setCursorPosition } from "../../../../utils";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
+import { AccountEditableSpan } from "./AccountEditableSpan";
 
-export function AccountDisplayName({ content, ownData }) { 
+export function AccountDisplayName({ displayName, ownData }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editedContent, setEditedContent ] = useState(content);
-  const [ isContentInvalid, setIsContentInvalid ] = useState(false);
+  const [ editedDisplayName, setEditedDisplayName ] = useState(displayName);
   const [ errorInfo, setErrorInfo ] = useState("");
-  const [ isErrorInfoVisible, setIsErrorInfoVisible ] = useState(false);
 
-  const editContent = (e) => {
-    if (e.target.value.length <= 20) {
-      if (isContentInvalid) setIsContentInvalid(false);
-      if (isErrorInfoVisible) setIsErrorInfoVisible(false);
+  const contentRef = useRef(null);
 
-      setEditedContent(e.target.value);
+  const inputDisplayName = (e) => {
+    const offset = window.getSelection().getRangeAt(0).startOffset;
+
+    if (e.target.innerText.length <= 20) {
+      if (errorInfo.length) setErrorInfo("");
+
+      setEditedDisplayName(e.target.innerText);
+      contentRef.current.innerText = editedDisplayName;
     }
     else {
-      setErrorInfo("Character limit reached.")
-      setIsContentInvalid(true);
-      setIsErrorInfoVisible(true);
+      contentRef.current.innerText = editedDisplayName;
+
+      setErrorInfo("Character limit reached.");
     }
+
+    requestAnimationFrame(() => {
+      setCursorPosition(contentRef, offset);
+    });
+  }
+  
+  const updateDisplayName = async (newDisplayName) => {
+    const filteredNewDisplayName = normalizeSpaces(newDisplayName);
+
+    if (filteredNewDisplayName === displayName) {
+      setIsEditMode(false);
+      return;
+    }
+
+    if (!filteredNewDisplayName.length) {
+      setErrorInfo("Display name can't be empty.");
+      return;
+    }
+    
+    const ownDocRef = doc(db, "users", ownData.uid);
+
+    await updateDoc(ownDocRef, {
+      ...ownData,
+      displayName: filteredNewDisplayName,
+    });
+
+    setEditedDisplayName(filteredNewDisplayName);
+    setIsEditMode(false);
   }
 
-  const editOnClick = async () => {
-
-    if (isContentInvalid) setIsContentInvalid(false);
-    if (isErrorInfoVisible) setIsErrorInfoVisible(false);
+  const editDisplayName = async () => {
+    if (errorInfo.length) setErrorInfo("");
 
     if (!isEditMode) {
       setIsEditMode(true);
     }
     else {
-      const filteredEditedContent = normalizeSpaces(editedContent);
-
-      if (!filteredEditedContent.length) {
-        setErrorInfo("Display name can't be empty");
-        setIsContentInvalid(true);
-        setIsErrorInfoVisible(true);
-        return;
-      }
-      
-      if (filteredEditedContent !== content) {
-        const ownDocRef = doc(db, "users", ownData.uid);
-        await updateDoc(ownDocRef, {
-          ...ownData,
-          displayName: filteredEditedContent,
-        });
-      }
-
-      setEditedContent(filteredEditedContent);
-      setIsEditMode(false);
+      updateDisplayName(editedDisplayName);
     }
-    
   }
   
   return (
     <div className="account-data-card">
 
-      <button onClick={editOnClick}>
+      <button onClick={editDisplayName}>
         DISPLAY NAME
         <div className="button-svg">
           {!isEditMode ? <EditSVG /> : <CheckSVG />}
         </div>
       </button>  
 
-      {
-        !isEditMode ?
-          <span className="content overflow-y-support">
-            {content ? content : "(Not Set)"}
-          </span>
-        : <input 
-            type="text"
-            className={isContentInvalid ? "invalid" : ""}
-            value={editedContent}
-            onChange={editContent}
-          />
-      }
-      
+      <AccountEditableSpan
+        contentRef={contentRef}
+        isEditMode={isEditMode}
+        errorInfo={errorInfo}
+        content={displayName}
+        editedContent={editedDisplayName}
+        inputContent={inputDisplayName}
+      />
+
       {
         isEditMode &&
         <span className="char-tracker">
-          {editedContent.length} / 20
+          {editedDisplayName.length} / 20
         </span>
       }
 
       {
-        isErrorInfoVisible &&
+        errorInfo.length > 0 &&
         <span className="error-info">
           {errorInfo}
         </span>

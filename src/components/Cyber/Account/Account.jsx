@@ -1,5 +1,5 @@
 import { auth } from "../../../../firebase";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CloseSVG } from "../../svg/CloseSVG";
 import { EmailSVG } from "../../svg/EmailSVG"
@@ -17,6 +17,8 @@ export function Account({ ownData, setIsAccountVisible }) {
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
   const { hiddenUserUids } = useHiddenUsers();
+
+  const accountContainerRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -167,10 +169,30 @@ export function Account({ ownData, setIsAccountVisible }) {
     setIsPopUpVisible(true);
   }
 
+  useEffect(() => {
+    const handleInput = (e) => {
+      if (e.target.matches(".editable-span")) {
+        if (!e.target.innerText.trim()) {
+          e.target.innerText = "";
+        }
+      }
+    }
+
+    if (accountContainerRef.current) {
+      accountContainerRef.current.addEventListener("input", handleInput);
+    }
+
+    return () => {
+      if (accountContainerRef.current) {
+        accountContainerRef.current.removeEventListener("input", handleInput);
+      }
+    }
+  })
+
   return (
     <div id="cyber-account" onClick={() => setIsAccountVisible(false)}
     >
-      <div onClick={(e) => e.stopPropagation()}>
+      <div ref={accountContainerRef} onClick={(e) => e.stopPropagation()}>
         
         <div id="cyber-account-top">
           <h1>Account</h1>
