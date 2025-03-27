@@ -1,89 +1,101 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EditSVG } from "../../../svg/EditSVG";
 import { CheckSVG } from "../../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
-import { normalizeSpaces } from "../../../../utils";
+import { normalizeSpaces, setCursorPosition } from "../../../../utils";
+import { AccountEditableSpan } from "./AccountEditableSpan";
 
-export function AccountBio({ content, ownData }) { 
+export function AccountBio({ bio, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editedContent, setEditedContent ] = useState(content);
-  const [ isContentInvalid, setIsContentInvalid ] = useState(false);
+  const [ editedBio, setEditedBio ] = useState(bio);
   const [ errorInfo, setErrorInfo ] = useState("");
-  const [ isErrorInfoVisible, setIsErrorInfoVisible ] = useState(false);
 
-  const editContent = (e) => {
-    if (e.target.value.length <= 150) {
-      if (isContentInvalid) setIsContentInvalid(false);
-      if (isErrorInfoVisible) setIsErrorInfoVisible(false);
+  const contentRef = useRef(null);
 
-      setEditedContent(e.target.value);
+  const inputBio = (e) => {
+    const offset = window.getSelection().getRangeAt(0).startOffset;
+
+    if (e.target.innerText.length <= 200) {
+      if (errorInfo.length) setErrorInfo("");
+
+      setEditedBio(e.target.innerText);
+      contentRef.current.innerText = editedBio;
     }
     else {
-      setErrorInfo("Character limit reached.")
-      setIsContentInvalid(true);
-      setIsErrorInfoVisible(true);
+      contentRef.current.innerText = editedBio;
+
+      setErrorInfo("Character limit reached.");
     }
+
+    requestAnimationFrame(() => {
+      setCursorPosition(contentRef, offset);
+    });
+  }
+  
+  const updateBio = async (newBio) => {
+    if (errorInfo.length) setErrorInfo("");
+
+    const filteredNewBio = normalizeSpaces(newBio);
+
+    if (filteredNewBio === bio) {
+      setIsEditMode(false);
+      setEditedBio(filteredNewBio);
+      return;
+    }
+    
+    const ownDocRef = doc(db, "users", ownUid);
+
+    await updateDoc(ownDocRef, { bio: filteredNewBio });
+
+    setEditedBio(filteredNewBio);
+    setIsEditMode(false);
   }
 
-  const editOnClick = async () => {
+  const editBio = async () => {
+    if (errorInfo.length) setErrorInfo("");
 
-    if (isContentInvalid) setIsContentInvalid(false);
-    if (isErrorInfoVisible) setIsErrorInfoVisible(false);
-  
     if (!isEditMode) {
       setIsEditMode(true);
+
+      requestAnimationFrame(() => {
+        setCursorPosition(contentRef, "end");
+      });
     }
     else {
-      const filteredEditedContent = normalizeSpaces(editedContent);
-      
-      if (filteredEditedContent !== content) {
-        const ownDocRef = doc(db, "users", ownData.uid);
-        await updateDoc(ownDocRef, {
-          ...ownData,
-          bio: filteredEditedContent,
-        });
-      }
-
-      setEditedContent(filteredEditedContent);
-      setIsEditMode(false);
+      updateBio(editedBio);
     }
-
   }
 
   return (
     <div className="account-data-card bio">
 
-      <button onClick={editOnClick}>
+      <button onClick={editBio}>
         BIO
         <div className="button-svg">
           {!isEditMode ? <EditSVG /> : <CheckSVG />}
         </div>
       </button>  
 
-      {
-        !isEditMode ?
-          <span className="content overflow-y-support">
-            {content ? content : "(Not Set)"}
-          </span>
-        : <textarea
-            className={isContentInvalid ? "invalid overflow-y-support" : "overflow-y-support"}
-            value={editedContent}
-            onChange={editContent}
-          >
-            {content}
-          </textarea>
-      }
+      <AccountEditableSpan
+        contentRef={contentRef}
+        isEditMode={isEditMode}
+        errorInfo={errorInfo}
+        content={bio}
+        editedContent={editedBio}
+        inputContent={inputBio}
+        updateContent={updateBio}
+      />
       
       {
         isEditMode &&
         <span className="char-tracker">
-          {editedContent.length} / 150
+          {editedBio.length} / 200
         </span>
       }
 
       {
-        isErrorInfoVisible &&
+        errorInfo.length > 0 &&
         <span className="error-info">
           {errorInfo}
         </span>

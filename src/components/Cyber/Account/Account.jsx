@@ -187,7 +187,7 @@ export function Account({ ownData, setIsAccountVisible }) {
         accountContainerRef.current.removeEventListener("input", handleInput);
       }
     }
-  })
+  }, []);
 
   return (
     <div id="cyber-account" onClick={() => setIsAccountVisible(false)}
@@ -214,25 +214,25 @@ export function Account({ ownData, setIsAccountVisible }) {
               <img src="/empty-pfp.webp" id="account-pfp" />
               <AccountUsername
                 username={ownData.username}
-                ownData={ownData}
+                ownUid={ownData.uid}
               />
               <AccountStatus
                 content={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
-                ownUid={ownData.uid}
+                ownData={ownData}
               />
             </div>
             <div className="right">
               <AccountDisplayName
                 displayName={ownData.displayName}
-                ownData={ownData}
+                ownUid={ownData.uid}
               />
               <AccountTitle
                 content={ownData.title}
                 ownData={ownData}
               />
               <AccountBio
-                content={ownData.bio}
-                ownData={ownData}
+                bio={ownData.bio}
+                ownUid={ownData.uid}
               />
             </div>
           </div>

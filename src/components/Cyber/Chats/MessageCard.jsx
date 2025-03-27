@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { normalizeSpaces, processDate } from "../../../utils";
+import { normalizeSpaces, processDate, setCursorPosition } from "../../../utils";
 import { MoreSVG } from "../../svg/MoreSVG";
 import { CheckSVG } from "../../svg/CheckSVG";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -23,7 +23,11 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
     if (e.clientY <= window.innerHeight / 2) topPosition = e.clientY + 10;
     else bottomPosition = window.innerHeight - e.clientY + 10;
 
-    setFeaturesContainerPosition({top: topPosition, bottom: bottomPosition, right: rightPosition });
+    setFeaturesContainerPosition({
+      top: topPosition,
+      bottom: bottomPosition,
+      right: rightPosition
+    });
     setIsFeaturesVisible(true);
   }
 
@@ -51,14 +55,7 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
       setIsEditing(true);
 
       requestAnimationFrame(() => {
-        const selection = window.getSelection();
-        const newRange = document.createRange();
-
-        newRange.setStart(contentRef.current.childNodes[0], contentRef.current.childNodes[0].length);
-        newRange.setEnd(contentRef.current.childNodes[0], contentRef.current.childNodes[0].length);
-
-        selection.removeAllRanges();
-        selection.addRange(newRange);
+        setCursorPosition(contentRef, "end");
       });
     }
     else {
@@ -79,22 +76,13 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
     }
   }
 
-  const handleContentEdit = (e) => {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const offset = range.startOffset;
+  const inputContent = (e) => {
+    const offset = window.getSelection.getRangeAt(0).startOffset;
 
     setEditedContent(e.target.innerText);
 
     requestAnimationFrame(() => {
-      const newRange = document.createRange();
-
-      if (contentRef.current.childNodes.length > 0) {
-        newRange.setStart(contentRef.current.childNodes[0], offset);
-        newRange.setEnd(contentRef.current.childNodes[0], offset);
-        selection.removeAllRanges();
-        selection.addRange(newRange);
-      }
+      setCursorPosition(contentRef, offset);
     });
   }
 
@@ -163,10 +151,13 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
             fontStyle: isDeleted ? "italic" : null
           }}
           ref={contentRef}
-          onInput={handleContentEdit}
           onKeyDown={(e) => {
-            if (e.key === "Enter") editMessage();
+            if (e.key === "Enter") {
+              e.preventDefault();
+              editMessage();
+            }
           }}
+          onInput={inputContent}
         >
           {!isEditing ? content : editedContent}
         </span>

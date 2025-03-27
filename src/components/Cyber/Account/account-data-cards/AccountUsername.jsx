@@ -6,7 +6,7 @@ import { collection, doc, getDocs, limit, query, updateDoc, where } from "fireba
 import { db } from "../../../../../firebase";
 import { AccountEditableSpan } from "./AccountEditableSpan";
 
-export function AccountUsername({ username, ownData }) { 
+export function AccountUsername({ username, ownUid }) { 
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedUsername, setEditedUsername] = useState(username);
   const [errorInfo, setErrorInfo] = useState("");
@@ -36,6 +36,8 @@ export function AccountUsername({ username, ownData }) {
   }
 
   const updateUsername = async (newUsername) => {
+    if (errorInfo.length) setErrorInfo("");
+
     if (newUsername === username) {
       setIsEditMode(false);
       return;
@@ -56,15 +58,10 @@ export function AccountUsername({ username, ownData }) {
     
     if (newUsernameDocs.docs.length) {
       setErrorInfo("Username already exists.");
-      setIsContentInvalid(true);
     }
     else {
-      const ownDocRef = doc(db, "users", ownData.uid);
-
-      await updateDoc(ownDocRef, {
-        ...ownData,
-        username: newUsername,
-      });
+      const ownDocRef = doc(db, "users", ownUid);
+      await updateDoc(ownDocRef, { username: newUsername });
 
       setIsEditMode(false);
     }
@@ -75,6 +72,10 @@ export function AccountUsername({ username, ownData }) {
 
     if (!isEditMode) {
       setIsEditMode(true);
+
+      requestAnimationFrame(() => {
+        setCursorPosition(contentRef, "end");
+      });
     }
     else {
       updateUsername(editedUsername);
@@ -98,6 +99,7 @@ export function AccountUsername({ username, ownData }) {
         content={username}
         editedContent={editedUsername}
         inputContent={inputUsername}
+        updateContent={updateUsername}
       />
 
       {

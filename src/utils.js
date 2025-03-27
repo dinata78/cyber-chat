@@ -160,6 +160,10 @@ export function setCursorPosition(elementRef, offset) {
   const selection = window.getSelection();
   const newRange = document.createRange();
 
+  if (offset === "end") {
+    offset = elementRef.current.childNodes[0].length;
+  }
+
   if (elementRef.current.childNodes.length > 0) {
     newRange.setStart(
       elementRef.current.childNodes[0],

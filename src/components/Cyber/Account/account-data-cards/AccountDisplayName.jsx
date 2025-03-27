@@ -6,7 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
 import { AccountEditableSpan } from "./AccountEditableSpan";
 
-export function AccountDisplayName({ displayName, ownData }) { 
+export function AccountDisplayName({ displayName, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
   const [ editedDisplayName, setEditedDisplayName ] = useState(displayName);
   const [ errorInfo, setErrorInfo ] = useState("");
@@ -34,9 +34,12 @@ export function AccountDisplayName({ displayName, ownData }) {
   }
   
   const updateDisplayName = async (newDisplayName) => {
+    if (errorInfo.length) setErrorInfo("");
+
     const filteredNewDisplayName = normalizeSpaces(newDisplayName);
 
     if (filteredNewDisplayName === displayName) {
+      setEditedDisplayName(filteredNewDisplayName);
       setIsEditMode(false);
       return;
     }
@@ -45,13 +48,10 @@ export function AccountDisplayName({ displayName, ownData }) {
       setErrorInfo("Display name can't be empty.");
       return;
     }
-    
-    const ownDocRef = doc(db, "users", ownData.uid);
 
-    await updateDoc(ownDocRef, {
-      ...ownData,
-      displayName: filteredNewDisplayName,
-    });
+    const ownDocRef = doc(db, "users", ownUid);
+
+    await updateDoc(ownDocRef, { displayName: filteredNewDisplayName });
 
     setEditedDisplayName(filteredNewDisplayName);
     setIsEditMode(false);
@@ -62,6 +62,10 @@ export function AccountDisplayName({ displayName, ownData }) {
 
     if (!isEditMode) {
       setIsEditMode(true);
+
+      requestAnimationFrame(() => {
+        setCursorPosition(contentRef, "end");
+      });
     }
     else {
       updateDisplayName(editedDisplayName);
@@ -85,6 +89,7 @@ export function AccountDisplayName({ displayName, ownData }) {
         content={displayName}
         editedContent={editedDisplayName}
         inputContent={inputDisplayName}
+        updateContent={updateDisplayName}
       />
 
       {
