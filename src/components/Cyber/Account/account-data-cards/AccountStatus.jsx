@@ -4,25 +4,21 @@ import { CheckSVG } from "../../../svg/CheckSVG";
 import { addDoc, collection, deleteDoc, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../../../../firebase";
 
-export function AccountStatus({ content, ownUid }) { 
+export function AccountStatus({ status, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editedContent, setEditedContent ] = useState(content);
-  
-  const editOnClick = async () => {
-    
+  const [ editedStatus, setEditedStatus ] = useState(status);
+
+  const editStatus = async () => {
     if (!isEditMode) {
       setIsEditMode(true);
     }
     else {
-      
-      if (content === "Online" && editedContent === "Hidden") {
+      if (status === "Online" && editedStatus === "Hidden") {
         const hiddenUsersRef = collection(db, "users", "metadata", "hiddenUsers");
 
-        await addDoc(hiddenUsersRef, {
-          uid: ownUid,
-        });
+        await addDoc(hiddenUsersRef, { uid: ownUid });
       }
-      else if (content === "Hidden" && editedContent === "Online") {
+      else if (status === "Hidden" && editedStatus === "Online") {
         const ownHiddenUserQuery = query(
           collection(db, "users", "metadata", "hiddenUsers"),
           where("uid", "==", ownUid),
@@ -35,17 +31,16 @@ export function AccountStatus({ content, ownUid }) {
 
       setIsEditMode(false);
     }
-
   }
 
   useEffect(() => {
-    setEditedContent(content);
-  }, [content]);
+    setEditedStatus(status);
+  }, [status]);
 
   return (
     <div className="account-data-card">
 
-      <button onClick={editOnClick}>
+      <button onClick={editStatus}>
         STATUS
         <div className="button-svg">
           {!isEditMode ? <EditSVG /> : <CheckSVG />}
@@ -55,12 +50,12 @@ export function AccountStatus({ content, ownUid }) {
       {
         !isEditMode ?
           <span className="content overflow-y-support">
-            {content ? content : "(Not Set)"}
+            {status || "(Not Set)"}
           </span>
         : <select
-            defaultValue={content}
+            defaultValue={status}
             onChange={
-              (e) => setEditedContent(e.target.value)
+              (e) => setEditedStatus(e.target.value)
             }
           >
             <option value="Online">Online</option>

@@ -1695,6 +1695,20 @@ button#add-friend:active {
   font-size: 11px;
 }
 
+#account-data .account-data-card select {
+  flex-grow: 1;
+  background-color: #3f3a77;
+  border: none;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+#account-data .account-data-card select:focus {
+  outline: 0;
+  border: 1px solid white   ;
+}
+
 #account-email {
   display: flex;
   gap: 6px;

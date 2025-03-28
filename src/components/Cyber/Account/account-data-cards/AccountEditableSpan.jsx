@@ -7,7 +7,7 @@ export function AccountEditableSpan({ contentRef, isEditMode, errorInfo, content
       suppressContentEditableWarning
       className="content editable-span overflow-y-support"
       style={{
-        backgroundColor: isEditMode && errorInfo.length ? "#ff000035" : isEditMode ? "#aaddff50" : null,
+        backgroundColor: isEditMode && errorInfo.length ? "#ff000035" : isEditMode ? "#3f3a77" : null,
         borderBottomWidth: isEditMode ? "1px" : null,
         borderBottomStyle: isEditMode ? "solid" : null,
         borderBottomColor: isEditMode && errorInfo.length ? "red" : isEditMode ? "white" : null

@@ -217,8 +217,8 @@ export function Account({ ownData, setIsAccountVisible }) {
                 ownUid={ownData.uid}
               />
               <AccountStatus
-                content={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
-                ownData={ownData}
+                status={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
+                ownUid={ownData.uid}
               />
             </div>
             <div className="right">
@@ -227,8 +227,8 @@ export function Account({ ownData, setIsAccountVisible }) {
                 ownUid={ownData.uid}
               />
               <AccountTitle
-                content={ownData.title}
-                ownData={ownData}
+                title={ownData.title}
+                ownUid={ownData.uid}
               />
               <AccountBio
                 bio={ownData.bio}

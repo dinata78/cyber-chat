@@ -4,33 +4,28 @@ import { CheckSVG } from "../../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
 
-export function AccountTitle({ content, ownData }) { 
+export function AccountTitle({ title, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
-  const [ editedContent, setEditedContent ] = useState(content);
+  const [ editedTitle, setEditedTitle ] = useState(title);
 
-  const editOnClick = async () => {
-  
+  const editTitle = async () => {
     if (!isEditMode) {
       setIsEditMode(true);
     }
     else {
-      if (editedContent !== content) {
-        const ownDocRef = doc(db, "users", ownData.uid);
-        await updateDoc(ownDocRef, {
-          ...ownData,
-          title: editedContent,
-        });
+      if (editedTitle !== title) {
+        const ownDocRef = doc(db, "users", ownUid);
+        await updateDoc(ownDocRef, { title: editedTitle });
       }
 
       setIsEditMode(false);
     }
-
   }
 
   return (
     <div className="account-data-card">
 
-      <button onClick={editOnClick}>
+      <button onClick={editTitle}>
         TITLE
         <div className="button-svg">
           {!isEditMode ? <EditSVG /> : <CheckSVG />}
@@ -40,12 +35,12 @@ export function AccountTitle({ content, ownData }) {
       {
         !isEditMode ?
           <span className="content overflow-y-support">
-            {content ? content : "(Not Set)"}
+            {title || "(Not Set)"}
           </span>
         : <select 
-            defaultValue={content}
+            defaultValue={title}
             onChange={
-              (e) => setEditedContent(e.target.value)
+              (e) => setEditedTitle(e.target.value)
             }
           >
             <option value="Newcomer">Newcomer</option>
