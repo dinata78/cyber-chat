@@ -5,7 +5,7 @@ export function AccountEditableSpan({ contentRef, isEditMode, errorInfo, content
       ref={contentRef}
       contentEditable={isEditMode}
       suppressContentEditableWarning
-      className="content editable-span overflow-y-support"
+      className="content editable-span overflow-y-support smaller-scrollbar"
       style={{
         backgroundColor: isEditMode && errorInfo.length ? "#ff000035" : isEditMode ? "#3f3a77" : null,
         borderBottomWidth: isEditMode ? "1px" : null,

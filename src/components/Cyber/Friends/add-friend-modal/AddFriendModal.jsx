@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CloseSVG } from "../../../svg/CloseSVG";
 import { SearchSVG } from "../../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
@@ -14,6 +14,8 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids,
   const [searchedUsername, setSearchedUsername] = useState("");
   const [searchedUserData, setSearchedUserData] = useState({});
 
+  const inputRef = useRef(null);
+
   const inputUsername = (e) => {
     const filteredInput = e.target.value.replaceAll(" ", "").toLowerCase();
 
@@ -23,6 +25,10 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids,
   const searchUser = async () => {    
     setSearchedUsername(usernameInput);
   }
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   useEffect(() => {
     if (!searchedUsername) return;
@@ -64,11 +70,9 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids,
   }, [searchedUsername]);
 
   return (
-    <div 
-      id="add-friend-modal"
-      onClick={() => setIsAddFriendModalVisible(false)}
-    >
+    <div id="add-friend-modal" onClick={() => setIsAddFriendModalVisible(false)}>
       <div onClick={(e) => e.stopPropagation()}>
+
         <div id="add-friend-top">
           <h1>ADD FRIEND</h1>
           <div>
@@ -77,22 +81,28 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids,
             </button>
           </div>
         </div>
+
         <hr />
+
         <div id="add-friend-bottom">
           <div id="add-friend-input">
             <div>
               <SearchSVG />
             </div>
             <input
+              ref={inputRef}
               type="text"
               placeholder="Search user with their username"
               value={usernameInput}
               onChange={inputUsername}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") searchUser();
+              }}
             />
             <button onClick={searchUser}>Search</button>
           </div>
           {
-            resultStatus === "found" ? 
+            resultStatus === "found" ?
               <>
                 <AddFriendProfile searchedUserData={searchedUserData} />      
                 <AddFriendButton
@@ -105,6 +115,7 @@ export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids,
             : <AddFriendNoResult type={resultStatus} />
           }
         </div>
+
       </div>
     </div>
   )

@@ -175,12 +175,28 @@ body {
 
 .overflow-y-support {
   overflow-y: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 .overflow-y-support::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+}
+
+.overflow-y-support::-webkit-scrollbar-thumb {
+  background-color: #aaddff99;
+  border-radius: 24px;
+}
+
+.overflow-y-support::-webkit-scrollbar-thumb:hover,
+.overflow-y-support::-webkit-scrollbar-thumb:active {
+  background-color: #aaddff;
+}
+
+.overflow-y-support::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.overflow-y-support.smaller-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
 .indicator.online {
@@ -613,11 +629,11 @@ button#toggle-theme svg {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-inline: 36px;
 }
 
 #chats-content-top  {
   padding-block: 24px;
+  padding-inline: 36px;
   display: flex;
   gap: 18px;
 }
@@ -679,6 +695,7 @@ button#toggle-theme svg {
 }
 
 #chat-messages .message-card {
+  padding-inline: 36px;
   display: flex;
   justify-content: flex-start;
   gap: 6px;
@@ -783,6 +800,7 @@ button#toggle-theme svg {
 
 #chat-input {
   min-height: 120px;
+  padding: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -795,13 +813,12 @@ button#toggle-theme svg {
   height: 48px;
   padding-inline: 12px;
   border: 1px solid white;
-  border-radius: 8px;
   color: white;
   font-family: inherit;
   font-size: 1.2rem;
 }
 
-#chat-input input:focus-visible {
+#chat-input input:focus {
   outline: none;
 }
 
@@ -810,7 +827,6 @@ button#toggle-theme svg {
   width: 48px;
   height: 48px;
   border: 1px solid #0066ff;
-  border-radius: 8px;
 }
 
 #chat-input button svg {
@@ -887,7 +903,6 @@ button#add-friend:active {
 
 #cyber-friends-content {
   flex-grow: 1;
-  padding-right: 72px;
   display: flex;
   flex-direction: column;
 }
@@ -1128,12 +1143,12 @@ button#add-friend:active {
 }
 
 #add-friend-button.no-effect:hover, 
-#add-friend-button.no-effect:active
-{
+#add-friend-button.no-effect:active {
   background-color: transparent;
 }
 
 #friends-search {
+  margin-right: 72px;
   display: flex;
   border: 1px solid white;
 }
@@ -1175,6 +1190,7 @@ button#add-friend:active {
 #friends-all h1 {
   margin: 0;
   margin-bottom: 24px;
+  margin-right: 72px;
   display: flex;
   align-items: center;
   font-size: 1.5rem;
@@ -1185,6 +1201,7 @@ button#add-friend:active {
   flex-grow: 1;
   height: 0;
   padding-bottom: 24px;
+  padding-right: 72px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1221,7 +1238,6 @@ button#add-friend:active {
   bottom: 22%;
   right: 18%;
 }
-
 
 .friend-card-info {
   flex-grow: 1;
@@ -1290,6 +1306,7 @@ button#add-friend:active {
 #friends-pending h1 {
   margin: 0;
   margin-bottom: 24px;
+  margin-right: 72px;
   display: flex;
   align-items: center;
   font-size: 1.5rem;
@@ -1300,6 +1317,7 @@ button#add-friend:active {
   flex-grow: 1;
   height: 0;
   padding-bottom: 24px;
+  padding-right: 72px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1354,6 +1372,7 @@ button#add-friend:active {
 
 #friends-inbox .top {
   margin-bottom: 24px;
+  margin-right: 72px;
   display: flex;
   justify-content: space-between;
 }
@@ -1361,6 +1380,7 @@ button#add-friend:active {
 #friends-inbox .top button {
   background-color: transparent;
   height: 24px;
+  margin-right: 12px;
   padding: 0;
   border: none;
   display: flex;
@@ -1391,6 +1411,7 @@ button#add-friend:active {
   flex-grow: 1;
   height: 0;
   padding-bottom: 24px;
+  padding-right: 72px;
   display: flex;
   flex-direction: column;
   gap: 12px;

@@ -28,6 +28,7 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
       bottom: bottomPosition,
       right: rightPosition
     });
+
     setIsFeaturesVisible(true);
   }
 
@@ -61,23 +62,30 @@ export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, co
     else {
       setIsEditing(false);
 
-      const updatedContent = normalizeSpaces(editedContent);
+      const filteredEditedContent = normalizeSpaces(editedContent);
 
-      if (updatedContent && updatedContent !== content) {
+      if (!filteredEditedContent) {
+        setEditedContent(content);
+        return;
+      }
+
+      if (filteredEditedContent !== content) {
         const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
         const currentMessageDoc = await getDoc(currentMessageRef);
   
         await updateDoc(currentMessageRef, {
           ...currentMessageDoc.data(),
           isEdited: true,
-          content: editedContent,
-        });  
+          content: filteredEditedContent,
+        });
       }
+
+      setEditedContent(filteredEditedContent)
     }
   }
 
   const inputContent = (e) => {
-    const offset = window.getSelection.getRangeAt(0).startOffset;
+    const offset = window.getSelection().getRangeAt(0).startOffset;
 
     setEditedContent(e.target.innerText);
 

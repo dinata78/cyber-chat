@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChatsSVG } from "../svg/nav-svg/ChatsSVG";
 import { SettingsSVG } from "../svg/nav-svg/SettingsSVG";
 import { FriendsSVG } from "../svg/nav-svg/FriendsSVG";
@@ -37,6 +37,14 @@ export function Cyber() {
 
   const { chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap } = useChats(ownData.uid, friendUids);
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!parameter) {
+      navigate("/cyber/chats");
+    }
+  }, []);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!auth.currentUser) return;
@@ -46,8 +54,8 @@ export function Cyber() {
       const setOnlineStatus = async () => {
         const ownStatusRef = ref(realtimeDb, `users/${user.uid}`);
 
-        await update(ownStatusRef, {isOnline: true});
-        onDisconnect(ownStatusRef).update({isOnline: false});
+        await update(ownStatusRef, { isOnline: true });
+        onDisconnect(ownStatusRef).update({ isOnline: false });
       }
 
       setOnlineStatus();
