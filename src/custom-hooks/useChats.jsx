@@ -14,7 +14,7 @@ export function useChats(ownUid, friendUids) {
 
     let unsubscribeList = [];
     
-    for (const uid of ["globalChat", "28qZ6LQQi3g76LLRd20HXrkQIjh1", ownUid, ...friendUids]) {
+    for (const uid of ["globalChat", import.meta.env.VITE_DEV_UID, ownUid, ...friendUids]) {
       const conversationId = getConversationId(ownUid, uid);
 
       const messagesQuery = query(

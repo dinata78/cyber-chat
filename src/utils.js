@@ -1,6 +1,7 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where, writeBatch } from "firebase/firestore";
-import { db } from "../firebase";
+import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, setDoc, where, writeBatch } from "firebase/firestore";
+import { db, realtimeDb } from "../firebase";
 import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
+import { ref, remove } from "firebase/database";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
@@ -124,36 +125,67 @@ export async function deleteUserConversation(uid) {
   const userConversationsQuery = query(
     conversationsRef,
     where("participants", "array-contains", uid),
-  )
+  );
 
   const userConversationDocs = await getDocs(userConversationsQuery);
 
-  await Promise.all(
-    userConversationDocs.docs.map(async (conversationDoc) => {
-      const data = conversationDoc.data();
-      const conversationParticipants = data.participants;
+  userConversationDocs.docs.forEach(async (conversationDoc) => {
+    const data = conversationDoc.data();
 
-      await removeFriend(conversationParticipants[0], uid);
-      await deleteDoc(conversationDoc.ref);
-    })
-  );
+    let conversationParticipants = data.participants;
+    conversationParticipants.splice(conversationParticipants.indexOf(uid), 1)
+  
+    if (conversationParticipants.length && conversationParticipants[0] !== import.meta.env.VITE_DEV_UID) {
+      await removeFriend(uid, conversationParticipants[0]);
+    }
+
+    await removeConversationFromDb(conversationDoc.id);
+  });
 }
 
 export async function deleteUserData(uid) {
-  const metadataDocRef = doc(db, "users", "metadata");
-  const metadataDocData = await fetchDataFromUid("metadata");
-  const metadataUsernames = metadataDocData.usernames;
+  const batch = writeBatch(db);
 
-  delete metadataUsernames[uid];
+  const hiddenUsersRef = query(
+    collection(db, "users", "metadata", "hiddenUsers"),
+    where("uid", "==", uid),
+    limit(1)
+  );
 
-  await updateDoc(metadataDocRef, {
-    ...metadataDocData,
-    usernames: metadataUsernames,
-  })
+  const hiddenUsersDocs = await getDocs(hiddenUsersRef);
+
+  if (hiddenUsersDocs.docs.length) {
+    batch.delete(hiddenUsersDocs.docs[0].ref);
+  }
+
+  const userInboxRef = collection(db, "users", uid, "inbox");
+  const userInboxItems = await getDocs(userInboxRef);
+  
+  if (userInboxItems.docs.length) {
+    userInboxItems.docs.forEach(item => {
+      batch.delete(item.ref);
+    });
+  }
+
+  const userRequestsRef = collection(db, "users", uid, "requests");
+  const userRequests = await getDocs(userRequestsRef);
+
+  if (userRequests.docs.length) {
+    userRequests.forEach(request => {
+      batch.delete(request.ref);
+    });
+  }
 
   const userDocRef = doc(db, "users", uid);
-  
+
+  await batch.commit();
   await deleteDoc(userDocRef);
+}
+
+export async function deleteUserStatusFromDb(uid) {
+  const userDbStatusRef = ref(realtimeDb, `users/${uid}`);
+
+  await remove(userDbStatusRef);
 }
 
 export function setCursorPosition(elementRef, offset) {
@@ -161,7 +193,7 @@ export function setCursorPosition(elementRef, offset) {
   const newRange = document.createRange();
 
   if (offset === "end") {
-    offset = elementRef.current.childNodes[0].length;
+    offset = elementRef.current.childNodes[0]?.length;
   }
 
   if (elementRef.current.childNodes.length > 0) {
@@ -174,6 +206,10 @@ export function setCursorPosition(elementRef, offset) {
       Math.min(offset, elementRef.current.childNodes[0].length)
     );
     selection.removeAllRanges();
-    selection.addRange(newRange);
+    selection.addRange(newRange);  
   }
+  else {
+    elementRef.current.focus();
+  }
+
 }

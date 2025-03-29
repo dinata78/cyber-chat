@@ -105,7 +105,7 @@ export function AccountUsername({ username, ownUid }) {
       {
         isEditMode &&
         <span className="char-tracker">
-          {editedUsername.length} / 15
+          {editedUsername?.length || 0} / 15
         </span>
       }
 

@@ -84,10 +84,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           chatMessagesRef
         );
       }
-      else if (selectedChatUid === "28qZ6LQQi3g76LLRd20HXrkQIjh1") {
+      else if (selectedChatUid === import.meta.env.VITE_DEV_UID) {
         chatCardOnClick(
           ownData.uid,
-          {displayName: "Steven Dinata", title: "Developer of CyberChat", uid: "28qZ6LQQi3g76LLRd20HXrkQIjh1"},
+          {displayName: "Steven Dinata", title: "Developer of CyberChat", uid: import.meta.env.VITE_DEV_UID},
           setCurrentChatData,
           setConversationId,
           null,
@@ -201,17 +201,17 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             chatMessagesRef={chatMessagesRef}
           />
           {
-            ownData.uid != "28qZ6LQQi3g76LLRd20HXrkQIjh1" ?
+            ownData.uid != import.meta.env.VITE_DEV_UID ?
               <ChatCard 
                 ownUid={ownData.uid}
                 displayName="Steven Dinata"
                 username={null}
                 title="Developer of CyberChat" 
-                uid="28qZ6LQQi3g76LLRd20HXrkQIjh1"
-                status={statusMap["28qZ6LQQi3g76LLRd20HXrkQIjh1"]}
+                uid={import.meta.env.VITE_DEV_UID}
+                status={statusMap[import.meta.env.VITE_DEV_UID]}
                 unreadMessagesCount={
-                  Array.isArray(chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]) ?
-                    chatMessagesMap[getConversationId(ownData.uid, "28qZ6LQQi3g76LLRd20HXrkQIjh1")]
+                  Array.isArray(chatMessagesMap[getConversationId(ownData.uid, import.meta.env.VITE_DEV_UID)]) ?
+                    chatMessagesMap[getConversationId(ownData.uid, import.meta.env.VITE_DEV_UID)]
                     .filter(message => message.isUnread && message.senderId !== ownData.uid)
                     .length
                   : 0
@@ -284,10 +284,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         
         <div id="chats-content-bottom">
 
-          <div 
+          <div
+            ref={chatMessagesRef}
             id="chat-messages"
             className="overflow-y-support"
-            ref={chatMessagesRef}
           >
             {
               hasOlderMessages &&

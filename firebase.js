@@ -4,16 +4,16 @@ import { getFirestore } from "firebase/firestore";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBhxRqthAHC7jOAjA18b1bSVXTfvqxRB9w",
-  authDomain: "cyber-chat-78.firebaseapp.com",
-  projectId: "cyber-chat-78",
-  storageBucket: "cyber-chat-78.firebasestorage.app",
-  messagingSenderId: "1092074312984",
-  appId: "1:1092074312984:web:c6373958f8157757f6ba6d"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const realtimeDb = getDatabase(app, "https://cyber-chat-78-default-rtdb.asia-southeast1.firebasedatabase.app");
+export const realtimeDb = getDatabase(app, import.meta.env.VITE_FIREBASE_RTDB_REF_URL);

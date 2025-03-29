@@ -182,7 +182,7 @@ body {
 }
 
 .overflow-y-support::-webkit-scrollbar-thumb {
-  background-color: #aaddff99;
+  background-color: #aaddff50;
   border-radius: 24px;
 }
 
@@ -193,6 +193,11 @@ body {
 
 .overflow-y-support::-webkit-scrollbar-track {
   background-color: transparent;
+  border-radius: 24px;
+}
+
+.overflow-y-support::-webkit-scrollbar-track:hover {
+  background-color: #aaddff50;
 }
 
 .overflow-y-support.smaller-scrollbar::-webkit-scrollbar {

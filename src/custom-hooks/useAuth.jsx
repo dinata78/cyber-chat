@@ -1,8 +1,8 @@
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { addNewConversationToDb, fetchDataFromUid } from "../utils";
+import { addNewConversationToDb } from "../utils";
 
 export function useAuth(setIsLoading) {
   const [signInData, setSignInData] = useState({email: "", password: ""});
@@ -34,19 +34,8 @@ export function useAuth(setIsLoading) {
       await addNewConversationToDb(auth.currentUser.uid);
       await addNewConversationToDb(
         auth.currentUser.uid,
-        "28qZ6LQQi3g76LLRd20HXrkQIjh1",
+        import.meta.env.VITE_DEV_UID
       );
-
-      const metadataDocRef = doc(db, "users", "metadata");
-      const metadataDocData = await fetchDataFromUid("metadata");
-      const usernamesMap = metadataDocData.usernames;
-      usernamesMap[auth.currentUser.uid] = "";
-
-      await updateDoc(metadataDocRef, {
-        ...metadataDocData,
-        usernames: usernamesMap, 
-      });
-
     }
     catch (error) {
       console.error("Error occured while signing up: " + error);

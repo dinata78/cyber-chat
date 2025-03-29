@@ -16,7 +16,7 @@ export function useStatus(ownUid, friendUids) {
 
     let unsubscribeList = [];
 
-    for (const uid of ["28qZ6LQQi3g76LLRd20HXrkQIjh1", ownUid, ...friendUids]) {
+    for (const uid of [import.meta.env.VITE_DEV_UID, ownUid, ...friendUids]) {
 
       if (hiddenUserUids.includes(uid)) {
         setStatusMap(prev => {
