@@ -1,48 +1,31 @@
 import { off, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { realtimeDb } from "../../firebase";
-import { useHiddenUsers } from "./useHiddenUsers";
 
 export function useStatus(ownUid, friendUids) {
   const [statusMap, setStatusMap] = useState({});
 
-  const { hiddenUserUids } = useHiddenUsers();
-
   useEffect(() => {
-    if (!ownUid && !hiddenUserUids) {
-      setStatusMap({});
-      return;
-    }
-
+    if (!ownUid) return;
+    
     let unsubscribeList = [];
 
-    for (const uid of [import.meta.env.VITE_DEV_UID, ownUid, ...friendUids]) {
-
-      if (hiddenUserUids.includes(uid)) {
-        setStatusMap(prev => {
-          const prevStatusMap = {...prev};
-
-          prevStatusMap[uid] = "hidden";
-
-          return prevStatusMap;
-        });
-
-        continue;
-      }
-
+    for (const uid of [import.meta.env.VITE_DEV_UID, ...friendUids]) {
       const statusRef = ref(realtimeDb, `users/${uid}`);
 
-      onValue(statusRef, (snapshot) => {
+      const listener = onValue(statusRef, (snapshot) => {
         setStatusMap(prev => {
           const prevStatusMap = {...prev};
 
-          prevStatusMap[uid] = snapshot.val()?.isOnline ? "online" : "offline";
+          const status = snapshot.val()?.status;
+
+          prevStatusMap[uid] = status || "offline";
 
           return prevStatusMap;
         });
       });
 
-      const unsubscribe = () => off(statusRef, "value");
+      const unsubscribe = () => off(statusRef, "value", listener);
       unsubscribeList.push(unsubscribe);
     }
 
@@ -54,7 +37,7 @@ export function useStatus(ownUid, friendUids) {
         unsubscribeList = [];
       }
     }
-  }, [ownUid, friendUids, hiddenUserUids]);
+  }, [ownUid, friendUids]);
   
   return { statusMap };
 }

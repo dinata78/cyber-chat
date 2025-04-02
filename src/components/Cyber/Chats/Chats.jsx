@@ -7,6 +7,7 @@ import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/
 import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId, normalizeSpaces } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
+import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 
@@ -14,6 +15,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [messageInput, setMessageInput] = useState("");
   const [hasOlderMessages, setHasOlderMessages] = useState(false);
+
+  const { status } = useStatusByUid(ownData.uid);
 
   const selectedChatMessages = chatMessagesMap[conversationId];
   const selectedChatMessagesMaxAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
@@ -230,7 +233,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             username={ownData?.username}
             title={ownData.title || "Loading..."}
             uid={ownData.uid}
-            status={statusMap[ownData.uid]}
+            status={status}
             unreadMessagesCount={0}
             setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}

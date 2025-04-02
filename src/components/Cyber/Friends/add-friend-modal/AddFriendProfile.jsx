@@ -17,11 +17,7 @@ export function AddFriendProfile({ searchedUserData }) {
         />
         <FriendProfileDataCard
           label="STATUS"
-          content={
-            status ? 
-              capitalizeFirstLetter(status)
-            : "..."
-          }
+          content={capitalizeFirstLetter(status) || "..."}
         />
       </div>
 

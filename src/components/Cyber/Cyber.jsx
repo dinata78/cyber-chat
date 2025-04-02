@@ -11,12 +11,12 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db, realtimeDb } from "../../../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import { onDisconnect, ref, update } from "firebase/database";
 import { useFriendList } from "../../custom-hooks/useFriendList";
 import { useRequests } from "../../custom-hooks/useRequests";
 import { useInbox } from "../../custom-hooks/useInbox";
 import { useChats } from "../../custom-hooks/useChats";
 import { useStatus } from "../../custom-hooks/useStatus";
+import { get, onDisconnect, ref, update } from "firebase/database";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -47,17 +47,25 @@ export function Cyber() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!auth.currentUser) return;
+      if (!auth?.currentUser) return;
       
       setIsAuthChanged(prev => !prev);
 
       const setOnlineStatus = async () => {
         const ownStatusRef = ref(realtimeDb, `users/${user.uid}`);
-
-        await update(ownStatusRef, { isOnline: true });
-        onDisconnect(ownStatusRef).update({ isOnline: false });
+      
+        const currentStatus = await get(ownStatusRef);
+        
+        if (currentStatus.val()?.status !== "hidden") {
+          await update(ownStatusRef, { status: "online" });
+      
+          onDisconnect(ownStatusRef).update({ status: "offline" });
+        }
+        else {
+          onDisconnect(ownStatusRef).cancel();
+        }
       }
-
+      
       setOnlineStatus();
     });
 

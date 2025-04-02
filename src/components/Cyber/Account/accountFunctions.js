@@ -1,14 +1,19 @@
 import { auth, realtimeDb } from "../../../../firebase";
 import { deleteUser, sendPasswordResetEmail, signOut } from "firebase/auth";
-import { ref, update } from "firebase/database";
+import { get, ref, update } from "firebase/database";
 import { deleteUserConversation, deleteUserData, deleteUserStatusFromDb } from "../../../utils";
 import { sendEmailVerification } from "firebase/auth";
 
 export async function logOut() {
   try {
-    const dbRef = ref(realtimeDb, `users/${auth.currentUser.uid}`);
+    const statusRef = ref(realtimeDb, `users/${auth.currentUser.uid}`);
 
-    await update(dbRef, { isOnline: false });
+    const currentStatus = await get(statusRef); 
+
+    if (currentStatus.val()?.status !== "hidden") {
+      await update(statusRef, { status: "offline" });
+    };
+
     await signOut(auth);
     
   }

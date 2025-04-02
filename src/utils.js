@@ -1,7 +1,7 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, setDoc, where, writeBatch } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { db, realtimeDb } from "../firebase";
 import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
-import { ref, remove } from "firebase/database";
+import { get, onDisconnect, ref, remove, update } from "firebase/database";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
@@ -83,13 +83,13 @@ export function getIndicatorClass(status) {
 
 export function capitalizeFirstLetter(str) {
   return (
-    str.charAt(0).toUpperCase()
-    + str.slice(1)
+    str?.charAt(0).toUpperCase()
+    + str?.slice(1)
   )
 }
 
 export function normalizeSpaces(str) {
-  return str.replace(/\s+/g, ' ').trim();
+  return str?.replace(/\s+/g, ' ').trim();
 }
 
 export function groupNames(displayName, username) {
@@ -97,7 +97,7 @@ export function groupNames(displayName, username) {
 }
 
 export function returnTwoDigitNumInString(num) {
-  const numInString = num.toString();
+  const numInString = num?.toString();
 
   if (numInString.length === 1) {
     return `0${num}`;
@@ -145,18 +145,6 @@ export async function deleteUserConversation(uid) {
 
 export async function deleteUserData(uid) {
   const batch = writeBatch(db);
-
-  const hiddenUsersRef = query(
-    collection(db, "users", "metadata", "hiddenUsers"),
-    where("uid", "==", uid),
-    limit(1)
-  );
-
-  const hiddenUsersDocs = await getDocs(hiddenUsersRef);
-
-  if (hiddenUsersDocs.docs.length) {
-    batch.delete(hiddenUsersDocs.docs[0].ref);
-  }
 
   const userInboxRef = collection(db, "users", uid, "inbox");
   const userInboxItems = await getDocs(userInboxRef);

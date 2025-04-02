@@ -10,14 +10,13 @@ import { AccountStatus } from "./account-data-cards/AccountStatus";
 import { AccountDisplayName } from "./account-data-cards/AccountDisplayName";
 import { AccountTitle } from "./account-data-cards/AccountTitle";
 import { AccountBio } from "./account-data-cards/AccountBio";
-import { useHiddenUsers } from "../../../custom-hooks/useHiddenUsers";
+import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
-  const { hiddenUserUids } = useHiddenUsers();
-
+  const { status } = useStatusByUid(ownData.uid);
   const accountContainerRef = useRef(null);
 
   const navigate = useNavigate();
@@ -217,7 +216,7 @@ export function Account({ ownData, setIsAccountVisible }) {
                 ownUid={ownData.uid}
               />
               <AccountStatus
-                status={hiddenUserUids?.includes(ownData.uid) ? "Hidden" : "Online"}
+                status={status}
                 ownUid={ownData.uid}
               />
             </div>

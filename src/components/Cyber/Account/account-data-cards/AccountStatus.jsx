@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { EditSVG } from "../../../svg/EditSVG";
 import { CheckSVG } from "../../../svg/CheckSVG";
-import { addDoc, collection, deleteDoc, getDocs, limit, query, where } from "firebase/firestore";
-import { db } from "../../../../../firebase";
+import { capitalizeFirstLetter } from "../../../../utils";
+import { onDisconnect, ref, update } from "firebase/database";
+import { realtimeDb } from "../../../../../firebase";
 
 export function AccountStatus({ status, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);
@@ -13,20 +14,15 @@ export function AccountStatus({ status, ownUid }) {
       setIsEditMode(true);
     }
     else {
-      if (status === "Online" && editedStatus === "Hidden") {
-        const hiddenUsersRef = collection(db, "users", "metadata", "hiddenUsers");
+      const ownStatusRef = ref(realtimeDb, `users/${ownUid}`);
 
-        await addDoc(hiddenUsersRef, { uid: ownUid });
+      if (status === "online" && editedStatus === "hidden") {
+        onDisconnect(ownStatusRef).cancel();
+        await update(ownStatusRef, { status: "hidden" });
       }
-      else if (status === "Hidden" && editedStatus === "Online") {
-        const ownHiddenUserQuery = query(
-          collection(db, "users", "metadata", "hiddenUsers"),
-          where("uid", "==", ownUid),
-          limit(1)
-        );
-
-        const ownHiddenUserDocs = await getDocs(ownHiddenUserQuery);
-        await deleteDoc(ownHiddenUserDocs.docs[0].ref);
+      else if (status === "hidden" && editedStatus === "online") {
+        onDisconnect(ownStatusRef).update({ status: "offline" });
+        await update(ownStatusRef, { status: "online" });
       }
 
       setIsEditMode(false);
@@ -50,7 +46,7 @@ export function AccountStatus({ status, ownUid }) {
       {
         !isEditMode ?
           <span className="content overflow-y-support">
-            {status || "(Not Set)"}
+            {capitalizeFirstLetter(status) || "(Not Set)"}
           </span>
         : <select
             defaultValue={status}
@@ -58,8 +54,8 @@ export function AccountStatus({ status, ownUid }) {
               (e) => setEditedStatus(e.target.value)
             }
           >
-            <option value="Online">Online</option>
-            <option value="Hidden">Hidden</option>
+            <option value="online">Online</option>
+            <option value="hidden">Hidden</option>
           </select>
       }
       
