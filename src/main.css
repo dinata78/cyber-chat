@@ -1637,9 +1637,110 @@ button#add-friend:active {
 }
 
 #account-pfp {
+  position: relative;
   width: 225px;
-  height: 225px;
+  aspect-ratio: 1 / 1;
   border: 2px solid #aaddff99;
+  overflow: hidden;
+}
+
+#account-pfp > img {
+  width: 100%;
+  height: 100%;
+}
+
+#account-pfp > button {
+  position: absolute;
+  bottom: 0;
+  background-color: #000000bb;
+  border: none;
+  width: 100%;
+  height: 15%;
+  padding: 0;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  color: #aaddff;
+  font-family: inherit;
+  font-weight: bold;
+
+  svg {
+    fill: #aaddff;
+    width: 10%;
+  }
+}
+
+#account-pfp > button:hover,
+#account-pfp > button:active {
+  color: #aaddffaa;
+
+  svg {
+    fill: #aaddffaa;
+  }
+}
+
+#upload-pfp {
+  position: absolute;
+  bottom: 0;
+  background-color: #000000bb;
+  width: 100%;
+  height: 15%;
+}
+
+#upload-pfp input {
+  display: none;
+}
+
+#upload-pfp label {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+}
+
+#account-pfp-preview {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000dd;
+  display: grid;
+  place-content: center;
+}
+
+#account-pfp-preview .main-container {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+#account-pfp-preview img {
+  object-fit: cover;
+  width: 250px;
+  height: 250px;
+  border: 5px solid #aaddff50;
+}
+
+#account-pfp-preview button {
+  background-color: #aaddff50;
+  width: 100%;
+  padding: 6px 0;
+  border: none;
+  color: #aaddff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#account-pfp-preview button:hover,
+#account-pfp-preview button:active {
+  background-color: #aaddff77;
 }
 
 #account-data .account-data-card {
@@ -1664,14 +1765,14 @@ button#add-friend:active {
   align-items: center;
   display: flex;
   gap: 4px;
-  color: #0066ff;
+  color: #aaddff;
   font-family: inherit;
   font-size: 12px;
   font-weight: bold;
 }
 
 #account-data .account-data-card button .button-svg {
-  fill: #0066ff;
+  fill: #aaddff;
   height: 100%;
   width: 12px;
   display: flex;
@@ -1681,10 +1782,10 @@ button#add-friend:active {
 
 #account-data .account-data-card button:hover,
 #account-data .account-data-card button:active {
-  color: #aaddff;
+  color: #aaddffaa;
 
   .button-svg {
-    fill: #aaddff;
+    fill: #aaddffaa;
   }
 }
 

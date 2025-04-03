@@ -29,6 +29,7 @@ export function useAuth(setIsLoading) {
         bio: "Hello world!",
         title: "Newcomer",
         email: auth.currentUser.email,
+        pfpUrl: "",
       });
 
       await addNewConversationToDb(auth.currentUser.uid);

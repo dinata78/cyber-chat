@@ -11,6 +11,7 @@ import { AccountDisplayName } from "./account-data-cards/AccountDisplayName";
 import { AccountTitle } from "./account-data-cards/AccountTitle";
 import { AccountBio } from "./account-data-cards/AccountBio";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
+import { AccountPfp } from "./account-data-cards/AccountPfp";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
@@ -210,7 +211,9 @@ export function Account({ ownData, setIsAccountVisible }) {
           
           <div id="account-data">
             <div className="left">
-              <img src="/empty-pfp.webp" id="account-pfp" />
+              <AccountPfp
+                pfpUrl={ownData.pfpUrl}
+              />
               <AccountUsername
                 username={ownData.username}
                 ownUid={ownData.uid}

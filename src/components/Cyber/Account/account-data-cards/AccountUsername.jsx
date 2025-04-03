@@ -104,16 +104,16 @@ export function AccountUsername({ username, ownUid }) {
 
       {
         isEditMode &&
-        <span className="char-tracker">
+        <label className="char-tracker">
           {editedUsername?.length || 0} / 15
-        </span>
+        </label>
       }
 
       {
         errorInfo.length > 0 &&
-        <span className="error-info">
+        <label className="error-info">
           {errorInfo}
-        </span>
+        </label>
       }
 
     </div>

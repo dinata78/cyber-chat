@@ -89,16 +89,16 @@ export function AccountBio({ bio, ownUid }) {
       
       {
         isEditMode &&
-        <span className="char-tracker">
+        <label className="char-tracker">
           {editedBio.length} / 200
-        </span>
+        </label>
       }
 
       {
         errorInfo.length > 0 &&
-        <span className="error-info">
+        <label className="error-info">
           {errorInfo}
-        </span>
+        </label>
       }
 
     </div>

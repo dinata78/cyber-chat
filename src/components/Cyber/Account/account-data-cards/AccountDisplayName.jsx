@@ -94,16 +94,16 @@ export function AccountDisplayName({ displayName, ownUid }) {
 
       {
         isEditMode &&
-        <span className="char-tracker">
+        <label className="char-tracker">
           {editedDisplayName.length} / 20
-        </span>
+        </label>
       }
 
       {
         errorInfo.length > 0 &&
-        <span className="error-info">
+        <label className="error-info">
           {errorInfo}
-        </span>
+        </label>
       }
 
     </div>
