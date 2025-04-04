@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ImageEditSVG } from "../../../svg/ImageEditSVG";
+import { auth } from "../../../../../firebase";
 
 export function AccountPfp({ pfpUrl }) {
   const [chosenImage, setChosenImage] = useState(null);
@@ -10,6 +11,28 @@ export function AccountPfp({ pfpUrl }) {
   const clearChosenImage = () => {
     fileInputRef.current.value = null;
     setChosenImage(null);
+  }
+
+  const uploadImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("image", chosenImage);
+      formData.append("uid", auth.currentUser.uid);
+
+      const response = await fetch(
+        "https://cyber-chat-worker.stevendinata78.workers.dev/image/pfp/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
+
+      const data = await response.json();
+      console.log(data);
+    }
+    catch (error) {
+      console.error("Error: " + error);
+    }
   }
 
   useEffect(() => {
@@ -43,7 +66,7 @@ export function AccountPfp({ pfpUrl }) {
         <div id="account-pfp-preview"onClick={clearChosenImage}>
           <div className="main-container" onClick={(e) => e.stopPropagation()}>
             <img src={chosenImageUrl}/>
-            <button>CONFIRM IMAGE</button>
+            <button onClick={uploadImage}>CONFIRM IMAGE</button>
             <button onClick={() => fileInputRef.current.click()}>CHANGE IMAGE</button>
           </div>
         </div>
