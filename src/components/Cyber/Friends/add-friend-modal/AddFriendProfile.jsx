@@ -10,7 +10,7 @@ export function AddFriendProfile({ searchedUserData }) {
     <div id="add-friend-profile">
 
       <div id="add-friend-profile-left">
-        <img src="/empty-pfp.webp" />
+        <img src={searchedUserData.pfpUrl || "/empty-pfp.webp"} />
         <FriendProfileDataCard 
           label="USERNAME"
           content={searchedUserData.username}

@@ -7,7 +7,7 @@ import { removeFriend } from "../modifyFriendList";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
 
-export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, friendStatus, setSelectedChatUid }) {
+export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, friendStatus, friendPfpUrl, setSelectedChatUid }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}});
 
@@ -45,7 +45,7 @@ export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsernam
     <div className="friend-card">
 
       <div className="friend-card-pfp">
-        <img src="/empty-pfp.webp" />
+        <img src={friendPfpUrl || "/empty-pfp.webp"} />
         <div 
           className={
             getIndicatorClass(friendStatus)

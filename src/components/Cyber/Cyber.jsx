@@ -17,6 +17,7 @@ import { useInbox } from "../../custom-hooks/useInbox";
 import { useChats } from "../../custom-hooks/useChats";
 import { useStatus } from "../../custom-hooks/useStatus";
 import { get, onDisconnect, ref, update } from "firebase/database";
+import { useUserData } from "../../custom-hooks/useUserData";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -30,6 +31,7 @@ export function Cyber() {
   const [ pendingNotifCount, setPendingNotifCount ] = useState(0); 
   const [ inboxNotifCount, setInboxNotifCount ] = useState(0); 
 
+  const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);
   const { statusMap } = useStatus(ownData.uid, friendUids);
   const { requests } = useRequests(ownData.uid);
@@ -169,7 +171,7 @@ export function Cyber() {
               id="nav-pfp"
               onClick={() => setIsAccountVisible(true)}
             >
-              <img src="/empty-pfp.webp" />
+              <img src={ownData.pfpUrl || "/empty-pfp.webp"} />
             </button>
             <button id="toggle-theme">
               <ThemeSVG theme="dark" />
@@ -192,6 +194,7 @@ export function Cyber() {
               selectedChatUid={selectedChatUid}
               setSelectedChatUid={setSelectedChatUid}
               friendDatas={friendDatas}
+              devData={devData}
               chatMessagesMap={chatMessagesMap}
               chatUsernamesMap={chatUsernamesMap}
               messagesAmountMap={messagesAmountMap}

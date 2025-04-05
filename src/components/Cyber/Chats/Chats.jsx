@@ -9,14 +9,27 @@ import { fetchDataFromUid, getConversationId, normalizeSpaces } from "../../../u
 import { chatCardOnClick } from "./chatCardOnClick";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 
-export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
+export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, devData, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 
   const [conversationId, setConversationId] = useState(null); 
-  const [currentChatData, setCurrentChatData] = useState({displayName: "Loading...", title: "Loading...", uid: null});
   const [messageInput, setMessageInput] = useState("");
   const [hasOlderMessages, setHasOlderMessages] = useState(false);
 
   const { status } = useStatusByUid(ownData.uid);
+
+  const [friendDisplayNameMap, friendTitleMap, friendPfpUrlMap] = (() => {
+    const displayNameMap = {};
+    const titleMap = {};
+    const pfpUrlMap = {};
+
+    friendDatas.forEach(friendData => {
+      displayNameMap[friendData.uid] = friendData.displayName;
+      titleMap[friendData.uid] = friendData.title;
+      pfpUrlMap[friendData.uid] = friendData.pfpUrl;
+    });
+
+    return [ displayNameMap, titleMap, pfpUrlMap ];
+  })();
 
   const selectedChatMessages = chatMessagesMap[conversationId];
   const selectedChatMessagesMaxAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
@@ -77,39 +90,36 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   useEffect(() => {
     const selectChatOnRender = async () => {
       if (selectedChatUid === "globalChat") {
-        chatCardOnClick(
-          ownData.uid,
-          {displayName: "Global Chat", title: "A global room everyone can access", uid: "globalChat"},
-          setCurrentChatData,
-          setConversationId,
-          null,
-          setSelectedChatUid,
-          chatMessagesRef
-        );
+        chatCardOnClick({
+          ownUid: ownData.uid,
+          chatUid: "globalChat",
+          setConversationId: setConversationId,
+          selectedChatUid: null,
+          setSelectedChatUid: setSelectedChatUid,
+          chatMessagesRef: chatMessagesRef,
+      });
       }
-      else if (selectedChatUid === import.meta.env.VITE_DEV_UID) {
-        chatCardOnClick(
-          ownData.uid,
-          {displayName: "Steven Dinata", title: "Developer of CyberChat", uid: import.meta.env.VITE_DEV_UID},
-          setCurrentChatData,
-          setConversationId,
-          null,
-          setSelectedChatUid,
-          chatMessagesRef
-        );
+      else if (selectedChatUid === devData.uid) {
+        chatCardOnClick({
+          ownUid: ownData.uid,
+          chatUid: devData.uid,
+          setConversationId: setConversationId,
+          selectedChatUid: null,
+          setSelectedChatUid: setSelectedChatUid,
+          chatMessagesRef: chatMessagesRef,
+      });
       }
       else {
         const chatData = await fetchDataFromUid(selectedChatUid);
 
-        chatCardOnClick(
-          ownData.uid,
-          {displayName: chatData.uid === ownData.uid ? chatData.displayName + " (You)" : chatData.displayName, title: chatData.title, uid: chatData.uid},
-          setCurrentChatData,
-          setConversationId,
-          null,
-          setSelectedChatUid,
-          chatMessagesRef
-        );
+        chatCardOnClick({
+          ownUid: ownData.uid,
+          chatUid: chatData.uid,
+          setConversationId: setConversationId,
+          selectedChatUid: null,
+          setSelectedChatUid: setSelectedChatUid,
+          chatMessagesRef: chatMessagesRef
+        });
       }
     }
 
@@ -195,31 +205,31 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             username={null}
             title="A global room everyone can access" 
             uid="globalChat"
-            status= "online"
+            status="online"
+            pfpUrl={null}
             unreadMessagesCount={0}
-            setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
             chatMessagesRef={chatMessagesRef}
           />
           {
-            ownData.uid != import.meta.env.VITE_DEV_UID ?
+            ownData.uid != devData.uid ?
               <ChatCard 
                 ownUid={ownData.uid}
-                displayName="Steven Dinata"
-                username={null}
-                title="Developer of CyberChat" 
-                uid={import.meta.env.VITE_DEV_UID}
-                status={statusMap[import.meta.env.VITE_DEV_UID]}
+                displayName={devData.displayName || "Loading..."}
+                username={devData.username}
+                title={devData.title || "Loading..."} 
+                uid={devData.uid}
+                status={statusMap[devData.uid]}
+                pfpUrl={devData.pfpUrl}
                 unreadMessagesCount={
-                  Array.isArray(chatMessagesMap[getConversationId(ownData.uid, import.meta.env.VITE_DEV_UID)]) ?
-                    chatMessagesMap[getConversationId(ownData.uid, import.meta.env.VITE_DEV_UID)]
+                  Array.isArray(chatMessagesMap[getConversationId(ownData.uid, devData.uid)]) ?
+                    chatMessagesMap[getConversationId(ownData.uid, devData.uid)]
                     .filter(message => message.isUnread && message.senderId !== ownData.uid)
                     .length
                   : 0
                 }
-                setCurrentChatData={setCurrentChatData}
                 setConversationId={setConversationId}
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
@@ -234,8 +244,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             title={ownData.title || "Loading..."}
             uid={ownData.uid}
             status={status}
+            pfpUrl={ownData.pfpUrl}
             unreadMessagesCount={0}
-            setCurrentChatData={setCurrentChatData}
             setConversationId={setConversationId}
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
@@ -253,6 +263,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   title={friendData.title}
                   uid={friendData.uid}
                   status={statusMap[friendData.uid]}
+                  pfpUrl={friendData.pfpUrl}
                   unreadMessagesCount={
                     Array.isArray(chatMessagesMap[getConversationId(ownData.uid, friendData.uid)]) ?
                       chatMessagesMap[getConversationId(ownData.uid, friendData.uid)]
@@ -260,7 +271,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                       .length
                     : 0
                   }
-                  setCurrentChatData={setCurrentChatData}
                   setConversationId={setConversationId}
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
@@ -277,11 +287,32 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
         <div id="chats-content-top">
           <div className="pfp">
-            <img src="/empty-pfp.webp" />
+            <img 
+              src={
+                selectedChatUid === "globalChat" ? "/globe.webp"
+                : selectedChatUid === devData.uid ? devData.pfpUrl || "/empty-pfp.webp"
+                : selectedChatUid === ownData.uid ? ownData.pfpUrl || "/empty-pfp.webp"
+                : friendPfpUrlMap[selectedChatUid] || "/empty-pfp.webp"
+              }
+            />
           </div>
           <div className="info">
-            <h1>{currentChatData.displayName}</h1>
-            <span>{currentChatData.title}</span>
+            <h1>
+              {
+                selectedChatUid === "globalChat" ? "Global Chat"
+                : selectedChatUid === devData.uid ? devData.displayName || "Loading..."
+                : selectedChatUid === ownData.uid ? `${ownData.displayName} (You)` || "Loading..."
+                : friendDisplayNameMap[selectedChatUid] || "Loading..."
+              }
+            </h1>
+            <span>
+              {
+                selectedChatUid === "globalChat" ? "A global room everyone can access"
+                : selectedChatUid === devData.uid ? devData.title || "Loading..."
+                : selectedChatUid === ownData.uid ? ownData.title || "Loading..."
+                : friendTitleMap[selectedChatUid] || "Loading..."
+              }
+            </span>
           </div>
         </div>
         

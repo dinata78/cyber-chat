@@ -21,6 +21,7 @@ export function FriendsAll({ ownUid, friendDatas, statusMap, setSelectedChatUid 
                     friendUsername={friendData.username}
                     friendTitle={friendData.title}
                     friendStatus={statusMap[friendData.uid]}
+                    friendPfpUrl={friendData.pfpUrl}
                     setSelectedChatUid={setSelectedChatUid}
                   />
                 )

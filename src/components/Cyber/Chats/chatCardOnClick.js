@@ -1,21 +1,15 @@
 import { getConversationId } from "../../../utils";
 
-export function chatCardOnClick(ownUid, chatData, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef) {
+export function chatCardOnClick({ ownUid, chatUid, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef }) {
   
   if (!ownUid) return;
-  if (chatData.uid === selectedChatUid) return;
+  if (chatUid === selectedChatUid) return;
 
-  const conversationId = getConversationId(ownUid, chatData.uid);
+  const conversationId = getConversationId(ownUid, chatUid);
 
   setConversationId(conversationId);
   
-  setSelectedChatUid(chatData.uid);
-  
-  setCurrentChatData({
-    displayName: chatData.displayName,
-    title: chatData.title,
-    uid: chatData.uid
-  });
+  setSelectedChatUid(chatUid);
 
   requestAnimationFrame(() => {
     chatMessagesRef.current.scrollTo({

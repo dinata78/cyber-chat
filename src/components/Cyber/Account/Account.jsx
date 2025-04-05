@@ -213,6 +213,7 @@ export function Account({ ownData, setIsAccountVisible }) {
             <div className="left">
               <AccountPfp
                 pfpUrl={ownData.pfpUrl}
+                ownUid={ownData.uid}
               />
               <AccountUsername
                 username={ownData.username}

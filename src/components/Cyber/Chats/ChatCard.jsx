@@ -1,29 +1,27 @@
 import { getIndicatorClass } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, displayName, username, title, uid, status, unreadMessagesCount, setCurrentChatData, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef }) {
+export function ChatCard({ ownUid, displayName, username, title, uid, status, pfpUrl, unreadMessagesCount, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef }) {
 
   return (
     <div 
       className={uid === selectedChatUid ? "chat-card selected" : "chat-card"} 
       onClick={
         () => 
-        chatCardOnClick(
-          ownUid,
-          {displayName: displayName, title: title, uid: uid},
-          setCurrentChatData,
-          setConversationId,
-          selectedChatUid,
-          setSelectedChatUid,
-          chatMessagesRef
-        )
+        chatCardOnClick({
+          ownUid: ownUid,
+          chatUid: uid,
+          setConversationId: setConversationId,
+          selectedChatUid: selectedChatUid,
+          setSelectedChatUid: setSelectedChatUid,
+          chatMessagesRef: chatMessagesRef,
+        })
       }
     >
 
       <div className="chat-card-pfp">
-        <img src="/empty-pfp.webp" />
-          <div className={getIndicatorClass(status)}>
-          </div>
+        <img src={uid === "globalChat" ? "/globe.webp" : pfpUrl || "/empty-pfp.webp"} />
+          <div className={getIndicatorClass(status)}></div>
       </div>
 
       <div className="chat-card-info">
