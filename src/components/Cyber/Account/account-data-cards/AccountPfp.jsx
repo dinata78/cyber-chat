@@ -2,23 +2,25 @@ import { useEffect, useRef, useState } from "react";
 import { ImageEditSVG } from "../../../svg/ImageEditSVG";
 import { db } from "../../../../../firebase";
 import { doc, updateDoc } from "firebase/firestore";
+import { TrashCanSVG } from "../../../svg/TrashCanSVG"
 
 export function AccountPfp({ pfpUrl, ownUid }) {
-  const [chosenImage, setChosenImage] = useState(null);
-  const [chosenImageUrl, setChosenImageUrl] = useState(null);
+  const [chosenPfp, setChosenPfp] = useState(null);
+  const [chosenPfpUrl, setChosenPfpUrl] = useState(null);
   const [errorInfo, setErrorInfo] = useState("");
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
   const fileInputRef = useRef(null);
 
-  const clearChosenImage = () => {
+  const clearChosenPfp = () => {
     fileInputRef.current.value = null;
-    setChosenImage(null);
+    setChosenPfp(null);
   }
 
-  const uploadImage = async () => {
+  const uploadPfp = async () => {
     try {
       const formData = new FormData();
-      formData.append("image", chosenImage);
+      formData.append("image", chosenPfp);
       formData.append("uid", ownUid);
 
       const response = await fetch(
@@ -32,37 +34,42 @@ export function AccountPfp({ pfpUrl, ownUid }) {
       const data = await response.json();
       
       if (data.secure_url) {
-        const ownDocRef = doc(db,"users", ownUid);
+        const ownDocRef = doc(db, "users", ownUid);
         await updateDoc(ownDocRef, { pfpUrl: data.secure_url });
       }
 
-      clearChosenImage();
+      clearChosenPfp();
     }
     catch (error) {
       console.error("Error: " + error);
       setErrorInfo("Failed to set profile picture.")
-      clearChosenImage();
+      clearChosenPfp();
     }
   }
 
+  const deletePfp = async () => {
+    console.log("Deleting pfp..");
+    setIsConfirmingDelete(false);
+  }
+
   useEffect(() => {
-    if (chosenImage) {
-      if (chosenImage.size > 5 * 1000 * 1000) {
+    if (chosenPfp) {
+      if (chosenPfp.size > 5 * 1000 * 1000) {
         setErrorInfo("Image size should be less than 10MB.");
-        clearChosenImage();
+        clearChosenPfp();
       }
       else {
-        const url = URL.createObjectURL(chosenImage);
-        setChosenImageUrl(url);  
+        const url = URL.createObjectURL(chosenPfp);
+        setChosenPfpUrl(url);  
       }
     }
 
     return () => {
-      if (chosenImage) {
-        URL.revokeObjectURL(chosenImage);
+      if (chosenPfp) {
+        URL.revokeObjectURL(chosenPfp);
       }
     }
-  }, [chosenImage])
+  }, [chosenPfp])
 
   return (
     <div id="account-pfp">
@@ -74,7 +81,36 @@ export function AccountPfp({ pfpUrl, ownUid }) {
         <label className="error-info">{errorInfo}</label>
       }
 
+      {
+        isConfirmingDelete &&
+        <div className="delete-pfp-confirmation">
+          <label>DELETE PROFILE PICTURE?</label>
+          <div className="buttons">
+            <button
+              style={{color: "lime"}}
+              onClick={deletePfp}
+            >
+              YES
+            </button>
+            <button
+              style={{color: "red"}}
+              onClick={() => setIsConfirmingDelete(false)}
+            >
+              NO
+            </button>
+          </div>
+        </div>
+      }
+
       <button
+        className="delete-pfp"
+        onClick={() => setIsConfirmingDelete(true)}
+      >
+        <TrashCanSVG />
+      </button>
+
+      <button
+        className="change-pfp"
         onClick={() => {
           setErrorInfo("");
           fileInputRef.current.click();
@@ -89,15 +125,15 @@ export function AccountPfp({ pfpUrl, ownUid }) {
         type="file"
         style={{display: "none", pointerEvents: "none"}}
         accept="image/jpg, image/jpeg, image/png, image/webp"
-        onChange={(e) => setChosenImage(e.target.files[0])}
+        onChange={(e) => setChosenPfp(e.target.files[0])}
       />
 
       {
-        chosenImage &&
-        <div id="account-pfp-preview"onClick={clearChosenImage}>
+        chosenPfp &&
+        <div id="account-pfp-preview" onClick={clearChosenPfp}>
           <div className="main-container" onClick={(e) => e.stopPropagation()}>
-            <img src={chosenImageUrl}/>
-            <button onClick={uploadImage}>CONFIRM IMAGE</button>
+            <img src={chosenPfpUrl}/>
+            <button onClick={uploadPfp}>CONFIRM IMAGE</button>
             <button onClick={() => fileInputRef.current.click()}>CHANGE IMAGE</button>
           </div>
         </div>

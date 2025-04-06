@@ -1667,7 +1667,73 @@ button#add-friend:active {
   font-weight: bold;
 }
 
-#account-pfp > button {
+#account-pfp > .delete-pfp-confirmation {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000bb;
+  padding: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
+}
+
+#account-pfp > .delete-pfp-confirmation label {
+  text-align: center;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#account-pfp > .delete-pfp-confirmation .buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10%;
+
+  button {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+
+    &:hover {
+      opacity: 65%;
+    }
+  }
+}
+
+#account-pfp > button.delete-pfp {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #000000bb;
+  width: 20%;
+  height: 20%;
+  padding: 4%;
+  border: none;
+
+  svg {
+    fill: red;
+  }
+}
+
+#account-pfp > button.delete-pfp:hover,
+#account-pfp > button.delete-pfp:active  {
+  svg {
+    fill: darkred;
+  }
+}
+
+#account-pfp > button.change-pfp {
   position: absolute;
   bottom: 0;
   background-color: #000000bb;
@@ -1689,8 +1755,8 @@ button#add-friend:active {
   }
 }
 
-#account-pfp > button:hover,
-#account-pfp > button:active {
+#account-pfp > button.change-pfp:hover,
+#account-pfp > button.change-pfp:active {
   color: #aaddffaa;
 
   svg {
