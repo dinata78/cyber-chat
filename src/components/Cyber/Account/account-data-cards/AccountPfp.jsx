@@ -6,6 +6,7 @@ import { doc, updateDoc } from "firebase/firestore";
 export function AccountPfp({ pfpUrl, ownUid }) {
   const [chosenImage, setChosenImage] = useState(null);
   const [chosenImageUrl, setChosenImageUrl] = useState(null);
+  const [errorInfo, setErrorInfo] = useState("");
 
   const fileInputRef = useRef(null);
 
@@ -21,7 +22,7 @@ export function AccountPfp({ pfpUrl, ownUid }) {
       formData.append("uid", ownUid);
 
       const response = await fetch(
-        "https://cyber-chat-worker.stevendinata78.workers.dev/image/pfp/upload",
+        "https://cyberchat.mediastorage.workers.dev/image/pfp/upload",
         {
           method: "POST",
           body: formData,
@@ -38,25 +39,47 @@ export function AccountPfp({ pfpUrl, ownUid }) {
       clearChosenImage();
     }
     catch (error) {
-      console.error("Erroxr: " + error);
+      console.error("Error: " + error);
+      setErrorInfo("Failed to set profile picture.")
       clearChosenImage();
     }
   }
 
   useEffect(() => {
     if (chosenImage) {
-      const url = URL.createObjectURL(chosenImage);
-      setChosenImageUrl(url);
+      if (chosenImage.size > 5 * 1000 * 1000) {
+        setErrorInfo("Image size should be less than 10MB.");
+        clearChosenImage();
+      }
+      else {
+        const url = URL.createObjectURL(chosenImage);
+        setChosenImageUrl(url);  
+      }
     }
 
-    return () => URL.revokeObjectURL(chosenImage);
-  }, [chosenImage]);
+    return () => {
+      if (chosenImage) {
+        URL.revokeObjectURL(chosenImage);
+      }
+    }
+  }, [chosenImage])
 
   return (
     <div id="account-pfp">
 
       <img src={pfpUrl || "/empty-pfp.webp"} />
-      <button onClick={() => fileInputRef.current.click()}>
+
+      {
+        errorInfo &&
+        <label className="error-info">{errorInfo}</label>
+      }
+
+      <button
+        onClick={() => {
+          setErrorInfo("");
+          fileInputRef.current.click();
+        }}
+      >
         CHANGE IMAGE
         <ImageEditSVG />
       </button>
