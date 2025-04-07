@@ -1234,6 +1234,7 @@ button#add-friend:active {
 
 .friend-card-pfp img {
   width: 65px;
+  aspect-ratio: 1 / 1;
   border-radius: 100%;
 }
 

@@ -42,14 +42,41 @@ export function AccountPfp({ pfpUrl, ownUid }) {
     }
     catch (error) {
       console.error("Error: " + error);
-      setErrorInfo("Failed to set profile picture.")
+      setErrorInfo("Failed to set profile picture.");
       clearChosenPfp();
     }
   }
 
   const deletePfp = async () => {
-    console.log("Deleting pfp..");
-    setIsConfirmingDelete(false);
+    try {
+      const formData = new FormData();
+      formData.append("imageUrl", pfpUrl);
+
+      const response = await fetch(
+        "https://cyberchat.mediastorage.workers.dev/image/delete",
+        {
+          method: "DELETE",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        const ownDocRef = doc(db, "users", ownUid);
+        await updateDoc(ownDocRef, { pfpUrl: "" });
+      }
+      else {
+        setErrorInfo("Failed to delete profile picture.");
+      }
+    }
+    catch (error) {
+      console.error("Error: " + error);
+      setErrorInfo("Failed to delete profile picture.");
+    }
+    finally {
+      setIsConfirmingDelete(false);
+    }
   }
 
   useEffect(() => {
