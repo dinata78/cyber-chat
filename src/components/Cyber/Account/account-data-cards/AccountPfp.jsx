@@ -6,7 +6,7 @@ import { TrashCanSVG } from "../../../svg/TrashCanSVG"
 
 export function AccountPfp({ pfpUrl, ownUid }) {
   const [chosenPfp, setChosenPfp] = useState(null);
-  const [chosenPfpUrl, setChosenPfpUrl] = useState(null);
+  const [chosenPfpUrl, setChosenPfpUrl] = useState("");
   const [errorInfo, setErrorInfo] = useState("");
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
@@ -15,6 +15,7 @@ export function AccountPfp({ pfpUrl, ownUid }) {
   const clearChosenPfp = () => {
     fileInputRef.current.value = null;
     setChosenPfp(null);
+    setChosenPfpUrl("");
   }
 
   const uploadPfp = async () => {
@@ -80,6 +81,8 @@ export function AccountPfp({ pfpUrl, ownUid }) {
   }
 
   useEffect(() => {
+    let revokeURL = null;
+
     if (chosenPfp) {
       if (chosenPfp.size > 5 * 1000 * 1000) {
         setErrorInfo("Image size should be less than 10MB.");
@@ -87,14 +90,14 @@ export function AccountPfp({ pfpUrl, ownUid }) {
       }
       else {
         const url = URL.createObjectURL(chosenPfp);
-        setChosenPfpUrl(url);  
+        revokeURL = () => URL.revokeObjectURL(url);
+
+        setChosenPfpUrl(url);
       }
     }
 
     return () => {
-      if (chosenPfp) {
-        URL.revokeObjectURL(chosenPfp);
-      }
+      if (revokeURL) revokeURL();
     }
   }, [chosenPfp])
 
@@ -129,12 +132,15 @@ export function AccountPfp({ pfpUrl, ownUid }) {
         </div>
       }
 
-      <button
-        className="delete-pfp"
-        onClick={() => setIsConfirmingDelete(true)}
-      >
-        <TrashCanSVG />
-      </button>
+      {
+        pfpUrl &&
+        <button
+          className="delete-pfp"
+          onClick={() => setIsConfirmingDelete(true)}
+        >
+          <TrashCanSVG />
+        </button>
+      }
 
       <button
         className="change-pfp"
@@ -159,7 +165,7 @@ export function AccountPfp({ pfpUrl, ownUid }) {
         chosenPfp &&
         <div id="account-pfp-preview" onClick={clearChosenPfp}>
           <div className="main-container" onClick={(e) => e.stopPropagation()}>
-            <img src={chosenPfpUrl}/>
+            <img src={chosenPfpUrl} />
             <button onClick={uploadPfp}>CONFIRM IMAGE</button>
             <button onClick={() => fileInputRef.current.click()}>CHANGE IMAGE</button>
           </div>

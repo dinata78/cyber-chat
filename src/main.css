@@ -806,43 +806,136 @@ button#toggle-theme svg {
 }
 
 #chat-input {
+  position: relative;
   min-height: 120px;
   padding: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px;
 }
 
-#chat-input input {
+#chat-input > input[type="text"] {
   flex-grow: 1;
   background-color: transparent;
   height: 48px;
-  padding-inline: 12px;
-  border: 1px solid white;
+  margin-right: 6px;
+  padding: 0;
+  padding-right: 12px;
+  border: 1px solid #aaddff;
+  border-left: none;
   color: white;
   font-family: inherit;
   font-size: 1.2rem;
 }
 
-#chat-input input:focus {
+#chat-input > input[type="text"]:focus {
   outline: none;
 }
 
-#chat-input button {
-  background-color: #0066ff;
-  width: 48px;
+#chat-input > input[type="text"]::placeholder {
+  color: #aaddff50;
+}
+
+#chat-input > button {
   height: 48px;
-  border: 1px solid #0066ff;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    fill: #aaddff;
+    width: 50%;
+    aspect-ratio: 1 / 1;
+  }
 }
 
-#chat-input button svg {
-  fill: white;
-  width: 24px;
+#chat-input button.add-image {
+  background-color: transparent;
+  width: 60px;
+  padding: 4px;
+  border: 1px solid #aaddff;
+  border-right: none;
 }
 
-#chat-input button:active {
+#chat-input button.add-image:hover,
+#chat-input button.add-image:active {
+  svg {
+    fill: #aaddff77;
+  }
+}
+
+#chat-input button.add-message {
+  background-color: #aaddff50;
+  width: 48px;
+  border: 1px solid #aaddff;
+}
+
+#chat-input button.add-message:active {
   border: 2px solid #aaddff;
+}
+
+#chat-input button.preview-image {
+  position: absolute;
+  right: 90px;
+  background-color: transparent;
+  padding: 0;
+  padding-inline: 18px;
+  border: none;
+  display: flex;
+  gap: 8px;
+  color: #aaddff99;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+
+  svg {
+    fill: #aaddff99;
+    width: 24px;
+  }
+}
+
+#chat-input button.preview-image:hover,
+#chat-input button.preview-image:active {
+  color: #aaddff;
+  
+  svg {
+    fill: #aaddff;
+  }
+}
+
+#cyber-chats .image-preview {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000dd;
+  display: grid;
+  place-content: center;
+}
+
+#cyber-chats .image-preview .extras {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background-color: #3d3d7d99;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+
+  label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
 }
 
 #cyber-friends {

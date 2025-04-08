@@ -5,7 +5,7 @@ import { CheckSVG } from "../../svg/CheckSVG";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 
-export function MessageCard({ id, isEdited, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
+export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
   const [featuresContainerPosition, setFeaturesContainerPosition] = useState({top: null, bottom: null, right: null});
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);

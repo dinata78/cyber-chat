@@ -1,6 +1,8 @@
 import { ChatCard } from "./ChatCard";
 import { SearchSVG } from "../../svg/SearchSVG";
-import { ArrowLeftSVG } from "../../svg/ArrowLeftSVG";
+import { SendSVG } from "../../svg/SendSVG";
+import { ImageSVG } from "../../svg/ImageSVG";
+import { EyeSVG } from "../../svg/EyeSVG"
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
@@ -14,6 +16,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const [conversationId, setConversationId] = useState(null); 
   const [messageInput, setMessageInput] = useState("");
   const [hasOlderMessages, setHasOlderMessages] = useState(false);
+  const [chosenImage, setChosenImage] = useState(null);
+  const [chosenImageData, setChosenImageData] = useState({ name: "", url: "", width: 0, height: 0 });
+  const [isPreviewingImage, setIsPreviewingImage] = useState(false);
+  const [isPreviewFit, setIsPreviewFit] = useState(false);
 
   const { status } = useStatusByUid(ownData.uid);
 
@@ -39,8 +45,15 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const prevSelectedChatUid = useRef("");
   
   const chatMessagesRef = useRef(null);
+  const imageInputRef = useRef(null);
 
-  const addMessage = async () => {    
+  const sendMessage = async () => {
+    const newMessage = chosenImageData.url || normalizeSpaces(messageInput) || null;
+    setMessageInput("");
+    if (chosenImage) clearChosenImage();
+    
+    if (!newMessage) return;
+
     if (selectedChatMessages.length === selectedChatMessagesMaxAmount) {
       setMessagesAmountMap(prev => {
         const prevMessagesAmountMap = {...prev};
@@ -51,14 +64,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       });
     }
 
-    const newMessage = normalizeSpaces(messageInput);
-    setMessageInput("");
-    
-    if (!newMessage) return;
-
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
+      type: chosenImageData.url ? "image" : "text",
       isEdited: false,
       isDeleted: false,
       content: newMessage,
@@ -85,6 +94,12 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
         behavior: "smooth",
       });
     });
+  }
+
+  const clearChosenImage = () => {
+    imageInputRef.current.value = null;
+    setChosenImage(null);
+    setChosenImageData({ name: "", url: "", width: 0, height: 0 });
   }
 
   useEffect(() => {
@@ -181,6 +196,41 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     }
 
   }, [selectedChatMessages, messagesAmountMap]);
+
+  useEffect(() => {
+    let revokeURL = null;
+
+    if (chosenImage) {
+      if (chosenImage.size > 5 * 1000 * 1000) {
+        setErrorInfo("Image size should be less than 10MB.");
+        clearChosenImage();
+      }
+      else {
+        const url = URL.createObjectURL(chosenImage);
+        revokeURL = () => URL.revokeObjectURL(url);
+
+        const img = new Image();
+        img.src = url;
+        
+        img.onload = () => {
+          setChosenImageData({
+            url: url,
+            name: `${chosenImage.name} (image)`,
+            width: img.width,
+            height: img.height,
+          });
+        }
+      }
+    }
+
+    return () => {
+      if (revokeURL) revokeURL();
+    }
+  }, [chosenImage])
+
+  useEffect(() => {
+    console.log(chosenImageData)
+  }, [chosenImageData])
 
   return (
     <div id="cyber-chats">
@@ -336,6 +386,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   <MessageCard
                     key={index + chatMessage.id}
                     id={chatMessage.id}
+                    type={chatMessage.type}
                     isEdited={chatMessage.isEdited}
                     isDeleted={chatMessage.isDeleted}
                     isSending={chatMessage.isSending}
@@ -354,23 +405,87 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           </div>
 
           <div id="chat-input">
-            <input 
+            <button
+              className="add-image"
+              onClick={() => imageInputRef.current.click()}
+            >
+              <ImageSVG />
+            </button>
+
+            <input
+              ref={imageInputRef}
+              type="file"
+              style={{display: "none", pointerEvents: "none"}}
+              accept="image/jpg, image/jpeg, image/png, image/webp"
+              onChange={(e) => setChosenImage(e.target.files[0])}
+            />
+
+            <input
               type="text"
+              style={{
+                color: chosenImageData.name ? "#aaddff99" : null,
+                paddingRight: chosenImageData.name ? "135px" : null
+              }}
               placeholder="Type something.."
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.target.value)}
+              value={chosenImageData.name || messageInput}
+              onChange={(e) => {
+                if (!chosenImageData.name) setMessageInput(e.target.value);
+              }}
               onKeyDown={(e) => {
-                if (e.key === "Enter") addMessage();
+                if (e.key === "Enter") sendMessage();
+                if (chosenImageData.name && e.key === "Backspace") {
+                  clearChosenImage();
+                  setMessageInput("");
+                }
               }}
             />
-            <button onClick={addMessage}>
-              <ArrowLeftSVG />
+
+            {
+              chosenImageData.name &&
+              <button className="preview-image" onClick={() => setIsPreviewingImage(true)}>
+                <EyeSVG />
+                Preview
+              </button>
+            }
+
+            <button className="add-message" onClick={sendMessage}>
+              <SendSVG />
             </button>
+
           </div>
 
         </div>
 
       </div>
+
+      {
+        isPreviewingImage &&
+        <div
+          className="image-preview"
+          onClick={() => {
+            setIsPreviewingImage(false);
+            setIsPreviewFit(false);
+          }}
+        >
+          <div className="extras" onClick={(e) => e.stopPropagation()}>
+            <span>
+              Actual Size: {chosenImageData.width} x {chosenImageData.height}
+            </span>
+            <label>
+              <input type="checkbox" onChange={() => setIsPreviewFit(prev => !prev)} />
+              Fit to screen
+            </label>
+          </div>
+          <img
+            style={{
+              maxWidth: isPreviewFit ? "80vw" : null,
+              maxHeight: isPreviewFit ? "80vh" : null
+            }}
+            src={chosenImageData.url}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      }
 
     </div>
   )
