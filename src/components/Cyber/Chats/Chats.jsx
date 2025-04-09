@@ -10,6 +10,7 @@ import { db } from "../../../../firebase";
 import { fetchDataFromUid, getConversationId, normalizeSpaces } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
+import { ImagePreview } from "../../ImagePreview";
 
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, devData, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 
@@ -19,7 +20,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const [chosenImage, setChosenImage] = useState(null);
   const [chosenImageData, setChosenImageData] = useState({ name: "", url: "", width: 0, height: 0 });
   const [isPreviewingImage, setIsPreviewingImage] = useState(false);
-  const [isPreviewFit, setIsPreviewFit] = useState(false);
+  const [isPreviewFit, setIsPreviewFit] = useState(true);
 
   const { status } = useStatusByUid(ownData.uid);
 
@@ -48,9 +49,31 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const imageInputRef = useRef(null);
 
   const sendMessage = async () => {
-    const newMessage = chosenImageData.url || normalizeSpaces(messageInput) || null;
+    let newMessage;
+    
+    if (!chosenImage) {
+      newMessage = normalizeSpaces(messageInput);
+    }
+    else {
+      const formData = new FormData();
+      formData.append("image", chosenImage);
+  
+      const response = await fetch(
+        "https://cyberchat.mediastorage.workers.dev/image/chats/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+      const url = data?.secure_url;
+      newMessage = url;
+
+      clearChosenImage();
+    }
+
     setMessageInput("");
-    if (chosenImage) clearChosenImage();
     
     if (!newMessage) return;
 
@@ -67,14 +90,14 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
-      type: chosenImageData.url ? "image" : "text",
+      type: chosenImage ? "image" : "text",
       isEdited: false,
       isDeleted: false,
       content: newMessage,
       senderId: ownData.uid,
       timeCreated: new Date(),
       isUnread: ["globalChat", ownData.uid].includes(selectedChatUid) ? false : true,
-    });  
+    });
   }
 
   const loadOlderMessages = () => {
@@ -202,7 +225,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
     if (chosenImage) {
       if (chosenImage.size > 5 * 1000 * 1000) {
-        setErrorInfo("Image size should be less than 10MB.");
         clearChosenImage();
       }
       else {
@@ -227,10 +249,6 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       if (revokeURL) revokeURL();
     }
   }, [chosenImage])
-
-  useEffect(() => {
-    console.log(chosenImageData)
-  }, [chosenImageData])
 
   return (
     <div id="cyber-chats">
@@ -460,31 +478,14 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
       {
         isPreviewingImage &&
-        <div
-          className="image-preview"
-          onClick={() => {
-            setIsPreviewingImage(false);
-            setIsPreviewFit(false);
-          }}
-        >
-          <div className="extras" onClick={(e) => e.stopPropagation()}>
-            <span>
-              Actual Size: {chosenImageData.width} x {chosenImageData.height}
-            </span>
-            <label>
-              <input type="checkbox" onChange={() => setIsPreviewFit(prev => !prev)} />
-              Fit to screen
-            </label>
-          </div>
-          <img
-            style={{
-              maxWidth: isPreviewFit ? "80vw" : null,
-              maxHeight: isPreviewFit ? "80vh" : null
-            }}
-            src={chosenImageData.url}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        <ImagePreview
+          url={chosenImageData.url}
+          width={chosenImageData.width}
+          height={chosenImageData.height}
+          isPreviewFit={isPreviewFit}
+          setIsPreviewFit={setIsPreviewFit}
+          closePreview={() => setIsPreviewingImage(false)}
+        />
       }
 
     </div>

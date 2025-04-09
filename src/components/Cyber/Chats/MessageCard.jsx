@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { normalizeSpaces, processDate, setCursorPosition } from "../../../utils";
 import { MoreSVG } from "../../svg/MoreSVG";
 import { CheckSVG } from "../../svg/CheckSVG";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { ImagePreview } from "../../ImagePreview";
 
 export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);
@@ -12,16 +13,20 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
+  const [isPreviewingImage, setIsPreviewingImage] = useState(false);
+  const [isPreviewFit, setIsPreviewFit] = useState(true);
+  const [imageData, setImageData] = useState({ width: 0, height: 0 });
+
   const featuresContainerRef = useRef(null);
   const contentRef= useRef(null);
 
   const showFeatures = (e) => {
     let topPosition = null;
     let bottomPosition = null;
-    let rightPosition = window.innerWidth - e.clientX + 10;
+    let rightPosition = window.innerWidth - e.clientX;
 
-    if (e.clientY <= window.innerHeight / 2) topPosition = e.clientY + 10;
-    else bottomPosition = window.innerHeight - e.clientY + 10;
+    if (e.clientY <= window.innerHeight / 2) topPosition = e.clientY;
+    else bottomPosition = window.innerHeight - e.clientY;
 
     setFeaturesContainerPosition({
       top: topPosition,
@@ -40,11 +45,36 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
       setIsFeaturesVisible(false);
 
       const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
-      const currentMessageDoc = await getDoc(currentMessageRef);
+
+      if (type === "image") {
+        try {
+          const formData = new FormData();
+          formData.append("imageUrl", content);
   
+          const response = await fetch(
+            "https://cyberchat.mediastorage.workers.dev/image/delete",
+            {
+              method: "DELETE",
+              body: formData,
+            }
+          )
+
+          const data = await response.json();
+
+          if (!data.success) {
+            console.error("Error: Failed to delete image");
+            return;
+          };
+        }
+        catch (error) {
+          console.error("Error: " + error);
+          return;
+        }
+      }
+      
       await updateDoc(currentMessageRef, {
-        ...currentMessageDoc.data(),
         isDeleted: true,
+        type: "text",
         content: "This message was deleted.",
       });  
     }
@@ -71,10 +101,8 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
 
       if (filteredEditedContent !== content) {
         const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
-        const currentMessageDoc = await getDoc(currentMessageRef);
   
         await updateDoc(currentMessageRef, {
-          ...currentMessageDoc.data(),
           isEdited: true,
           content: filteredEditedContent,
         });
@@ -133,13 +161,27 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
 
   }, [isFeaturesVisible]);
 
+  useEffect(() => {
+    if (type === "image") {
+      const img = new Image();
+      img.src = content;
+      
+      img.onload = () => {
+        setImageData({ width: img.width, height: img.height });
+      }
+    }
+  }, []);
+
   return (
     <div 
       className="message-card"
       style={{justifyContent: isOwnMessage ? "flex-end" : null}}
     >
       
-      <div className="container">
+      <div
+        className="container"
+        style={{width: type === "image" ? "max-content" : null}}
+      >
 
         <div
           className="sender-name"
@@ -148,27 +190,36 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
           {senderName}
         </div>
 
-        <span 
-          contentEditable={isEditing}
-          suppressContentEditableWarning
-          className="content"
-          style={{
-            paddingRight: isOwnMessage && !isDeleted ? "50px" : null,
-            border: isEditing ? "1px solid white" : null,
-            color: isOwnMessage && isSending || isDeleted ? "#888" : null,
-            fontStyle: isDeleted ? "italic" : null
-          }}
-          ref={contentRef}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              editMessage();
-            }
-          }}
-          onInput={inputContent}
-        >
-          {!isEditing ? content : editedContent}
-        </span>
+        {
+          type === "text" ?
+            <span 
+            contentEditable={isEditing}
+            suppressContentEditableWarning
+            className="content"
+            style={{
+              paddingRight: isOwnMessage && !isDeleted ? "50px" : null,
+              border: isEditing ? "1px solid white" : null,
+              color: isOwnMessage && isSending || isDeleted ? "#888" : null,
+              fontStyle: isDeleted ? "italic" : null
+            }}
+            ref={contentRef}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                editMessage();
+              }
+            }}
+            onInput={inputContent}
+          >
+            {!isEditing ? content : editedContent}
+          </span>
+        : <img 
+            src={content}
+            className="content"
+            onClick={() => setIsPreviewingImage(true)}
+          />
+        }
+
 
         <div className="time" onClick={() => contentRef.current.focus()}>
           {isEdited && "*EDITED*"} {processDate(timeCreated.toDate())}
@@ -204,17 +255,30 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
           }}
           ref={featuresContainerRef}
         >
-          <button onClick={editMessage}>Edit</button>
+          {type === "text" && <button onClick={editMessage}>Edit</button>}
+          
           <button 
             onClick={deleteMessage}
             style={{
-              backgroundColor: isConfirmingDelete ? "#ff000099" : null,
+              backgroundColor: isConfirmingDelete ? "#ff000050" : null,
               color: isConfirmingDelete ? "white" : null
             }}
           >
             {!isConfirmingDelete ? "Delete" : "Confirm?"}
           </button>
         </div>
+      }
+
+      {
+        isPreviewingImage &&
+        <ImagePreview
+          url={content}
+          width={imageData.width}
+          height={imageData.height}
+          isPreviewFit={isPreviewFit}
+          setIsPreviewFit={setIsPreviewFit}
+          closePreview={() => setIsPreviewingImage(false)}
+        />
       }
       
     </div>
