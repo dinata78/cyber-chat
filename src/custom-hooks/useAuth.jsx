@@ -39,7 +39,7 @@ export function useAuth(setIsLoading) {
       );
     }
     catch (error) {
-      console.error("Error occured while signing up: " + error);
+      throw new Error(error.code);
     }
     finally {
       setIsLoading(false);
@@ -58,7 +58,7 @@ export function useAuth(setIsLoading) {
       );
     }
     catch (error) {
-      console.error("Error occured while signing in: " + error)
+      throw new Error(error.code);
     }
     finally {
       setIsLoading(false);

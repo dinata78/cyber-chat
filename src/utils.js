@@ -1,7 +1,7 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { db, realtimeDb } from "../firebase";
 import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
-import { get, onDisconnect, ref, remove, update } from "firebase/database";
+import { ref, remove } from "firebase/database";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
@@ -57,49 +57,59 @@ export const deleteImageFromDb = async (url) => {
     return data.success;
   }
   catch (error) {
-    console.error("Error while deleting image: " + error);
+    console.error("Error while deleting image: " + error.message);
     return null;
   }
 }
 
 export async function removeMessagesFromDb(conversationUid) {
-  const batch = writeBatch(db);
-  let imageUrls = [];
+  try {
+    const batch = writeBatch(db);
+    let imageUrls = [];
+    
+    const messagesCollectionRef = collection(db, "conversations", conversationUid, "messages");
+    
+    const messagesDocs = await getDocs(messagesCollectionRef);
   
-  const messagesCollectionRef = collection(db, "conversations", conversationUid, "messages");
+    messagesDocs.docs.forEach((doc) => {
+      if (doc.data().type === "image") {
+        imageUrls.push(doc.data().content);
+      }
   
-  const messagesDocs = await getDocs(messagesCollectionRef);
-
-  messagesDocs.docs.forEach((doc) => {
-    if (doc.data().type === "image") {
-      imageUrls.push(doc.data().content);
-    }
-
-    batch.delete(doc.ref);
-  });
-
-  await batch.commit();
-
-  if (imageUrls.length) {
-    await Promise.all(
-      imageUrls.map(url => deleteImageFromDb(url))
-    );
+      batch.delete(doc.ref);
+    });
+  
+    await batch.commit();
+  
+    if (imageUrls.length) {
+      await Promise.all(
+        imageUrls.map(url => deleteImageFromDb(url))
+      );
+    }  
+  }
+  catch (error) {
+    throw new Error("Error occured while removing user's messages: " + error.message);
   }
 }
 
 export async function removeConversationFromDb(uid1, uid2) {
-  if (uid2 === undefined) {
-    const conversationDocRef = doc(db, "conversations", uid1);
-    
-    await removeMessagesFromDb(uid1);
-    await deleteDoc(conversationDocRef);
+  try {
+    if (uid2 === undefined) {
+      const conversationDocRef = doc(db, "conversations", uid1);
+      
+      await removeMessagesFromDb(uid1);
+      await deleteDoc(conversationDocRef);
+    }
+    else {
+      const conversationDocId = getConversationId(uid1, uid2);
+      const conversationDocRef = doc(db, "conversations", conversationDocId);
+  
+      await removeMessagesFromDb(conversationDocId);
+      await deleteDoc(conversationDocRef);
+    }  
   }
-  else {
-    const conversationDocId = getConversationId(uid1, uid2);
-    const conversationDocRef = doc(db, "conversations", conversationDocId);
-
-    await removeMessagesFromDb(conversationDocId);
-    await deleteDoc(conversationDocRef);
+  catch (error) {
+    throw new Error(`Error occured while removing conversation (${getConversationId(uid1, uid2)}): ${error.message}`);
   }
 }
 
@@ -156,60 +166,75 @@ export function processDate(dateObject) {
 }
 
 export async function deleteUserConversation(uid) {
-  const conversationsRef = collection(db, "conversations");
+  try {
+    const conversationsRef = collection(db, "conversations");
   
-  const userConversationsQuery = query(
-    conversationsRef,
-    where("participants", "array-contains", uid),
-  );
+    const userConversationsQuery = query(
+      conversationsRef,
+      where("participants", "array-contains", uid),
+    );
+    
+    const userConversationDocs = await getDocs(userConversationsQuery);
 
-  const userConversationDocs = await getDocs(userConversationsQuery);
-
-  userConversationDocs.docs.forEach(async (conversationDoc) => {
-    const data = conversationDoc.data();
-
-    let conversationParticipants = data.participants;
-    conversationParticipants.splice(conversationParticipants.indexOf(uid), 1)
+    userConversationDocs.docs.forEach(async (conversationDoc) => {
+      const data = conversationDoc.data();
   
-    if (conversationParticipants.length && conversationParticipants[0] !== import.meta.env.VITE_DEV_UID) {
-      await removeFriend(uid, conversationParticipants[0]);
-    }
-
-    await removeConversationFromDb(conversationDoc.id);
-  });
+      let conversationParticipants = data.participants;
+      conversationParticipants.splice(conversationParticipants.indexOf(uid), 1)
+    
+      if (conversationParticipants.length && conversationParticipants[0] !== import.meta.env.VITE_DEV_UID) {
+        await removeFriend(uid, conversationParticipants[0]);
+      }
+  
+      await removeConversationFromDb(conversationDoc.id);
+    });  
+  }
+  catch (error) {
+    throw new Error("Error occured while removing user's conversations: " + error.message);
+  }
 }
 
 export async function deleteUserData(uid) {
-  const batch = writeBatch(db);
+  try {
+    const batch = writeBatch(db);
 
-  const userInboxRef = collection(db, "users", uid, "inbox");
-  const userInboxItems = await getDocs(userInboxRef);
+    const userInboxRef = collection(db, "users", uid, "inbox");
+    const userInboxItems = await getDocs(userInboxRef);
+    
+    if (userInboxItems.docs.length) {
+      userInboxItems.docs.forEach(item => {
+        batch.delete(item.ref);
+      });
+    }
   
-  if (userInboxItems.docs.length) {
-    userInboxItems.docs.forEach(item => {
-      batch.delete(item.ref);
-    });
+    const userRequestsRef = collection(db, "users", uid, "requests");
+    const userRequests = await getDocs(userRequestsRef);
+  
+    if (userRequests.docs.length) {
+      userRequests.forEach(request => {
+        batch.delete(request.ref);
+      });
+    }
+  
+    const userDocRef = doc(db, "users", uid);
+  
+    await batch.commit();
+    await deleteDoc(userDocRef);  
   }
-
-  const userRequestsRef = collection(db, "users", uid, "requests");
-  const userRequests = await getDocs(userRequestsRef);
-
-  if (userRequests.docs.length) {
-    userRequests.forEach(request => {
-      batch.delete(request.ref);
-    });
+  catch (error) {
+    throw new Error("Error occured while deleting user's data: " + error.message);
   }
-
-  const userDocRef = doc(db, "users", uid);
-
-  await batch.commit();
-  await deleteDoc(userDocRef);
 }
 
 export async function deleteUserStatusFromDb(uid) {
-  const userDbStatusRef = ref(realtimeDb, `users/${uid}`);
+  try {
+    const userDbStatusRef = ref(realtimeDb, `users/${uid}`);
 
-  await remove(userDbStatusRef);
+    await remove(userDbStatusRef);  
+  }
+  catch (error) {
+    throw new Error("Error occured while deleting user status path from realtime database: " + error.message);
+  }
 }
 
 export function setCursorPosition(elementRef, offset) {

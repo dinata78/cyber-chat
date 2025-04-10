@@ -44,7 +44,7 @@ export async function deleteAccount(){
   }
   catch (error) {
     console.error(error);
-    alert("Failed to delete the account.");
+    throw new Error(error.message);
   }
 }
 
