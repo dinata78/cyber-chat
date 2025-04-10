@@ -1,6 +1,6 @@
 import { getConversationId } from "../../../utils";
 
-export function chatCardOnClick({ ownUid, chatUid, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef }) {
+export function chatCardOnClick({ ownUid, chatUid, setConversationId, selectedChatUid, setSelectedChatUid, chatMessagesRef, chatInputRef }) {
   
   if (!ownUid) return;
   if (chatUid === selectedChatUid) return;
@@ -15,7 +15,9 @@ export function chatCardOnClick({ ownUid, chatUid, setConversationId, selectedCh
     chatMessagesRef.current.scrollTo({
       top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight,
       behavior: "smooth",
-    })
+    });
+
+    chatInputRef.current.focus();
   });
   
 }

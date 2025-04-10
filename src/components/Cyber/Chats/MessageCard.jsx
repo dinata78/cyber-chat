@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { normalizeSpaces, processDate, setCursorPosition } from "../../../utils";
+import { deleteImageFromDb, normalizeSpaces, processDate, setCursorPosition } from "../../../utils";
 import { MoreSVG } from "../../svg/MoreSVG";
 import { CheckSVG } from "../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
@@ -47,27 +47,10 @@ export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderNa
       const currentMessageRef = doc(db, "conversations", conversationId, "messages", id);
 
       if (type === "image") {
-        try {
-          const formData = new FormData();
-          formData.append("imageUrl", content);
-  
-          const response = await fetch(
-            "https://cyberchat.mediastorage.workers.dev/image/delete",
-            {
-              method: "DELETE",
-              body: formData,
-            }
-          )
+        const success = await deleteImageFromDb(content);
 
-          const data = await response.json();
-
-          if (!data.success) {
-            console.error("Error: Failed to delete image");
-            return;
-          };
-        }
-        catch (error) {
-          console.error("Error: " + error);
+        if (!success) {
+          console.error("Error: Failed to delete image.");
           return;
         }
       }

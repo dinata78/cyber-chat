@@ -3,6 +3,7 @@ import { ImageEditSVG } from "../../../svg/ImageEditSVG";
 import { db } from "../../../../../firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { TrashCanSVG } from "../../../svg/TrashCanSVG"
+import { deleteImageFromDb } from "../../../../utils";
 
 export function AccountPfp({ pfpUrl, ownUid }) {
   const [chosenPfp, setChosenPfp] = useState(null);
@@ -49,35 +50,24 @@ export function AccountPfp({ pfpUrl, ownUid }) {
   }
 
   const deletePfp = async () => {
+    const success = await deleteImageFromDb(pfpUrl);
+
     try {
-      const formData = new FormData();
-      formData.append("imageUrl", pfpUrl);
-
-      const response = await fetch(
-        "https://cyberchat.mediastorage.workers.dev/image/delete",
-        {
-          method: "DELETE",
-          body: formData,
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
+      if (success) {
         const ownDocRef = doc(db, "users", ownUid);
         await updateDoc(ownDocRef, { pfpUrl: "" });
       }
       else {
         setErrorInfo("Failed to delete profile picture.");
-      }
+      }  
     }
     catch (error) {
-      console.error("Error: " + error);
-      setErrorInfo("Failed to delete profile picture.");
+      console.error("Error while deleting profile picture: " + error)
     }
     finally {
       setIsConfirmingDelete(false);
     }
+
   }
 
   useEffect(() => {

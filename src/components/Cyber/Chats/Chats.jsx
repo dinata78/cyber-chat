@@ -47,6 +47,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   
   const chatMessagesRef = useRef(null);
   const imageInputRef = useRef(null);
+  const chatInputRef = useRef(null);
 
   const sendMessage = async () => {
     let newMessage;
@@ -135,6 +136,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           selectedChatUid: null,
           setSelectedChatUid: setSelectedChatUid,
           chatMessagesRef: chatMessagesRef,
+          chatInputRef: chatInputRef
       });
       }
       else if (selectedChatUid === devData.uid) {
@@ -145,6 +147,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           selectedChatUid: null,
           setSelectedChatUid: setSelectedChatUid,
           chatMessagesRef: chatMessagesRef,
+          chatInputRef: chatInputRef
       });
       }
       else {
@@ -156,7 +159,8 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
           setConversationId: setConversationId,
           selectedChatUid: null,
           setSelectedChatUid: setSelectedChatUid,
-          chatMessagesRef: chatMessagesRef
+          chatMessagesRef: chatMessagesRef,
+          chatInputRef: chatInputRef
         });
       }
     }
@@ -280,6 +284,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
             chatMessagesRef={chatMessagesRef}
+            chatInputRef={chatInputRef}
           />
           {
             ownData.uid != devData.uid ?
@@ -302,6 +307,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
                 chatMessagesRef={chatMessagesRef}
+                chatInputRef={chatInputRef}
               />
             : null
           }
@@ -318,6 +324,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             selectedChatUid={selectedChatUid}
             setSelectedChatUid={setSelectedChatUid}
             chatMessagesRef={chatMessagesRef}
+            chatInputRef={chatInputRef}
           />
           {
             friendDatas.length > 0 &&
@@ -343,6 +350,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                   chatMessagesRef={chatMessagesRef}
+                  chatInputRef={chatInputRef}
                 />
               )
             })
@@ -439,6 +447,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             />
 
             <input
+              ref={chatInputRef}
               type="text"
               style={{
                 color: chosenImageData.name ? "#aaddff99" : null,

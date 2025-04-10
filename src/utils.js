@@ -40,15 +40,51 @@ export async function addNewConversationToDb(uid1, uid2) {
   
 }
 
+export const deleteImageFromDb = async (url) => {
+  try {
+    const formData = new FormData();
+    formData.append("imageUrl", url);
+  
+    const response = await fetch(
+      "https://cyberchat.mediastorage.workers.dev/image/delete",
+      {
+        method: "DELETE",
+        body: formData,
+      }
+    );
+  
+    const data = await response.json();
+    return data.success;
+  }
+  catch (error) {
+    console.error("Error while deleting image: " + error);
+    return null;
+  }
+}
+
 export async function removeMessagesFromDb(conversationUid) {
   const batch = writeBatch(db);
+  let imageUrls = [];
   
   const messagesCollectionRef = collection(db, "conversations", conversationUid, "messages");
   
   const messagesDocs = await getDocs(messagesCollectionRef);
-  messagesDocs.docs.forEach((doc) => batch.delete(doc.ref));
+
+  messagesDocs.docs.forEach((doc) => {
+    if (doc.data().type === "image") {
+      imageUrls.push(doc.data().content);
+    }
+
+    batch.delete(doc.ref);
+  });
 
   await batch.commit();
+
+  if (imageUrls.length) {
+    await Promise.all(
+      imageUrls.map(url => deleteImageFromDb(url))
+    );
+  }
 }
 
 export async function removeConversationFromDb(uid1, uid2) {
