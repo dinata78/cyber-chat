@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
 import { auth } from "../../../firebase";
@@ -12,8 +12,11 @@ export function Auth() {
   const [isLoading, setIsLoading] = useState(false);
   
   const [signType, setSignType] = useState("in");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  const confirmButton = useRef(null);
   const navigate = useNavigate();
+  
 
   const {
     signInData,
@@ -60,7 +63,7 @@ export function Auth() {
       <div id="auth-container">
         <h1 id="main-heading">CYBER CHAT</h1>
         
-        <form id="sign-form">
+        <form id="sign-form" onSubmit={(e) => e.preventDefault()}>
 
           <div id="sign-type">
             <button 
@@ -83,14 +86,17 @@ export function Auth() {
 
           <AuthGreeting signType={signType}/>
 
-          <AuthInput 
+          <AuthInput
+            signType={signType}
+            isPasswordVisible={isPasswordVisible}
+            setIsPasswordVisible={setIsPasswordVisible}
             emailValue={
               signType === "in" ? signInData.email
               : signUpData.email 
             } 
             passwordValue={
               signType === "in" ? signInData.password
-              : signUpData.password 
+              : signUpData.password
             } 
             onEmailChange={
               signType === "in" ? 
@@ -101,11 +107,13 @@ export function Auth() {
               signType === "in" ?
                 (e) => setSignInData({...signInData, password: e.target.value})
               : (e) => setSignUpData({...signUpData, password: e.target.value})
-            } 
+            }
+            confirm={() => confirmButton.current.click()}
           />
           
           <div id="auth-button">
             <button
+              ref={confirmButton}
               type="submit"
               onClick={onConfirm}
             >

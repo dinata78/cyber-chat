@@ -1,13 +1,15 @@
 @font-face {
   font-family: "nasalization";
-  src: url(font/nasalization/nasalization.woff) format(woff),
-       url(font/nasalization/nasalization.woff2) format(woff2);
+  src: url(/font/nasalization/nasalization.woff2) format("woff2"),
+       url(/font/nasalization/nasalization.woff) format("woff");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "xolonium";
-  src: url(font/xolonium/xolonium.woff) format(woff),
-       url(font/xolonium/xolonium.woff2) format(woff2);
+  src: url(/font/xolonium/xolonium.woff2) format("woff2"),
+       url(/font/xolonium/xolonium.woff) format("woff");
+  font-display: swap;
 }
 
 * {
@@ -19,6 +21,7 @@
 :root {
   background-color: black;
   color: white;
+  font-family: xolonium;
   --auth-size: min(calc(40vw + 40vh), 640px);
   --cyber-size: min(calc(2.5vw + 2.5vh), 64px);
 }
@@ -30,6 +33,7 @@ body {
 }
 
 #auth-page {
+  background-color: #000000aa;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -54,12 +58,11 @@ body {
 }
 
 #sign-form {
-  background-color: #000000cc;
+  background-color: #00000099;
   width: 90%;
   height: 80%;
   border: calc(var(--auth-size) / 250) solid white;
-  font-family: xolonium;
-  
+  font-family: inherit;
 }
 
 #sign-type {
@@ -82,7 +85,7 @@ body {
   border-bottom: 2px solid white;
 }
 
-#auth-greeting-container {
+#auth-greeting {
   height: 20%;
   padding-inline: calc(var(--auth-size) / 40);
   display: flex;
@@ -91,7 +94,7 @@ body {
   font-size: calc(var(--auth-size) / 40);
 }
 
-#auth-input-container {
+#auth-input {
   height: 40%;
   display: flex;
   flex-direction: column;
@@ -101,27 +104,46 @@ body {
   gap: calc(var(--auth-size) / 50);
 }
 
-#auth-input-container label {
+#auth-input label {
   display: inline-block;
   width: calc(var(--auth-size) / 4);
-  text-align: center
+  text-align: center;
 }
 
-#auth-input-container input {
+#auth-input input {
   background-color: transparent;
   width: calc(var(--auth-size) / 2.2);
   height: calc(var(--auth-size) / 18);
   padding: 0 calc(var(--auth-size) / 70);
-  border: calc(var(--auth-size) / 400) solid white;
+  padding-right: 8%;
+  border: 1px solid white;
   border-radius: calc(var(--auth-size) / 200);
   color: inherit;
   font-family: inherit;
   font-size: inherit;
 }
 
-#auth-input-container input:focus {
+#auth-input input:focus {
   outline: none;
   border-color: red;
+}
+
+#auth-input input:autofill {
+  border: 1px solid limegreen;
+}
+
+#auth-input button {
+  position: absolute;
+  right: 0;
+  background-color: transparent;
+  width: 8%;
+  height: 100%;
+  padding: 8px;
+  border: none;
+
+  svg {
+    fill: #ffffff99;
+  }
 }
 
 #auth-button {
@@ -146,7 +168,17 @@ body {
   color: #10c80a;
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 #loading-overlay {
+  z-index: 3;
   background-color: #000000e0;
   width: 100vw;
   height: 100vh;
@@ -162,15 +194,6 @@ body {
   border-right-color: transparent;
   border-radius: 100%;
   animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .overflow-y-support {
@@ -409,17 +432,16 @@ body {
 }
 
 #cyber-page {
-  background-color: #000000e0;
+  background-color: #000000cc;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: xolonium;
+  font-family: inherit;
 }
 
 #cyber-container {
-  background-color: #0a101650;
   width: 100vw;
   height: 100vh;
   display: flex;
