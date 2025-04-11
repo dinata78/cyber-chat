@@ -1,6 +1,7 @@
 import { Auth } from "./Auth/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Cyber } from "./Cyber/Cyber";
+import { ResetPassword } from "./ResetPassword/ResetPassword";
 
 const router = createBrowserRouter([
   {
@@ -8,11 +9,15 @@ const router = createBrowserRouter([
     element: <Auth />,
   },
   {
-    path: "cyber",
+    path: "/reset-password",
+    element: <ResetPassword />
+  },
+  {
+    path: "/cyber",
     element: <Cyber />,
   },
   {
-    path: "cyber/:parameter",
+    path: "/cyber/:parameter",
     element: <Cyber />
   },
 ]);

@@ -30,6 +30,18 @@ export function Auth() {
     e.preventDefault();
     
     if (signType === "in") {
+      if (!signInData.email.length || !signInData.password.length) return;
+
+      if (!signInData.email.includes("@")) {
+        setErrorInfo("Email is invalid. Please enter a valid email.");
+        return;
+      }
+
+      if (signInData.password.length < 6 || signInData.password.length > 24) {
+        setErrorInfo("Password length should be between 6 to 24 characters.");
+        return;
+      }
+
       try {
         await logIn();
       }
@@ -37,21 +49,23 @@ export function Auth() {
         const errorCode = error.message;
 
         if (errorCode === "auth/invalid-credential") {
-          setErrorInfo("Invalid email or password. Make sure you enter the correct email and password.");
+          setErrorInfo("Invalid email or password. Make sure you entered the correct email and password.");
         }
         else if (errorCode === "auth/too-many-requests") {
           setErrorInfo("Too many requests. Please try again later.");
         }
         else {
-          setErrorInfo("Error occured while trying to log you in. Please try again later.");
+          setErrorInfo("Error occured while trying to log you in. Make sure you entered the correct credentials or try again later.");
         }
       }
     }
     else if (signType === "up") {
+      if (!signUpData.email.length || !signUpData.password.length) return;
+
       if (signUpData.password.length < 6 || signUpData.password.length > 24) {
         setErrorInfo("Password length should be between 6 to 24 characters.");
         return;
-      } 
+      }
       
       try {
         await createAccount();
@@ -63,7 +77,7 @@ export function Auth() {
           setErrorInfo("Email is already in use. Please try again with another email or try logging in instead.");
         }
         else {
-          setErrorInfo("Error occured while signing up. Please try again later.")
+          setErrorInfo("Error occured while signing up. Please try again later.");
         }
       }
     }
@@ -150,10 +164,18 @@ export function Auth() {
             <button
               ref={confirmButton}
               type="submit"
+              className="confirm"
               onClick={onConfirm}
             >
               CONFIRM
             </button>
+
+            {
+              signType === "in" &&
+              <button className="reset-password" onClick={() => navigate("/reset-password")}>
+                Forgot password?
+              </button>
+            }
           </div>
 
         </form>

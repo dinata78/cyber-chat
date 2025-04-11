@@ -13,7 +13,7 @@ export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, 
       <div id="email">
         <label htmlFor="email-input">EMAIL:</label>
         <input
-          type="email"
+          type="text"
           id="email-input"
           autoComplete="username"
           value={emailValue}
@@ -22,7 +22,7 @@ export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, 
             if (errorInfo) clearErrorInfo();
             if (e.key === "Enter") {
               e.preventDefault();
-              confirm();
+              passwordInputRef.current.focus();
             }
           }}
         />
@@ -53,7 +53,7 @@ export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, 
             passwordInputRef.current.focus();
           }}
         >
-          { !isPasswordVisible ? <EyeSVG /> : <EyeOffSVG />}
+          {!isPasswordVisible ? <EyeSVG /> : <EyeOffSVG />}
         </button>
         
         {errorInfo && <label className="error-info">{errorInfo}</label>}

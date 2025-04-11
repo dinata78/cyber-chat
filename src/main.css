@@ -22,8 +22,6 @@
   background-color: black;
   color: white;
   font-family: xolonium;
-  --auth-size: min(calc(40vw + 40vh), 640px);
-  --cyber-size: min(calc(2.5vw + 2.5vh), 64px);
 }
 
 body {
@@ -34,6 +32,7 @@ body {
 
 #auth-page {
   background-color: #000000aa;
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -42,18 +41,18 @@ body {
 }
 
 #auth-container {
-  width: var(--auth-size);
-  height: calc(var(--auth-size) * 0.9);
+  width: 640px;
+  height: 640px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--auth-size) / 100);
+  gap: 12px;
 }
 
 #main-heading {
   margin: 0;
-  font-size: calc(var(--auth-size) * 0.1);
+  font-size: 64px;
   font-family: nasalization, xolonium;
 }
 
@@ -61,7 +60,7 @@ body {
   background-color: #00000099;
   width: 90%;
   height: 80%;
-  border: calc(var(--auth-size) / 250) solid white;
+  border: 2px solid white;
   font-family: inherit;
 }
 
@@ -74,58 +73,75 @@ body {
 
 #sign-type button {
   background-color: transparent;
-  padding-bottom: calc(var(--auth-size) / 100);
+  padding-bottom: 6px;
   border: none;
   color: inherit;
   font-family: inherit;
-  font-size: calc(var(--auth-size) / 25);
-}
+  font-size: 27px;
 
-#sign-type button.selected {
-  border-bottom: 2px solid white;
+  &.selected {
+    border-bottom: 2px solid white;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    border-bottom: 2px solid red;
+  }
 }
 
 #auth-greeting {
-  height: 15%;
+  height: 20%;
   padding-inline: 24px;
   display: flex;
   align-items: flex-end;
   text-align: center;
-  font-size: calc(var(--auth-size) / 40);
+  line-height: 1.5;
+  font-size: 16px;
 }
 
 #auth-input {
-  height: 50%;
+  height: 40%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: calc(var(--auth-size) / 35);
-  gap: calc(var(--auth-size) / 50);
+  gap: 12px;
+  color: white;
+  font-size: 18px;
+}
+
+#auth-input div {
+  width: 100%;
+  padding-inline: 7%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #auth-input label {
   display: inline-block;
-  width: calc(var(--auth-size) / 4);
+  width: 40%;
   text-align: center;
 }
 
 #auth-input input {
   background-color: transparent;
-  width: calc(var(--auth-size) / 2.2);
-  height: calc(var(--auth-size) / 18);
-  padding: 0 calc(var(--auth-size) / 70);
-  padding-right: 8%;
+  width: 60%;
+  height: 36px;
+  padding: 8px;
   border: 1px solid white;
-  border-radius: calc(var(--auth-size) / 200);
+  border-radius: 4px;
   color: inherit;
   font-family: inherit;
   font-size: inherit;
-}
 
-#auth-input input:focus {
-  outline: none;
-  border-color: red;
+  &:focus {
+    outline: none;
+    border-color: red;  
+  }
 }
 
 #auth-input input:autofill {
@@ -134,48 +150,204 @@ body {
 
 #auth-input button {
   position: absolute;
-  right: 0;
+  right: 7%;
   background-color: transparent;
   width: 8%;
   height: 100%;
-  padding: 8px;
+  padding: 10px;
   border: none;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   svg {
     fill: #ffffff99;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    border: 1px solid red;
   }
 }
 
 #auth-input .error-info {
   position: absolute;
   top: 150%;
-  left: 5%;
-  width: 90%;
+  left: 8%;
+  width: 84%;
   text-align: center;
   color: red;
   font-size: 14px;
 }
 
 #auth-button {
-  height: 20%;
-  display: grid;
+  position: relative;
+  height: 25%;
+  padding-top: 3%;
+  display: flex;
   justify-content: center;
   align-items: start;
 }
 
-#auth-button button {
+#auth-button button.confirm {
   background-color: #ffffff55;
-  width: calc(var(--auth-size) / 4);
-  height: calc(var(--auth-size) / 15);
+  width: 150px;
+  height: 36px;
   border: none;
   color: inherit;
   font-family: inherit;
   font-size: 18px;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover, &:focus-visible {
+    background-color: #10c80a55;
+    color: #10c80a;
+  }
 }
 
-#auth-button button:active {
-  background-color: #10c80a55;
-  color: #10c80a;
+#auth-button button.reset-password {
+  position: absolute;
+  left: 16px;
+  bottom: 22px;
+  background-color: transparent;
+  border: none;
+  color: #999;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+
+  &:hover, &:focus-visible     {
+    color: red;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+#reset-password-page {
+  background-color: #000000aa;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-content: center;
+}
+
+#reset-password-page > .container {
+  position: relative;
+  background-color: #00000077;
+  width: 440px;
+  height: 480px;
+  padding-top: 40px;
+  border: 2px solid #777;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  color: white;
+  font-size: 16px;
+
+  .icon {
+    height: 25%;
+    aspect-ratio: 1 / 1;
+    padding: 18px;
+    border: 2px solid red;
+    border-radius: 100%;
+    fill: red;
+  }
+
+  .icon svg {
+    fill: inherit;
+  }
+
+  label {
+    font-size: 20px;
+  }
+
+  span {
+    margin-inline: 10%;
+    text-align: center;
+    color: #ccc;
+    font-size: inherit;
+  }
+
+  input {
+    background-color: #111;
+    width: 80%;
+    height: 42px;
+    padding: 0 8px;
+    border: 1px solid #777;
+    border-radius: 6px;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  input:focus {
+    outline: none;
+    border: 1px solid #bbb;
+  }
+
+  button.send-link {
+    background-color: #aa0000;
+    width: 80%;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+  }
+
+  button.send-link:focus {
+    outline: none;
+  }
+
+  button.send-link:focus-visible {
+    border: 1px solid #bbb;
+  }
+
+  .error-info {
+    margin-inline: 5%;
+    text-align: center;
+    line-height: 1.25;
+    color: red;
+    font-size: 14px;
+  }
+
+  button.navigate {
+    position: absolute;
+    bottom: 0;
+    background-color: #ffffff20;
+    width: 100%;
+    padding: 0;
+    padding-block: 12px;
+    border: none;
+    border-top: 1px solid #777;
+    color: inherit;
+    font-family: inherit;
+    font-size: 18px;
+  }
+
+  button.navigate:hover {
+    color: #aaa;
+  }
+
+  button.navigate:focus {
+    outline: none;
+  }
+
+  button.navigate:focus-visible {
+    border: 1px solid white;
+  }
 }
 
 @keyframes spin {
@@ -189,10 +361,12 @@ body {
 
 #loading-overlay {
   z-index: 3;
-  background-color: #000000e0;
-  width: 100vw;
-  height: 100vh;
   position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000e0;
   display: grid;
   place-content: center;
 }
