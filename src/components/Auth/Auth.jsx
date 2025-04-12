@@ -51,6 +51,9 @@ export function Auth() {
         if (errorCode === "auth/invalid-credential") {
           setErrorInfo("Invalid email or password. Make sure you entered the correct email and password.");
         }
+        else if (errorCode === "auth/wrong-password") {
+          setErrorInfo("Wrong password. Make sure you entered the correct password or try resetting your password instead.")
+        }
         else if (errorCode === "auth/too-many-requests") {
           setErrorInfo("Too many requests. Please try again later.");
         }

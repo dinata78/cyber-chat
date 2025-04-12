@@ -1,17 +1,22 @@
 import { FriendCard } from "./FriendCard";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
+import { isContentSearched } from "../../../../utils";
 
-export function FriendsAll({ ownUid, friendDatas, statusMap, setSelectedChatUid }) {
+export function FriendsAll({ ownUid, friendDatas, statusMap, setSelectedChatUid, searchedInput }) {
+
+  const filteredFriendDatas = friendDatas.filter(friendData => {
+    return isContentSearched([friendData.displayName, friendData.username], searchedInput);
+  });
   
   return (
     <div id="friends-all">
       <h1>All Friends - {friendDatas.length}</h1>
 
       {
-        friendDatas.length > 0 ?
+        filteredFriendDatas.length > 0 ?
           <div className="friend-cards overflow-y-support">
             {
-              friendDatas.map((friendData, index) => {
+              filteredFriendDatas.map((friendData, index) => {
                 return (
                   <FriendCard 
                     key={index + friendData.uid}

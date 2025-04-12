@@ -7,7 +7,7 @@ import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
-import { fetchDataFromUid, getConversationId, normalizeSpaces } from "../../../utils";
+import { fetchDataFromUid, getConversationId, isContentSearched, normalizeSpaces } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 import { ImagePreview } from "../../ImagePreview";
@@ -15,6 +15,7 @@ import { ImagePreview } from "../../ImagePreview";
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, devData, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 
   const [conversationId, setConversationId] = useState(null); 
+  const [asideInput, setAsideInput] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [hasOlderMessages, setHasOlderMessages] = useState(false);
   const [chosenImage, setChosenImage] = useState(null);
@@ -23,6 +24,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
   const [isPreviewFit, setIsPreviewFit] = useState(true);
 
   const { status } = useStatusByUid(ownData.uid);
+
+  const filteredFriendDatas = friendDatas.filter(friendData => {
+    return isContentSearched([friendData.displayName, friendData.username, friendData.title], asideInput);
+  });
 
   const [friendDisplayNameMap, friendTitleMap, friendPfpUrlMap] = (() => {
     const displayNameMap = {};
@@ -45,6 +50,7 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
 
   const prevSelectedChatUid = useRef("");
   
+  const asideInputRef = useRef(null);
   const chatMessagesRef = useRef(null);
   const imageInputRef = useRef(null);
   const chatInputRef = useRef(null);
@@ -125,6 +131,24 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
     setChosenImage(null);
     setChosenImageData({ name: "", url: "", width: 0, height: 0 });
   }
+
+  useEffect(() => {
+    const handleKeydown = (e) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        if (document.activeElement === asideInputRef.current) {
+          chatInputRef.current.focus();
+        }
+        else {
+          asideInputRef.current.focus();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, []);
 
   useEffect(() => {
     const selectChatOnRender = async () => {
@@ -259,35 +283,51 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
       <div id="cyber-chats-aside">
 
         <div id="chats-aside-top">
+
           <div className="top">
             <h1>Chats</h1>
           </div>
+
           <div className="bottom">
+
             <div id="chats-aside-search">
               <div><SearchSVG /></div>
-              <input type="text" placeholder="Search" />
+              <input
+                ref={asideInputRef}
+                type="text"
+                placeholder="Search"
+                value={asideInput}
+                onChange={(e) => setAsideInput(e.target.value)}
+              />
             </div>
+
           </div>
+          
         </div>
 
         <div id="chats-aside-bottom" className="overflow-y-support">
-          <ChatCard
-            ownUid={ownData.uid}
-            displayName="Global Chat"
-            username={null}
-            title="A global room everyone can access" 
-            uid="globalChat"
-            status="online"
-            pfpUrl={null}
-            unreadMessagesCount={0}
-            setConversationId={setConversationId}
-            selectedChatUid={selectedChatUid}
-            setSelectedChatUid={setSelectedChatUid}
-            chatMessagesRef={chatMessagesRef}
-            chatInputRef={chatInputRef}
-          />
           {
-            ownData.uid != devData.uid ?
+            isContentSearched(["Global Chat", "A global room everyone can access"], asideInput) &&
+            <ChatCard
+              ownUid={ownData.uid}
+              displayName="Global Chat"
+              username={null}
+              title="A global room everyone can access" 
+              uid="globalChat"
+              status="online"
+              pfpUrl={null}
+              unreadMessagesCount={0}
+              setConversationId={setConversationId}
+              selectedChatUid={selectedChatUid}
+              setSelectedChatUid={setSelectedChatUid}
+              chatMessagesRef={chatMessagesRef}
+              chatInputRef={chatInputRef}
+            />
+          }
+          
+          {
+            ownData.uid != devData.uid &&
+            isContentSearched([devData.displayName, devData.username, devData.title], asideInput) ?
               <ChatCard 
                 ownUid={ownData.uid}
                 displayName={devData.displayName || "Loading..."}
@@ -311,7 +351,10 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
               />
             : null
           }
-          <ChatCard
+
+          {
+            isContentSearched([ownData.displayName, ownData.username, ownData.title], asideInput) &&
+            <ChatCard
             ownUid={ownData.uid}
             displayName={ownData.displayName ? ownData.displayName + " (You)" : "Loading..."}
             username={ownData?.username}
@@ -326,9 +369,11 @@ export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendData
             chatMessagesRef={chatMessagesRef}
             chatInputRef={chatInputRef}
           />
+          }
+
           {
-            friendDatas.length > 0 &&
-            friendDatas.map((friendData, index) => {
+            filteredFriendDatas.length > 0 &&
+            filteredFriendDatas.map((friendData, index) => {
               return (
                 <ChatCard
                   ownUid={ownData.uid}

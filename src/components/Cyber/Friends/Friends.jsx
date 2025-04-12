@@ -11,12 +11,27 @@ import { db } from "../../../../firebase";
 export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, statusMap, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [currentNav, setCurrentNav] = useState("all");
+  const [searchedInput, setSearchedInput] = useState("");
 
   const prevNav = useRef("");
+  const inputRef = useRef(null);
 
   const friendsButtonOnClick = (navType) => {
     setCurrentNav(navType);
   }
+
+  useEffect(() => {
+    const handleKeydown = (e) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        inputRef.current.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => document.removeEventListener("keydown", handleKeydown)
+  }, []);
 
   useEffect(() => {
     if (!ownData.uid) return;
@@ -109,7 +124,11 @@ export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, 
           <div>
             <SearchSVG />
           </div>
-          <input type="text" />
+          <input
+            ref={inputRef}
+            type="text"
+            onChange={(e) => setSearchedInput(e.target.value)}
+          />
         </div>
         {
           currentNav === "all" ? 
@@ -118,16 +137,19 @@ export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, 
               friendDatas={friendDatas}
               statusMap={statusMap}
               setSelectedChatUid={setSelectedChatUid}
+              searchedInput={searchedInput}
             />
           : currentNav === "pending" ?
             <FriendsPending
               ownUid={ownData.uid}
               requests={requests}
+              searchedInput={searchedInput}
             />
           : currentNav === "inbox" ?
             <FriendsInbox
               ownUid={ownData.uid}
               inboxItems={inboxItems}
+              searchedInput={searchedInput}
             />
           : null
         }

@@ -5,10 +5,20 @@ import { InboxCard } from "./InboxCard";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
+import { isContentSearched, processDate } from "../../../../utils";
 
-export function FriendsInbox({ ownUid, inboxItems }) {
+export function FriendsInbox({ ownUid, inboxItems, searchedInput }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);
   const [popUpData, setPopUpData] = useState({caption: "", textContent: "", hasTwoButtons: false, firstButton: {}, secondButton: {}}); 
+
+  const filteredInboxItems = inboxItems.filter((item) => {
+    return (
+      isContentSearched(
+        [`[ ${processDate(item.timeCreated.toDate())} ]${item.content}`],
+        searchedInput
+      )
+    );
+  });
 
   const clearInbox = async () => {
     const inboxRef = collection(db, "users", ownUid, "inbox");
@@ -49,7 +59,7 @@ export function FriendsInbox({ ownUid, inboxItems }) {
     <div id="friends-inbox">
 
       <div className="top">
-        <h1>Inbox - {inboxItems.length}</h1>
+        <h1>Inbox - {filteredInboxItems.length}</h1>
         <button onClick={clearInboxButtonOnClick}>
           <TrashCanSVG />
           Clear Inbox
@@ -57,10 +67,10 @@ export function FriendsInbox({ ownUid, inboxItems }) {
       </div>
 
       {
-        inboxItems.length > 0 ?
+        filteredInboxItems.length > 0 ?
           <div className="inbox-cards overflow-y-support">
             {
-              inboxItems.map((item, index) => {
+              filteredInboxItems.map((item, index) => {
                 return (
                   <InboxCard
                     key={index + item.timeCreated + index}

@@ -138,10 +138,6 @@ export function normalizeSpaces(str) {
   return str?.replace(/\s+/g, ' ').trim();
 }
 
-export function groupNames(displayName, username) {
-  return `*${displayName} (@${username})*`;
-}
-
 export function returnTwoDigitNumInString(num) {
   const numInString = num?.toString();
 
@@ -261,4 +257,17 @@ export function setCursorPosition(elementRef, offset) {
     elementRef.current.focus();
   }
 
+}
+
+export const isContentSearched = (contentArray, searched) => {
+    for (const content of contentArray) {
+      if (
+        content?.toLowerCase().trim()
+        .includes(searched.toLowerCase().trim())
+      ) {
+        return true;
+      }
+    }
+
+    return false;
 }

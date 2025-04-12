@@ -1,20 +1,7 @@
 import { cancelRequest, handleRequest } from "../handleRequest";
-import { fetchDataFromUid, groupNames, processDate } from "../../../../utils";
-import { useEffect, useState } from "react";
+import { processDate } from "../../../../utils";
 
-export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {
-  const [displayName, setDisplayName] = useState("...");
-  const [username, setUsername] = useState("...");
-
-  useEffect(() => {
-    const fetchAndSetNames = async () => {
-      const data = await fetchDataFromUid(uid);
-      setDisplayName(data.displayName);
-      setUsername(data.username);
-    }
-
-    fetchAndSetNames();
-  }, []);
+export function PendingCard({ ownUid, type, names, uid, timeCreated, isUnread }) {
 
   return (
     <div className={isUnread ? "pending-card unread" : "pending-card"}>
@@ -22,7 +9,7 @@ export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {
         type === "received" ?
           <>
             <span>
-              [ {processDate(timeCreated.toDate())} ] {groupNames(displayName, username)} sent you a friend request!
+              [ {processDate(timeCreated.toDate())} ] *{names?.displayName || "..."} (@{names?.username || "..."})* sent you a friend request!
             </span>
             <div className="pending-card-buttons">
               <button style={{color: "#00ff62"}} onClick={() => handleRequest("accept", ownUid, uid)}>
@@ -36,7 +23,7 @@ export function PendingCard({ ownUid, type, uid, timeCreated, isUnread }) {
         :
           <>
             <span>
-              [ {processDate(timeCreated.toDate())} ] You sent {groupNames(displayName, username)} a friend request!
+              [ {processDate(timeCreated.toDate())} ] You sent *{names?.displayName || "..."} (@{names?.username || "..."})* a friend request!
             </span>
             <div className="pending-card-buttons">
               <button style={{color: "red"}} onClick={() => cancelRequest(ownUid, uid)}>
