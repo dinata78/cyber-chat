@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { deleteImageFromDb, normalizeSpaces, processDate, setCursorPosition } from "../../../utils";
-import { MoreSVG } from "../../svg/MoreSVG";
-import { CheckSVG } from "../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { ImagePreview } from "../../ImagePreview";
+import { CheckSVG, MoreSVG } from "../../svg";
 
 export function MessageCard({ id, type, isEdited, isDeleted, isSending, senderName, content, timeCreated, isUnread, isOwnMessage, selectedChatUid, prevSelectedChatUid, conversationId }) {
   const [isFeaturesVisible, setIsFeaturesVisible] = useState(false);

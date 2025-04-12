@@ -5,7 +5,7 @@ import { isContentSearched } from "../../../../utils";
 export function FriendsAll({ ownUid, friendDatas, statusMap, setSelectedChatUid, searchedInput }) {
 
   const filteredFriendDatas = friendDatas.filter(friendData => {
-    return isContentSearched([friendData.displayName, friendData.username], searchedInput);
+    return isContentSearched([friendData.displayName, friendData.username, friendData.title], searchedInput);
   });
   
   return (

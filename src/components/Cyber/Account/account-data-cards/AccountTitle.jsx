@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { EditSVG } from "../../../svg/EditSVG";
-import { CheckSVG } from "../../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
+import { CheckSVG, EditSVG } from "../../../svg";
 
 export function AccountTitle({ title, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);

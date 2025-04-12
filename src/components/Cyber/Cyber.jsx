@@ -1,11 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ChatsSVG } from "../svg/nav-svg/ChatsSVG";
-import { SettingsSVG } from "../svg/nav-svg/SettingsSVG";
-import { FriendsSVG } from "../svg/nav-svg/FriendsSVG";
-import { ThemeSVG } from "../svg/nav-svg/ThemeSVG";
 import { Chats } from "./Chats/Chats";
 import { Friends } from "./Friends/Friends";
-import { Settings } from "./Settings/Settings";
 import { Account } from "./Account/Account";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -18,6 +13,7 @@ import { useChats } from "../../custom-hooks/useChats";
 import { useStatus } from "../../custom-hooks/useStatus";
 import { get, onDisconnect, ref, update } from "firebase/database";
 import { useUserData } from "../../custom-hooks/useUserData";
+import { ChatsNavSVG, FriendsNavSVG, ThemeNavSVG  } from "../svg";
 
 export function Cyber() {
   const { parameter } = useParams();
@@ -149,19 +145,14 @@ export function Cyber() {
           <div id="top-nav">
             <Link to="/cyber/chats" tabIndex={-1}>
               <button className={parameter === "chats" ? "nav-button selected" : "nav-button"}>
-                <ChatsSVG />
+                <ChatsNavSVG />
                 {chatsHasNotif && <div id="cyber-notif"></div>}
               </button>
             </Link>
             <Link to="/cyber/friends" tabIndex={-1}>
               <button className={parameter === "friends" ? "nav-button selected" : "nav-button"}>
-                <FriendsSVG />
+                <FriendsNavSVG />
                 {pendingNotifCount + inboxNotifCount > 0 && <div id="cyber-notif"></div>}
-              </button>
-            </Link>
-            <Link to="/cyber/settings" tabIndex={-1}>
-              <button className={parameter === "settings" ? "nav-button selected" : "nav-button"}>
-                <SettingsSVG />
               </button>
             </Link>
           </div>
@@ -174,7 +165,7 @@ export function Cyber() {
               <img src={ownData.pfpUrl || "/empty-pfp.webp"} />
             </button>
             <button id="toggle-theme">
-              <ThemeSVG theme="dark" />
+              <ThemeNavSVG theme="dark" />
             </button>
           </div>
         </nav>
@@ -212,10 +203,6 @@ export function Cyber() {
               inboxItems={inboxItems}
               pendingNotifCount={pendingNotifCount}
               inboxNotifCount={inboxNotifCount}
-            />
-          : parameter === "settings" ?
-            <Settings
-              ownData={ownData}
             />
           : null
         }

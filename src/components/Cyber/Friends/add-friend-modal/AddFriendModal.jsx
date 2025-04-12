@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { CloseSVG } from "../../../svg/CloseSVG";
-import { SearchSVG } from "../../../svg/SearchSVG";
 import { AddFriendNoResult } from "./AddFriendNoResult"; 
 import { collection, getDocs, limit, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../../../firebase"
 import { AddFriendProfile } from "./AddFriendProfile";
 import { AddFriendButton } from "./AddFriendButton";
+import { CloseSVG, SearchSVG } from "../../../svg";
 
 export function AddFriendModal({ ownUid, setIsAddFriendModalVisible, friendUids, requests }) {
   const [resultStatus, setResultStatus] = useState("initial");

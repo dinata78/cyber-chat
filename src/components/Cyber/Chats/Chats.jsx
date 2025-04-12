@@ -1,8 +1,4 @@
 import { ChatCard } from "./ChatCard";
-import { SearchSVG } from "../../svg/SearchSVG";
-import { SendSVG } from "../../svg/SendSVG";
-import { ImageSVG } from "../../svg/ImageSVG";
-import { EyeSVG } from "../../svg/EyeSVG"
 import { MessageCard } from "./MessageCard";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, getDocs, query, where, writeBatch } from "firebase/firestore";
@@ -11,6 +7,7 @@ import { fetchDataFromUid, getConversationId, isContentSearched, normalizeSpaces
 import { chatCardOnClick } from "./chatCardOnClick";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 import { ImagePreview } from "../../ImagePreview";
+import { EyeSVG, ImageSVG, SearchSVG, SendSVG } from "../../svg";
 
 export function Chats({ ownData, selectedChatUid, setSelectedChatUid, friendDatas, devData, chatMessagesMap, chatUsernamesMap, messagesAmountMap, setMessagesAmountMap, statusMap }) {
 

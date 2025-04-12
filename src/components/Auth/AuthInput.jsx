@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { EyeSVG } from "../svg/EyeSVG";
-import { EyeOffSVG } from "../svg/EyeOffSVG";
+import { EyeOffSVG, EyeSVG } from "../svg";
 
 export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, onPasswordChange, confirm, errorInfo, clearErrorInfo }) {
   const [ isPasswordVisible, setIsPasswordVisible ] = useState(false); 

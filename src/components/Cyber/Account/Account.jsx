@@ -1,8 +1,6 @@
 import { auth } from "../../../../firebase";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CloseSVG } from "../../svg/CloseSVG";
-import { EmailSVG } from "../../svg/EmailSVG"
 import { logOut, resetPassword, verifyEmail } from "./accountFunctions";
 import { PopUp } from "../../PopUp";
 import { AccountUsername } from "./account-data-cards/AccountUsername";
@@ -12,6 +10,7 @@ import { AccountTitle } from "./account-data-cards/AccountTitle";
 import { AccountBio } from "./account-data-cards/AccountBio";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 import { AccountPfp } from "./account-data-cards/AccountPfp";
+import { CloseSVG, EmailSVG } from "../../svg";
 
 export function Account({ ownData, setIsAccountVisible }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);

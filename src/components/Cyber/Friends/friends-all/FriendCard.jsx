@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { getIndicatorClass } from "../../../../utils";
-import { AccountMinusSVG } from "../../../svg/AccountMinusSVG";
-import { ChatSVG } from "../../../svg/ChatSVG";
 import { addInbox } from "../addInbox";
 import { removeFriend } from "../modifyFriendList";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
+import { AccountMinusSVG, ChatSVG } from "../../../svg";
 
 export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendTitle, friendStatus, friendPfpUrl, setSelectedChatUid }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);

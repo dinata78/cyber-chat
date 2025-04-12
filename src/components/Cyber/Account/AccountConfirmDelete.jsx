@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { EyeSVG } from "../../svg/EyeSVG";
-import { EyeOffSVG } from "../../svg/EyeOffSVG";
 import { deleteAccount } from "./accountFunctions";
 import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { EyeOffSVG, EyeSVG } from "../../svg";
 
 export function AccountConfirmDelete() {
   const [password, setPassword] = useState("");

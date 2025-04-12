@@ -1,11 +1,11 @@
 import { collection, getDocs, writeBatch } from "firebase/firestore";
 import { db } from "../../../../../firebase";
-import { TrashCanSVG } from "../../../svg/TrashCanSVG";
 import { InboxCard } from "./InboxCard";
 import { useState } from "react";
 import { PopUp } from "../../../PopUp";
 import { FriendsEmptyUI } from "../FriendsEmptyUI";
 import { isContentSearched, processDate } from "../../../../utils";
+import { TrashCanSVG } from "../../../svg";
 
 export function FriendsInbox({ ownUid, inboxItems, searchedInput }) {
   const [isPopUpVisible, setIsPopUpVisible] = useState(false);

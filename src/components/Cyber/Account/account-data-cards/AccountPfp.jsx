@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { ImageEditSVG } from "../../../svg/ImageEditSVG";
 import { db } from "../../../../../firebase";
 import { doc, updateDoc } from "firebase/firestore";
-import { TrashCanSVG } from "../../../svg/TrashCanSVG"
 import { deleteImageFromDb } from "../../../../utils";
+import { ImageEditSVG, TrashCanSVG } from "../../../svg";
 
 export function AccountPfp({ pfpUrl, ownUid }) {
   const [chosenPfp, setChosenPfp] = useState(null);

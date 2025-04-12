@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
-import { EditSVG } from "../../../svg/EditSVG";
-import { CheckSVG } from "../../../svg/CheckSVG";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../../firebase";
 import { normalizeSpaces, setCursorPosition } from "../../../../utils";
 import { AccountEditableSpan } from "./AccountEditableSpan";
+import { CheckSVG, EditSVG } from "../../../svg";
 
 export function AccountBio({ bio, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);

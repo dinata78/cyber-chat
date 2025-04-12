@@ -1,10 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { LockSVG } from "../svg/LockSVG";
 import { useEffect, useRef, useState } from "react";
 import { fetchSignInMethodsForEmail, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { LoadingOverlay } from "../LoadingOverlay";
-import { CheckSVG } from "../svg/CheckSVG";
+import { CheckSVG, LockSVG } from "../svg";
 
 export function ResetPassword() {
   const [email, setEmail] = useState("");

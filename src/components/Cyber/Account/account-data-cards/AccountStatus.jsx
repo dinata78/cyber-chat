@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { EditSVG } from "../../../svg/EditSVG";
-import { CheckSVG } from "../../../svg/CheckSVG";
 import { capitalizeFirstLetter } from "../../../../utils";
 import { onDisconnect, ref, update } from "firebase/database";
 import { realtimeDb } from "../../../../../firebase";
+import { CheckSVG, EditSVG } from "../../../svg";
 
 export function AccountStatus({ status, ownUid }) { 
   const [ isEditMode, setIsEditMode ] = useState(false);

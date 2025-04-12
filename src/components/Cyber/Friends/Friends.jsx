@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { SearchSVG } from "../../svg/SearchSVG";
 import { FriendsAll } from "./friends-all/FriendsAll";
 import { AddFriendModal } from "./add-friend-modal/AddFriendModal";
 import { FriendsPending } from "./friends-pending/FriendsPending";
@@ -7,6 +6,7 @@ import { FriendsInbox } from "./friends-inbox/FriendsInbox";
 import { FriendsNotifUI } from "./FriendsNotifUI";
 import { collection, getDocs, query, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../../firebase";
+import { SearchSVG } from "../../svg";
 
 export function Friends({ ownData, setSelectedChatUid, friendUids, friendDatas, statusMap, requests, inboxItems, pendingNotifCount, inboxNotifCount }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
