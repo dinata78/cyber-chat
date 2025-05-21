@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EyeOffSVG, EyeSVG } from "../svg";
 
 export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, onPasswordChange, confirm, errorInfo, clearErrorInfo }) {
@@ -47,7 +47,7 @@ export function AuthInput({ signType, emailValue, passwordValue, onEmailChange, 
         
         <button
           className="show-password"
-          onClick={() => {
+          onClick={() => { 
             setIsPasswordVisible(prev => !prev);
             passwordInputRef.current.focus();
           }}

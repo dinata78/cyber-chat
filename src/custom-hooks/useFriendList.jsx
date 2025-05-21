@@ -46,7 +46,7 @@ export function useFriendList(uid) {
             previousDatas[currentDataIndex] = snapshot.data();
           }
           else {
-           previousDatas.push(snapshot.data());
+            previousDatas.push(snapshot.data());
           }
 
           return previousDatas.filter(data => friendUids.includes(data.uid));

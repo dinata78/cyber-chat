@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react"
 import { AuthGreeting } from "./AuthGreeting";
 import { AuthInput } from "./AuthInput";
-import { auth } from "../../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { LoadingOverlay } from "../LoadingOverlay";
 import { useAuth } from "../../custom-hooks/useAuth"
+import { useIsAuth } from "../../custom-hooks/useIsAuth";
 
 export function Auth() {
-  const [isAuth, setIsAuth] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [signType, setSignType] = useState("in");
   const [errorInfo, setErrorInfo] = useState("");
+
+  const { isAuth } = useIsAuth();
 
   const confirmButton = useRef(null);
 
@@ -88,22 +88,9 @@ export function Auth() {
 
   useEffect(() => {
     if (isAuth) {
-      navigate("/cyber");
+      navigate("/chat");
     }
   }, [isAuth]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, () => {
-      if (auth.currentUser) {
-        setIsAuth(true);
-      }
-      else {
-        setIsAuth(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     if (errorInfo) setErrorInfo("");
@@ -175,7 +162,10 @@ export function Auth() {
 
             {
               signType === "in" &&
-              <button className="reset-password" onClick={() => navigate("/reset-password")}>
+              <button 
+                className="reset-password"
+                onClick={() => navigate("/reset-password")}
+              >
                 Forgot password?
               </button>
             }

@@ -6,6 +6,8 @@ export function useUserData(uid) {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
+    if (!uid) return;
+
     const userDocRef = doc(db, "users", uid);
 
     const unsubscribe = onSnapshot(userDocRef, (snapshot) => {
@@ -15,7 +17,7 @@ export function useUserData(uid) {
 
     return () => unsubscribe();
 
-  }, []);
+  }, [uid]);
 
   return [ userData ];
 }

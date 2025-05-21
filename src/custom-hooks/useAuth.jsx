@@ -27,8 +27,6 @@ export function useAuth(setIsLoading) {
         username: "",
         displayName: "Anonymous",
         bio: "Hello world!",
-        title: "Newcomer",
-        email: auth.currentUser.email,
         pfpUrl: "",
       });
 

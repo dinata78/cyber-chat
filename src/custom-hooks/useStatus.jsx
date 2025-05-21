@@ -2,12 +2,10 @@ import { off, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { realtimeDb } from "../../firebase";
 
-export function useStatus(ownUid, friendUids) {
+export function useStatus(friendUids) {
   const [statusMap, setStatusMap] = useState({});
 
   useEffect(() => {
-    if (!ownUid) return;
-    
     let unsubscribeList = [];
 
     for (const uid of [import.meta.env.VITE_DEV_UID, ...friendUids]) {
@@ -37,7 +35,7 @@ export function useStatus(ownUid, friendUids) {
         unsubscribeList = [];
       }
     }
-  }, [ownUid, friendUids]);
+  }, [friendUids]);
   
   return { statusMap };
 }

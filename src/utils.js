@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where, writeBatch } from "firebase/firestore";
-import { db, realtimeDb } from "../firebase";
-import { removeFriend } from "./components/Cyber/Friends/modifyFriendList";
+import { auth, db, realtimeDb } from "../firebase";
+import { removeFriend } from "./components/Chat/_Friends/modifyFriendList";
 import { ref, remove } from "firebase/database";
 
 export function getConversationId(uid1, uid2) {
@@ -19,6 +19,10 @@ export function getConversationId(uid1, uid2) {
     else i++;
   }
 };
+
+export function getOtherUid(conversationId, ownUid) {
+  return conversationId.replace(ownUid, "");
+}
 
 export async function addNewConversationToDb(uid1, uid2) {
   if (uid2 === undefined) {
@@ -138,95 +142,84 @@ export function normalizeSpaces(str) {
   return str?.replace(/\s+/g, ' ').trim();
 }
 
-export function returnTwoDigitNumInString(num) {
-  const numInString = num?.toString();
-
-  if (numInString.length === 1) {
-    return `0${num}`;
-  }
-  else {
-    return numInString;
-  }
-}
-
 export function processDate(dateObject) {
   const time = {year: dateObject.getFullYear(), month: dateObject.getMonth() + 1, date: dateObject.getDate(), hour: dateObject.getHours(), minute: dateObject.getMinutes()}
 
   const year = time.year.toString();
-  const month = returnTwoDigitNumInString(time.month);
-  const date = returnTwoDigitNumInString(time.date);
-  const hour = returnTwoDigitNumInString(time.hour);
-  const minute = returnTwoDigitNumInString(time.minute);
+  const month = time.month.toString().padStart(2, "0");
+  const date = time.date.toString().padStart(2, "0");;
+  const hour = time.hour.toString().padStart(2, "0");;
+  const minute = time.minute.toString().padStart(2, "0");;
 
   return `${year}/${month}/${date} ${hour}:${minute}`;
 }
 
-export async function deleteUserConversation(uid) {
+export async function deleteOwnConversations() {
   try {
     const conversationsRef = collection(db, "conversations");
   
-    const userConversationsQuery = query(
+    const conversationsQuery = query(
       conversationsRef,
-      where("participants", "array-contains", uid),
+      where("participants", "array-contains", auth.currentUser.uid),
     );
     
-    const userConversationDocs = await getDocs(userConversationsQuery);
+    const conversationDocs = await getDocs(conversationsQuery);
 
-    userConversationDocs.docs.forEach(async (conversationDoc) => {
+    conversationDocs.docs.forEach(async (conversationDoc) => {
       const data = conversationDoc.data();
   
       let conversationParticipants = data.participants;
-      conversationParticipants.splice(conversationParticipants.indexOf(uid), 1)
+      conversationParticipants.splice(conversationParticipants.indexOf(auth.currentUser.uid), 1)
     
       if (conversationParticipants.length && conversationParticipants[0] !== import.meta.env.VITE_DEV_UID) {
-        await removeFriend(uid, conversationParticipants[0]);
+        await removeFriend(auth.currentUser.uid, conversationParticipants[0]);
       }
   
       await removeConversationFromDb(conversationDoc.id);
-    });  
+    });
   }
   catch (error) {
     throw new Error("Error occured while removing user's conversations: " + error.message);
   }
 }
 
-export async function deleteUserData(uid) {
+export async function deleteOwnData() {
   try {
     const batch = writeBatch(db);
 
-    const userInboxRef = collection(db, "users", uid, "inbox");
-    const userInboxItems = await getDocs(userInboxRef);
+    const inboxRef = collection(db, "users", auth.currentUser.uid, "inbox");
+    const inboxItems = await getDocs(inboxRef);
     
-    if (userInboxItems.docs.length) {
-      userInboxItems.docs.forEach(item => {
+    if (inboxItems.docs.length) {
+      inboxItems.docs.forEach(item => {
         batch.delete(item.ref);
       });
     }
   
-    const userRequestsRef = collection(db, "users", uid, "requests");
-    const userRequests = await getDocs(userRequestsRef);
+    const requestsRef = collection(db, "users", auth.currentUser.uid, "requests");
+    const requests = await getDocs(requestsRef);
   
-    if (userRequests.docs.length) {
-      userRequests.forEach(request => {
+    if (requests.docs.length) {
+      requests.forEach(request => {
         batch.delete(request.ref);
       });
     }
   
-    const userDocRef = doc(db, "users", uid);
+    const ownDocRef = doc(db, "users", auth.currentUser.uid);
   
     await batch.commit();
-    await deleteDoc(userDocRef);  
+    await deleteDoc(ownDocRef);
   }
   catch (error) {
     throw new Error("Error occured while deleting user's data: " + error.message);
   }
 }
 
-export async function deleteUserStatusFromDb(uid) {
+export async function deleteOwnStatusFromRtdb() {
   try {
-    const userDbStatusRef = ref(realtimeDb, `users/${uid}`);
+    const ownStatusRef = ref(realtimeDb, `users/${auth.currentUser.uid}`);
 
-    await remove(userDbStatusRef);  
+    await remove(ownStatusRef);  
   }
   catch (error) {
     throw new Error("Error occured while deleting user status path from realtime database: " + error.message);
@@ -259,15 +252,15 @@ export function setCursorPosition(elementRef, offset) {
 
 }
 
-export const isContentSearched = (contentArray, searched) => {
-    for (const content of contentArray) {
-      if (
-        content?.toLowerCase().trim()
-        .includes(searched.toLowerCase().trim())
-      ) {
-        return true;
-      }
+export const isContentSearched = (contentArray, searchedValue) => {
+  for (const content of contentArray) {
+    if (
+      content?.toLowerCase().trim()
+      .includes(searchedValue.toLowerCase().trim())
+    ) {
+      return true;
     }
+  }
 
-    return false;
+  return false;
 }

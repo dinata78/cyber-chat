@@ -40,6 +40,8 @@ export function useChats(ownUid, friendUids) {
           return prevMessages;
         });
 
+
+        
         const uniqueSenderIds = Array.from(new Set(messages.map(message => message.senderId)));
         const missingUsernameIds = uniqueSenderIds.filter(id => !chatUsernamesMap[id]);
 
@@ -50,7 +52,7 @@ export function useChats(ownUid, friendUids) {
             const senderDocData = await fetchDataFromUid(senderId);
     
             if (senderDocData) {
-              fetchedNames[senderId] = senderDocData.displayName;
+              fetchedNames[senderId] = senderDocData.username;
             }
             else {
               fetchedNames[senderId] = "<deleted>";

@@ -4,6 +4,7 @@ import { fetchSignInMethodsForEmail, sendPasswordResetEmail } from "firebase/aut
 import { auth } from "../../../firebase";
 import { LoadingOverlay } from "../LoadingOverlay";
 import { CheckSVG, LockSVG } from "../svg";
+import { useIsAuth } from "../../custom-hooks/useIsAuth";
 
 export function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -11,7 +12,9 @@ export function ResetPassword() {
   const [isSent, setIsSent] = useState(false);
   const [errorInfo, setErrorInfo] = useState("");
 
-  const inputRef = useRef();
+  const { isAuth } = useIsAuth();
+
+  const inputRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -58,8 +61,8 @@ export function ResetPassword() {
   }
 
   useEffect(() => {
-    if (inputRef.current) inputRef.current.focus();
-  }, [])
+    inputRef.current.focus();
+  }, []);
 
   return (
     <div id="reset-password-page">
@@ -105,7 +108,7 @@ export function ResetPassword() {
               placeholder="Enter your email here"
               value={email}
               onKeyDown={(e) => {
-                if (errorInfo) setErrorInfo("");
+                setErrorInfo("");
                 if (e.key === "Enter") sendLink();
               }}
               onChange={(e) => setEmail(e.target.value)}
@@ -117,11 +120,20 @@ export function ResetPassword() {
           </>
         }
 
-        <label className="error-info">{errorInfo}</label>
+        <label className="error-info">
+          {errorInfo}
+        </label>
 
-        <button className="navigate" onClick={() => navigate("/")}>
-          Back to login page
-        </button>
+        {
+          isAuth ?
+            <button className="navigate" onClick={() => navigate("/chat")}>
+              Back to chat page
+            </button>
+          : <button className="navigate" onClick={() => navigate("/")}>
+              Back to login page
+            </button>
+        }
+
 
       </div>
     </div>
