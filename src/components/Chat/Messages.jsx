@@ -1,7 +1,11 @@
-import { processDate } from "../../utils"
+import { useEffect, useState } from "react";
+import { getConversationId, processDate } from "../../utils"
 import { MessageCard } from "./MessageCard"
 
-export function Messages({ selectedChatUid, selectedChatMessages, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
+export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
+
+  const [ hoveredId, setHoveredId ] = useState(null);
+  const [ editingId, setEditingId ] = useState(null);
   
   const renderedMessages = () => {
     let previousId;
@@ -21,6 +25,12 @@ export function Messages({ selectedChatUid, selectedChatMessages, ownData, devDa
         return (
           <MessageCard
             key={message.id + index}
+            conversationId={getConversationId(ownData.uid, selectedChatUid)}
+            messageId={message.id}
+            isHovered={message.id === hoveredId}
+            setHoveredId={setHoveredId}
+            isEditing={message.id === editingId}
+            setEditingId={setEditingId}
             isOwn={currentSenderId === ownData.uid}
             isSubset={
               currentSenderId === previousSenderId &&
@@ -48,6 +58,15 @@ export function Messages({ selectedChatUid, selectedChatMessages, ownData, devDa
     )
 
   };
+
+  useEffect(() => {
+    if (isLastMessageEditing) {
+      setEditingId(
+        selectedChatMessages[selectedChatMessages.length - 1].id
+      );
+      closeLastMessageEdit();
+    }
+  }, [isLastMessageEditing]);
 
   return (
     <div className="messages overflow-y-support">

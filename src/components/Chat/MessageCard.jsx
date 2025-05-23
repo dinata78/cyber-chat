@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ThreeDotsSVG } from "../svg";
-import { useAutoHideFeatures } from "../../custom-hooks/useAutoHideFeatures";
 import { MessageFeatures } from "./MessageFeatures";
+import { EditInput } from "./EditInput";
+import { EditedMark } from "./EditedMark";
 
-export function MessageCard({ isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
+export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
-  const [ isHovered, setIsHovered ] = useState(false);
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
 
-  // useAutoHideFeatures(featuresRef, isFeaturesVisible, setIsFeaturesVisible);
+  const handleEdit = () => {
+    setEditingId(messageId);
+    setIsFeaturesVisible(false);
+  }
 
   return (
     <div
@@ -19,10 +22,10 @@ export function MessageCard({ isOwn, isSubset, isDeleted, isEdited, isSending, s
         paddingTop: isSubset ? "0px" : null
       }}
       onMouseEnter={() => {
-        if (!isFeaturesVisible) setIsHovered(true);
+        if (!isFeaturesVisible) setHoveredId(messageId);
       }}
       onMouseLeave={() => {
-        if (!isFeaturesVisible) setIsHovered(false);
+        if (!isFeaturesVisible) setHoveredId(null);
       }}
     >
 
@@ -39,61 +42,64 @@ export function MessageCard({ isOwn, isSubset, isDeleted, isEdited, isSending, s
             </div>
 
             {
-              type === "text" ?
-                <span
-                  className="content"
-                  style={{
-                    color: isSending || isDeleted ? "#a1a5ad" : null,
-                    fontStyle: isDeleted ? "italic" : null
-                  }}
-                >
-                  {content}
+              isEditing ?
 
-                  {!isDeleted && isEdited && " "}
+                <EditInput
+                  conversationId={conversationId}
+                  messageId={messageId}
+                  isSubset={isSubset}
+                  content={content}
+                  closeEdit={() => setEditingId(null)}
+                />
 
-                  {
-                    !isDeleted && isEdited &&
-                    <span
-                      style={{
-                        userSelect: "none",
-                        color: "#aaaabf",
-                        fontSize: "10px"
-                      }}
-                    >
-                      (edited)
-                    </span>
-                  }
-                </span>
+              : type === "text" ?
+
+                  <span
+                    className="content"
+                    style={{
+                      color: isSending || isDeleted ? "#a1a5ad" : null,
+                      fontStyle: isDeleted ? "italic" : null
+                    }}
+                  >
+                    {content}
+
+                    {
+                      !isDeleted && isEdited &&
+                      <EditedMark />
+                    }
+                  </span>
+
               : <img className="content" src={content} />
             }
-
 
           </div>
         </>
         : <>
             {
-              type === "text" ?
+              isEditing ?
+
+                <EditInput
+                  conversationId={conversationId}
+                  messageId={messageId}
+                  isSubset={isSubset}
+                  content={content}
+                  closeEdit={() => setEditingId(null)}
+                />
+
+              : type === "text" ?
+
                 <span
                   className="content"
-                  style={{marginLeft: "68px"}}
+                  style={{marginLeft: "68px", marginRight: "12px"}}
                 >
                   {content}
 
-                  {!isDeleted && isEdited && " "}
-
                   {
                     !isDeleted && isEdited &&
-                    <span
-                      style={{
-                        userSelect: "none",
-                        color: "#aaaabf",
-                        fontSize: "10px"
-                      }}
-                    >
-                      (edited)
-                    </span>
+                    <EditedMark />
                   }
                 </span>
+
               : <img
                   className="content"
                   style={{marginLeft: "68px"}}
@@ -104,7 +110,7 @@ export function MessageCard({ isOwn, isSubset, isDeleted, isEdited, isSending, s
       }
 
       {
-        isHovered &&
+        !isDeleted && !isEditing && isHovered &&
         <div className="three-dots">
           <button onClick={() => setIsFeaturesVisible(true)}>
             <ThreeDotsSVG />
@@ -117,15 +123,13 @@ export function MessageCard({ isOwn, isSubset, isDeleted, isEdited, isSending, s
         <>
           <div
             className="overlay"
-            onClick={() => {
-              setIsFeaturesVisible(false);
-              setIsHovered(false);
-            }}
+            onClick={() => {setIsFeaturesVisible(false);}}
           >
           </div>
           
           <MessageFeatures
             isOwn={isOwn}
+            handleEdit={handleEdit}
           />
         </>
       }

@@ -25,6 +25,8 @@ export function Chat() {
   const [ currentNav, setCurrentNav ] = useState("chats");
   const [ theme, setTheme ] = useState("light");
 
+  const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
+
   const [ selectedChatUid, setSelectedChatUid ] = useState(null);
 
   const { isAuth } = useIsAuth();
@@ -228,6 +230,8 @@ export function Chat() {
           <Messages
             selectedChatUid={selectedChatUid}
             selectedChatMessages={selectedChatMessages}
+            isLastMessageEditing={isLastMessageEditing}
+            closeLastMessageEdit={() => setIsLastMessageEditing(false)}
             ownData={ownData}
             devData={devData}
             friendDisplayNameMap={friendDisplayNameMap}
@@ -238,6 +242,7 @@ export function Chat() {
 
           <MessageInput
             messageInputRef={messageInputRef}
+            editLastMessage={() => setIsLastMessageEditing(true)}
             ownUid={ownData.uid}
             selectedChatUid={selectedChatUid}
           />

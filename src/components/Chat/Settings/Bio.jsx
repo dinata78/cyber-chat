@@ -66,8 +66,8 @@ export function Bio({ ownUid, ownBio }) {
             </span>
           : <textarea
               ref={inputRef}
-              placeholder={ownBio}
               rows={1}
+              placeholder={ownBio}
               value={editedValue}
               onChange={inputOnChange}
               onKeyDown={(e) => {

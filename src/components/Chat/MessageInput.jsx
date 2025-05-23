@@ -4,7 +4,7 @@ import { getConversationId } from "../../utils";
 import { db } from "../../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 
-export function MessageInput({ messageInputRef, ownUid, selectedChatUid }) {
+export function MessageInput({ messageInputRef, editLastMessage, ownUid, selectedChatUid }) {
   const [ messageValue, setMessageValue ] = useState("");
 
   const inputContainerRef = useRef(null);
@@ -61,6 +61,11 @@ export function MessageInput({ messageInputRef, ownUid, selectedChatUid }) {
         placeholder="Type something.."
         value={messageValue}
         onChange={inputMessage}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowUp") {
+            editLastMessage();
+          }
+        }}
         onInput={resizeInput}
       >
       </textarea>

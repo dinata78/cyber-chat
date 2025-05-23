@@ -1,13 +1,29 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../svg";
 
-export function MessageFeatures({ isOwn }) {
+export function MessageFeatures({ isOwn, handleEdit }) {
   const [ featuresHeight, setFeaturesHeight ] = useState(0);
 
   const featuresRef = useRef(null);
 
   useLayoutEffect(() => {
     setFeaturesHeight(featuresRef.current.scrollHeight);
+  }, []);
+
+  useEffect(() => {
+    const preventScroll = (e) => {
+      e.preventDefault();
+    }
+
+    featuresRef.current.addEventListener("wheel", preventScroll, { passive: false });
+    featuresRef.current.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      if (featuresRef?.current) {
+        featuresRef.current.removeEventListener("wheel", preventScroll);
+        featuresRef.current.removeEventListener("touchmove", preventScroll);
+      }
+    }
   }, []);
 
   return (
@@ -32,7 +48,7 @@ export function MessageFeatures({ isOwn }) {
       {
         isOwn ?
           <>
-            <button>
+            <button onClick={handleEdit}>
               Edit
               <EditSVG />
             </button>
