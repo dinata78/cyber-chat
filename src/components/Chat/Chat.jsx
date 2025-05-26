@@ -117,7 +117,7 @@ export function Chat() {
           </button>
 
           <div className="name">
-            <span className="display-name">
+            <span className="display-name text-overflow-support">
               {
                 selectedChatUid === "globalChat" ? "Global Chat"
                 : selectedChatUid === devData.uid ? devData.displayName
@@ -125,7 +125,7 @@ export function Chat() {
                 : friendDisplayNameMap[selectedChatUid] || "Loading..."
               }
             </span>
-            <span className="username">
+            <span className="username text-overflow-support">
               {
                 selectedChatUid === devData.uid ? "@" + devData.username
                 : selectedChatUid === ownData.uid ? "@" + ownData.username

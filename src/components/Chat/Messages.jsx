@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { getConversationId, processDate } from "../../utils"
 import { MessageCard } from "./MessageCard"
+import { MessageDelete } from "./MessageDelete";
 
 export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
+  const [ isDeleting, setIsDeleting ] = useState(false);
+  const [ deletingData, setDeletingData ] = useState({ id: "", timeCreated: "", type: "", content: "..." })
   
   const renderedMessages = () => {
     let previousId;
@@ -19,7 +22,7 @@ export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageE
         const currentSenderId = message.senderId;
         const currentTimeCreated = processDate(message.timeCreated.toDate());
 
-        previousId = currentSenderId
+        previousId = currentSenderId;
         previousTime = currentTimeCreated;
         
         return (
@@ -31,6 +34,8 @@ export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageE
             setHoveredId={setHoveredId}
             isEditing={message.id === editingId}
             setEditingId={setEditingId}
+            setIsDeleting={setIsDeleting}
+            setDeletingData={setDeletingData}
             isOwn={currentSenderId === ownData.uid}
             isSubset={
               currentSenderId === previousSenderId &&
@@ -74,14 +79,11 @@ export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageE
         <span>
           This is the beginning of your conversation with
           {" "}
-          <span style={{color: "#ddf"}}>
+          <span style={{wordBreak: "break-word", color: "#ddf"}}>
             {
-              selectedChatUid === "globalChat" ?
-                "Global Chat"
-              : selectedChatUid === ownData.uid ?
-                ownData.displayName + " (You)" || "..."
-              : selectedChatUid === devData.uid ?
-                devData.displayName || "..."
+              selectedChatUid === "globalChat" ? "Global Chat"
+              : selectedChatUid === ownData.uid ? ownData.displayName + " (You)" || "..."
+              : selectedChatUid === devData.uid ? devData.displayName || "..."
               : friendDisplayNameMap[selectedChatUid] || "..."
             }
           </span>
@@ -91,6 +93,26 @@ export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageE
       {
         selectedChatMessages &&
         renderedMessages()
+      }
+
+      {
+        isDeleting &&
+        <MessageDelete
+          closeModal={() => {
+            setIsDeleting(false);
+            setDeletingData({
+              timeCreated: "",
+              content: "..." }
+            );
+          }}
+          conversationId={getConversationId(ownData.uid, selectedChatUid)}
+          messageId={deletingData.id}
+          senderPfpUrl={ownData.pfpUrl}
+          senderDisplayName={ownData.displayName}
+          timeCreated={deletingData.timeCreated}
+          contentType={deletingData.type}
+          content={deletingData.content}
+        />
       }
     </div>
   )

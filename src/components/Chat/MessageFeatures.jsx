@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../svg";
 
-export function MessageFeatures({ isOwn, handleEdit }) {
+export function MessageFeatures({ isOwn, handleEdit, handleDelete, handleCopyText }) {
   const [ featuresHeight, setFeaturesHeight ] = useState(0);
 
   const featuresRef = useRef(null);
@@ -29,7 +29,7 @@ export function MessageFeatures({ isOwn, handleEdit }) {
   return (
     <div
       ref={featuresRef}
-      className="features"
+      id="message-features"
       style={{
         top: `${featuresHeight * -1 - 25}px`
       }}
@@ -40,7 +40,7 @@ export function MessageFeatures({ isOwn, handleEdit }) {
         <ReplySVG />
       </button>
 
-      <button>
+      <button onClick={handleCopyText}>
         Copy Text
         <CopySVG />
       </button>
@@ -53,7 +53,7 @@ export function MessageFeatures({ isOwn, handleEdit }) {
               <EditSVG />
             </button>
 
-            <button style={{color: "red", fill: "red"}}>
+            <button style={{color: "red", fill: "red"}} onClick={handleDelete}>
               Delete
               <TrashCanSVG />
             </button>        

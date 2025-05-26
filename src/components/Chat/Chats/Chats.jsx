@@ -43,7 +43,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         username={ownData.username}
         status={ownStatus}
         pfpUrl={ownData.pfpUrl}
-        unreadMessagesCount={0}
+        unreadMessagesCount={9}
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}

@@ -143,7 +143,15 @@ export function normalizeSpaces(str) {
 }
 
 export function processDate(dateObject) {
-  const time = {year: dateObject.getFullYear(), month: dateObject.getMonth() + 1, date: dateObject.getDate(), hour: dateObject.getHours(), minute: dateObject.getMinutes()}
+  if (!(dateObject instanceof Date)) return null;
+
+  const time = {
+    year: dateObject.getFullYear(),
+    month: dateObject.getMonth() + 1,
+    date: dateObject.getDate(),
+    hour: dateObject.getHours(),
+    minute: dateObject.getMinutes()
+  }
 
   const year = time.year.toString();
   const month = time.month.toString().padStart(2, "0");

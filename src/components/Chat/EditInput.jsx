@@ -2,7 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../../../firebase";
 
-export function EditInput({ conversationId, messageId, isSubset, content, closeEdit }) {
+export function EditInput({ closeEdit, conversationId, messageId, isSubset, content }) {
   
   const [ editedMessage, setEditedMessage ] = useState(content);
   
@@ -45,7 +45,7 @@ export function EditInput({ conversationId, messageId, isSubset, content, closeE
 
   return (
     <div
-      className="edit-input"
+      id="edit-input"
       style={{
         paddingLeft: isSubset ? "68px" : null,
         paddingRight: isSubset ? "12px" : null

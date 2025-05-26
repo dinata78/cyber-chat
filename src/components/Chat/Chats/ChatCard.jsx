@@ -41,12 +41,12 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
       </div>
 
       <div className="name">
-        <span className="display-name">
+        <span className="display-name text-overflow-support">
           {displayName || "Loading..."}
         </span>
         {
           username &&
-          <span className="username">
+          <span className="username text-overflow-support">
             @{username}
           </span>
         }

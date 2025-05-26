@@ -4,13 +4,38 @@ import { MessageFeatures } from "./MessageFeatures";
 import { EditInput } from "./EditInput";
 import { EditedMark } from "./EditedMark";
 
-export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
+export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
 
   const handleEdit = () => {
     setEditingId(messageId);
     setIsFeaturesVisible(false);
+  }
+
+  const handleDelete = () => {
+    setIsDeleting(true);
+    setDeletingData({
+      id: messageId,
+      timeCreated: timeCreated,
+      type: type,
+      content: content,
+    });
+    setIsFeaturesVisible(false);
+    setHoveredId(null);
+  }
+
+  const handleCopyText = async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      console.log("Text copied!");
+    }
+    catch {
+      console.log("Failed to copy text.");
+    }
+    finally {
+      setIsFeaturesVisible(false);
+    }
   }
 
   return (
@@ -37,7 +62,7 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
           <div className="right">
 
             <div className="top">
-              <span className="name">{senderName}</span>
+              <span className="name text-overflow-support">{senderName}</span>
               <span className="time">{timeCreated}</span>
             </div>
 
@@ -58,10 +83,10 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
                     className="content"
                     style={{
                       color: isSending || isDeleted ? "#a1a5ad" : null,
-                      fontStyle: isDeleted ? "italic" : null
+                      fontStyle: isDeleted && "italic"
                     }}
                   >
-                    {content}
+                    {!isDeleted ? content : "This message was deleted."}
 
                     {
                       !isDeleted && isEdited &&
@@ -79,20 +104,25 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
               isEditing ?
 
                 <EditInput
+                  closeEdit={() => setEditingId(null)}
                   conversationId={conversationId}
                   messageId={messageId}
                   isSubset={isSubset}
                   content={content}
-                  closeEdit={() => setEditingId(null)}
                 />
 
               : type === "text" ?
 
                 <span
                   className="content"
-                  style={{marginLeft: "68px", marginRight: "12px"}}
+                  style={{
+                    marginLeft: "68px",
+                    marginRight: "12px",
+                    color: isSending || isDeleted ? "#a1a5ad" : null,
+                    fontStyle: isDeleted && "italic"
+                  }}
                 >
-                  {content}
+                  {!isDeleted ? content : "This message was deleted."}
 
                   {
                     !isDeleted && isEdited &&
@@ -130,6 +160,8 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
           <MessageFeatures
             isOwn={isOwn}
             handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleCopyText={handleCopyText}
           />
         </>
       }

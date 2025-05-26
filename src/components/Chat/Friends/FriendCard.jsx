@@ -27,8 +27,12 @@ export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsernam
       </div>
 
       <div className="name">
-        <span className="display-name">{friendDisplayName}</span>
-        <span className="username">@{friendUsername}</span>
+        <span className="display-name text-overflow-support">
+          {friendDisplayName}
+        </span>
+        <span className="username text-overflow-support">
+          @{friendUsername}
+        </span>
       </div>
 
       <div className="buttons">

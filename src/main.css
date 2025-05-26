@@ -14,6 +14,7 @@
 
 * {
   box-sizing: border-box;
+  word-break: break-word;
 }
 
 :root {
@@ -557,6 +558,8 @@ button {
   }
 
   .name {
+    flex-grow: 1;
+    width: 0;
     margin-left: 18px;
     display: flex;
   }
@@ -700,6 +703,9 @@ button {
   }
 
   .chat-card .name {
+    flex-grow: 1;
+    width: 0;
+    padding-right: 37px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -810,6 +816,8 @@ button {
   }
 
   .friend-card .name {
+    flex-grow: 1;
+    width: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -826,8 +834,7 @@ button {
   }
 
   .friend-card .buttons {
-    margin-left: auto;
-    margin-right: 6px;
+    margin-inline: 6px;
     display: flex;
     gap: 4px;
   }
@@ -996,6 +1003,7 @@ button {
 
   .message-card > .right {
     flex-grow: 1;
+    width: 0;
     padding-right: 12px;
     display: flex;
     flex-direction: column;
@@ -1014,6 +1022,7 @@ button {
 
   .message-card > .right > .top .time {
     user-select: none;
+    white-space: nowrap;
     color: #9999ab;
     font-size: 10px;
   }
@@ -1021,7 +1030,6 @@ button {
   .message-card span.content {
     padding-block: 6px;
     white-space: pre-wrap;
-    word-break: break-word;
     line-height: 1.25;
     color: #d1d5db;
     font-size: 15px;
@@ -1029,6 +1037,8 @@ button {
 
   .message-card img.content {
     box-sizing: content-box;
+    align-self: flex-start;
+    object-fit: contain;
     max-width: 250px;
     max-height: 250px;
     padding-block: 12px;
@@ -1071,20 +1081,20 @@ button {
     left: 0;
     right: 0;
   }
+}
 
-  .message-card .features {
-    z-index: 1;
-    position: absolute;
-    right: 12px;
-    background-color: #111;
-    width: 125px;
-    padding: 6px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-  }
+#message-features {
+  z-index: 1;
+  position: absolute;
+  right: 12px;
+  background-color: #111;
+  width: 125px;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
 
-  .message-card .features button {
+  button {
     background-color: transparent;
     padding: 0;
     padding-inline: 8px;
@@ -1099,26 +1109,26 @@ button {
     fill: #c1c5cb;
   }
 
-  .message-card .features button:hover {
+  button:hover {
     background-color: #ffffff18;
     color: white;
     fill: white;
   }
 
-  .message-card .features button svg {
+  button svg {
     width: 16px;
     fill: inherit;
   }
+}
 
-  .message-card .edit-input {
-    width: 100%;
-    padding-block: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+#edit-input {
+  width: 100%;
+  padding-block: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
-  .message-card .edit-input .input-container {
+  .input-container {
     background-color: #404050;
     width: 100%;
     height: calc(1.25 * 15px + 24px);
@@ -1129,7 +1139,7 @@ button {
     align-items: center;
   }
 
-  .message-card .edit-input .input-container textarea {
+  .input-container textarea {
     resize: none;
     background-color: transparent;
     width: 100%;
@@ -1142,20 +1152,21 @@ button {
     font-family: inherit;
   }
 
-  .message-card .edit-input .input-container textarea:focus {
+  .input-container textarea:focus {
     outline: none;
   }
 
-  .message-card .edit-input .input-container textarea::placeholder {
+  .input-container textarea::placeholder {
     color: #779;
   }
 
-  .message-card .edit-input .bottom span {
+  .bottom span {
+    user-select: none;
     color: #bbb;
     font-size: 12px;
   }
 
-  .message-card .edit-input .bottom button {
+  .bottom button {
     background-color: transparent;
     padding: 0;
     border: none;
@@ -1164,9 +1175,130 @@ button {
     font-family: inherit;
   }
 
-  .message-card .edit-input .bottom button:hover,
-  .message-card .edit-input .bottom button:focus-visible {
+  .bottom button:hover,
+  .bottom button:focus-visible {
     border-bottom: 1px solid #bbf;
+  }
+}
+
+#message-delete {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #00000077;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#message-delete > .container {
+  position: relative;
+  background-color: var(--message-background);
+  width: 400px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+
+  button.close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: transparent;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    fill: #bbb;
+  }
+
+  button.close:hover {
+    fill: #fff;
+    color: white;
+  }
+
+  button.close:focus-visible {
+    border: 1px solid white;
+  }
+
+  > h1 {
+    margin: 0;
+    margin-top: 20px;
+    margin-left: 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: lighter;
+  }
+
+  > span {
+    margin-top: 8px;
+    margin-left: 20px;
+    display: inline-block;
+    color: #ccd;
+    font-size: 12px;
+  }
+
+  .message {
+    background-color: #17171cbb;
+    margin-top: 12px;
+    margin-inline: 12px;
+    padding-block: 16px;
+    padding-inline: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .message img.pfp {
+    width: 36px;
+    height: 36px;
+    border-radius: 100%;
+  }
+
+  .message .right {
+    flex-grow: 1;
+    width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .message .right .top {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .message .right span.content {
+    white-space: pre-wrap;
+    color: #d1d5db;
+    font-size: 15px;
+  }
+
+  .message .right img.content {
+    align-self: flex-start;
+    max-width: 250px;
+    max-height: 250px;
+  }
+
+  .buttons {
+    margin-block: 18px;
+    margin-right: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .buttons button {
+    background-color: #121216;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    font-family: inherit;
   }
 }
 
