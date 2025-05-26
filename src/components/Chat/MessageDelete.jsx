@@ -2,6 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { CloseSVG } from "../svg";
 import { db } from "../../../firebase";
 import { deleteImageFromDb } from "../../utils";
+import { notify } from "../Notification";
 
 export function MessageDelete({ closeModal, conversationId, messageId, senderPfpUrl, senderDisplayName, timeCreated, contentType, content }) {
 
@@ -10,20 +11,30 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
 
     const currentMessageRef = doc(db, "conversations", conversationId, "messages", messageId);
 
-    if (contentType === "image") {
-      const success = await deleteImageFromDb(content);
+    try {
+      if (contentType === "image") {
+        const success = await deleteImageFromDb(content);
 
-      if (!success) {
-        console.error("Error: Failed to delete image.");
-        return;
+        if (!success) {
+          console.error("Error: Failed to delete image.");
+          notify(null, "Failed to delete image.");
+          return;
+        }
       }
-    }
 
-    await updateDoc(currentMessageRef, {
-      isDeleted: true,
-      type: "text",
-      content: null,
-    });
+      await updateDoc(currentMessageRef, {
+        isDeleted: true,
+        type: "text",
+        content: null,
+      });
+
+      notify(null, "Message deleted successfully.");      
+    }
+    catch (error) {
+      console.error(error);
+
+      notify(null, "Failed to delete message.");
+    }
   }
 
   return (

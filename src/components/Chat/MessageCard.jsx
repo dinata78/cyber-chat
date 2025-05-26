@@ -3,6 +3,7 @@ import { ThreeDotsSVG } from "../svg";
 import { MessageFeatures } from "./MessageFeatures";
 import { EditInput } from "./EditInput";
 import { EditedMark } from "./EditedMark";
+import { notify } from "../Notification";
 
 export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
@@ -29,9 +30,11 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
     try {
       await navigator.clipboard.writeText(content);
       console.log("Text copied!");
+      notify("text-copied", "Copied text to clipboard!");
     }
     catch {
       console.log("Failed to copy text.");
+      notify(null, "Failed to copy text.");
     }
     finally {
       setIsFeaturesVisible(false);

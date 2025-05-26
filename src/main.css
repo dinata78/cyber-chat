@@ -373,6 +373,32 @@ button {
   animation: spin 1s linear infinite;
 }
 
+#notification {
+  z-index: 9999;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20px;
+  background-color: #212126;
+  padding-block: 12px;
+  padding-inline: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  svg {
+    fill: inherit;
+    width: min(24px, calc(3vw + 1vh));
+  }
+
+  span {
+    user-select: none;
+    white-space: nowrap;
+    font-size: min(15px, calc(2vw + 1vh));
+  }
+}
+
 *.text-overflow-support {
   overflow: hidden;
   text-overflow: ellipsis;

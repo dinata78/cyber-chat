@@ -63,7 +63,7 @@ export function EditInput({ closeEdit, conversationId, messageId, isSubset, cont
           value={editedMessage}
           onChange={inputEditedMessage}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               saveEdit();
             }

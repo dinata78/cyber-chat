@@ -2,6 +2,7 @@ import { Auth } from "./Auth/Auth";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Chat } from "./Chat/Chat";
 import { ResetPassword } from "./ResetPassword/ResetPassword";
+import { Notifier } from "./Notification";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,9 @@ const router = createBrowserRouter([
 
 export function App() {
   return (
+    <>
       <RouterProvider router={router}/>
+      <Notifier />    
+    </>
   )
 }

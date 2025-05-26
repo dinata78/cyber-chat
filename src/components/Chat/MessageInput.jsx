@@ -62,7 +62,11 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
         value={messageValue}
         onChange={inputMessage}
         onKeyDown={(e) => {
-          if (e.key === "ArrowUp") {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+          else if (e.key === "ArrowUp") {
             editLastMessage();
           }
         }}
