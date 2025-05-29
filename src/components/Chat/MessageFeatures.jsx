@@ -1,13 +1,20 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../svg";
 
-export function MessageFeatures({ isOwn, handleEdit, handleDelete, handleCopyText }) {
-  const [ featuresHeight, setFeaturesHeight ] = useState(0);
+export function MessageFeatures({ cursorYPos, isOwn, handleEdit, handleDelete, handleCopyText }) {
+  const [ featuresTopValue, setFeaturesTopValue ] = useState(0);
 
   const featuresRef = useRef(null);
 
   useLayoutEffect(() => {
-    setFeaturesHeight(featuresRef.current.scrollHeight);
+    const featuresHeight = featuresRef.current.scrollHeight;
+
+    if (cursorYPos > (featuresHeight + 100)) {
+      setFeaturesTopValue(featuresHeight * -1 - 25);
+    }
+    else {
+      setFeaturesTopValue(20);
+    }
   }, []);
 
   useEffect(() => {
@@ -31,7 +38,7 @@ export function MessageFeatures({ isOwn, handleEdit, handleDelete, handleCopyTex
       ref={featuresRef}
       id="message-features"
       style={{
-        top: `${featuresHeight * -1 - 25}px`
+        top: `${featuresTopValue}px`
       }}
     >
 

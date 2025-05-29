@@ -1,6 +1,6 @@
 import { ChatCard } from "./ChatCard"
 
-export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messageInputRef }) {
+export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
   return (
     <>
       <ChatCard
@@ -14,7 +14,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        chatMessagesRef={null}
+        messagesRef={messagesRef}
         messageInputRef={messageInputRef}
       />
 
@@ -29,7 +29,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        chatMessagesRef={null}
+        messagesRef={messagesRef}
         messageInputRef={messageInputRef}
       />
 
@@ -47,7 +47,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        chatMessagesRef={null}
+        messagesRef={messagesRef}
         messageInputRef={messageInputRef}
       />
 
@@ -73,7 +73,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
                 setIsSidebarVisible={setIsSidebarVisible}
-                chatMessagesRef={null}
+                messagesRef={messagesRef}
                 messageInputRef={messageInputRef}
               />
             )

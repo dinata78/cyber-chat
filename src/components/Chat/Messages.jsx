@@ -3,7 +3,7 @@ import { getConversationId, processDate } from "../../utils"
 import { MessageCard } from "./MessageCard"
 import { MessageDelete } from "./MessageDelete";
 
-export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
+export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -74,7 +74,7 @@ export function Messages({ selectedChatUid, selectedChatMessages, isLastMessageE
   }, [isLastMessageEditing]);
 
   return (
-    <div className="messages overflow-y-support">
+    <div ref={messagesRef} className="messages overflow-y-support">
       <div className="beginning">
         <span>
           This is the beginning of your conversation with

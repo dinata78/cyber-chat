@@ -1095,6 +1095,10 @@ button {
     background-color: #ffffff15;
   }
 
+  .message-card .three-dots button:focus-visible {
+    border: 1px solid white;
+  }
+
   .message-card .three-dots button svg {
     fill: #aab;
   }
@@ -1139,6 +1143,10 @@ button {
     background-color: #ffffff18;
     color: white;
     fill: white;
+  }
+
+  button:focus-visible {
+    border: 1px solid white;
   }
 
   button svg {
@@ -1227,31 +1235,11 @@ button {
   border: 1px solid var(--border-color);
   border-radius: 12px;
 
-  button.close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background-color: transparent;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    border: none;
-    fill: #bbb;
-  }
-
-  button.close:hover {
-    fill: #fff;
-    color: white;
-  }
-
-  button.close:focus-visible {
-    border: 1px solid white;
-  }
-
   > h1 {
     margin: 0;
     margin-top: 20px;
-    margin-left: 20px;
+    margin-inline: 20px;
+    text-align: center;
     color: white;
     font-size: 16px;
     font-weight: lighter;
@@ -1259,8 +1247,9 @@ button {
 
   > span {
     margin-top: 8px;
-    margin-left: 20px;
-    display: inline-block;
+    margin-inline: 20px;
+    display: block;
+    text-align: center;
     color: #ccd;
     font-size: 12px;
   }
@@ -1304,6 +1293,7 @@ button {
   }
 
   .message .right img.content {
+    box-sizing: content-box;
     align-self: flex-start;
     max-width: 250px;
     max-height: 250px;
@@ -1311,7 +1301,7 @@ button {
 
   .buttons {
     margin-block: 18px;
-    margin-right: 12px;
+    margin-inline: 12px;
     display: flex;
     justify-content: flex-end;
     gap: 8px;
@@ -1325,6 +1315,10 @@ button {
     color: white;
     font-size: 12px;
     font-family: inherit;
+  }
+
+  .buttons button:focus-visible {
+    border: 1px solid white;
   }
 }
 
@@ -1351,7 +1345,7 @@ button {
   align-items: center;
   gap: 4px;
 
-  button {
+  > button {
     position: absolute;
     bottom: 0px;
     background-color: transparent;
@@ -1362,15 +1356,15 @@ button {
     border-radius: 6px;
   }
 
-  button:focus-visible {
+  > button:focus-visible {
     border: 1px solid white;
   }
 
-  button:active {
+  > button:active {
     border: 2px solid white;
   }
 
-  button svg {
+  > button svg {
     fill: #bbd;
   }
 
@@ -1389,6 +1383,7 @@ button {
     font-family: inherit;
   }
 
+
   textarea:focus {
     outline: none;
   }
@@ -1396,6 +1391,46 @@ button {
   textarea::placeholder {
     color: #779;
   }
+
+  .img-attached {
+    height: 100%;
+    width: 100%;
+    padding-inline: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .img-attached img {
+    cursor: pointer;
+    object-fit: contain;
+    width: 24px;
+    height: 24px;
+    margin-inline: 6px;
+  }
+
+  .img-attached span {
+    cursor: pointer;
+    user-select: none;
+    color: #bbd;
+    font-size: 16px;
+  }
+
+  .img-attached span:hover {
+    color: #ccf;
+    text-decoration: underline;
+  }
+
+  .img-attached button {
+    background-color: transparent;
+    width: 20px;
+    min-width: 20px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border: none;
+    fill: #ff0000;
+  }
+
 }
 
 #chat-settings {
@@ -1803,5 +1838,16 @@ button {
     height: max-content;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+  }
+
+  #message-delete > .container {
+    align-self: flex-end;
+    width: 100vw;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  #message-delete > .container .buttons {
+    flex-direction: column-reverse;
   }
 }

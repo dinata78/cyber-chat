@@ -41,10 +41,6 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
     <div id="message-delete" onClick={closeModal}>
       <div className="container" onClick={(e) => e.stopPropagation()}>
 
-        <button className="close" onClick={closeModal}>
-          <CloseSVG />
-        </button>
-
         <h1>Delete Message</h1>
 
         <span>

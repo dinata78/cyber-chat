@@ -1,5 +1,5 @@
 
-export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, chatMessagesRef, messageInputRef }) {
+export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
   
   if (!ownUid) return;
   if (chatUid === selectedChatUid) return;
@@ -11,9 +11,8 @@ export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedC
   requestAnimationFrame(() => {
     messageInputRef.current.focus();
 
-    chatMessagesRef.current.scrollTo({
-      top: chatMessagesRef.current.scrollHeight - chatMessagesRef.current.clientHeight,
-      behavior: "smooth",
+    messagesRef.current.scrollTo({
+      top: messagesRef.current.scrollHeight,
     });
 
   });

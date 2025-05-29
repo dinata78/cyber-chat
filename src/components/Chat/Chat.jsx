@@ -59,6 +59,7 @@ export function Chat() {
 
   const isFirstRender = useRef(true);
 
+  const messagesRef = useRef(null);
   const messageInputRef = useRef(null);
 
   const navigate = useNavigate();
@@ -174,6 +175,7 @@ export function Chat() {
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
                   messageInputRef={messageInputRef}
+                  messagesRef={messagesRef}
                 />
               : <Friends 
                   ownUid={ownData.uid}
@@ -228,6 +230,7 @@ export function Chat() {
           onClick={() => setIsSidebarVisible(false)}
         >
           <Messages
+            messagesRef={messagesRef}
             selectedChatUid={selectedChatUid}
             selectedChatMessages={selectedChatMessages}
             isLastMessageEditing={isLastMessageEditing}

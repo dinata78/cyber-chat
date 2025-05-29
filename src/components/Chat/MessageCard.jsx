@@ -8,6 +8,7 @@ import { notify } from "../Notification";
 export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
+  const [ cursorYPos, setCursorYPos ] = useState(null);
 
   const handleEdit = () => {
     setEditingId(messageId);
@@ -29,11 +30,10 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
   const handleCopyText = async () => {
     try {
       await navigator.clipboard.writeText(content);
-      console.log("Text copied!");
       notify("text-copied", "Copied text to clipboard!");
     }
     catch {
-      console.log("Failed to copy text.");
+      console.error("Error: Failed to copy text.");
       notify(null, "Failed to copy text.");
     }
     finally {
@@ -145,7 +145,12 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
       {
         !isDeleted && !isEditing && isHovered &&
         <div className="three-dots">
-          <button onClick={() => setIsFeaturesVisible(true)}>
+          <button
+            onClick={(e) => {
+              setIsFeaturesVisible(true);
+              setCursorYPos(e.clientY);
+            }}
+          >
             <ThreeDotsSVG />
           </button>
         </div>
@@ -161,6 +166,7 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
           </div>
           
           <MessageFeatures
+            cursorYPos={cursorYPos}
             isOwn={isOwn}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
