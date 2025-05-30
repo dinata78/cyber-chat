@@ -14,17 +14,10 @@ export function useProcessImageFile(chosenImageFile, setChosenImageData, clearCh
       else {
         url = URL.createObjectURL(chosenImageFile);
 
-        const img = new Image();
-        img.src = url;
-        
-        img.onload = () => {
-          setChosenImageData({
-            url: url,
-            name: chosenImageFile.name,
-            width: img.width,
-            height: img.height,
-          });
-        }
+        setChosenImageData({
+          url: url,
+          name: chosenImageFile.name,
+        });
       }
     }
     else {

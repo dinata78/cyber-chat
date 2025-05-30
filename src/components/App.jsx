@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Chat } from "./Chat/Chat";
 import { ResetPassword } from "./ResetPassword/ResetPassword";
 import { Notifier } from "./Notification";
+import { ImagePreview } from "./ImagePreview";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +24,8 @@ export function App() {
   return (
     <>
       <RouterProvider router={router}/>
-      <Notifier />    
+      <Notifier />
+      <ImagePreview />
     </>
   )
 }

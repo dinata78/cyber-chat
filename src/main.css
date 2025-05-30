@@ -399,6 +399,46 @@ button {
   }
 }
 
+#image-preview {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+
+  .menu {
+    z-index: 1;
+    position: fixed;
+    top: 24px;
+    right: 0;
+    background-color: #445;
+    margin-inline: 24px;
+    padding-block: 12px;
+    padding-inline: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 6px;
+    color: #bbd;
+    font-family: monospace;
+    font-size: 14px;
+    font-weight: bold
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
 *.text-overflow-support {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -456,8 +496,6 @@ button {
   }
 }
     
-
-
 *.overflow-y-support.smaller-scrollbar {
   overflow-y: auto;
 
@@ -489,40 +527,6 @@ button {
 
 .indicator.hidden {
   background-color: lightgray;
-}
-
-#image-preview {
-  z-index: 2;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #000000dd;
-  display: grid;
-  place-content: center;
-}
-
-#image-preview .extras {
-  position: fixed;
-  top: 24px;
-  right: 24px;
-  background-color: #3d3d7d99;
-  padding: 12px 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: bold;
-
-  label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-  }
 }
 
 #chat-page {
@@ -1067,7 +1071,16 @@ button {
     object-fit: contain;
     max-width: 250px;
     max-height: 250px;
-    padding-block: 12px;
+    margin-block: 12px;
+  }
+
+  .message-card img.content:focus {
+    outline: none;
+  }
+
+  .message-card img.content:focus-visible {
+    opacity: 70%;
+    border: 1px solid #bbf;
   }
 
   .message-card .three-dots {
@@ -1408,6 +1421,15 @@ button {
     margin-inline: 6px;
   }
 
+  .img-attached img:focus {
+    outline: none;
+  }
+
+  .img-attached img:focus-visible {
+    opacity: 70%;
+    border: 1px solid #bbf;
+  }
+
   .img-attached span {
     cursor: pointer;
     user-select: none;
@@ -1415,9 +1437,14 @@ button {
     font-size: 16px;
   }
 
-  .img-attached span:hover {
+  .img-attached span:focus {
+    outline: none;
+  }
+
+  .img-attached span:hover,
+  .img-attached span:focus-visible {
     color: #ccf;
-    text-decoration: underline;
+    border-bottom: 1px solid #ccf;
   }
 
   .img-attached button {
@@ -1428,7 +1455,17 @@ button {
     min-height: 44px;
     padding: 0;
     border: none;
+  }
+
+  .img-attached button svg {
     fill: #ff0000;
+    border-radius: 100%;
+  }
+
+  .img-attached button:focus-visible {
+    svg {
+      border: 1px solid white;
+    }
   }
 
 }

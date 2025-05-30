@@ -5,10 +5,11 @@ import { db } from "../../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useProcessImageFile } from "../../custom-hooks/useProcessImageFile";
 import { notify } from "../Notification";
+import { previewImage } from "../ImagePreview";
 
 export function MessageInput({ messageInputRef, editLastMessage, ownUid, selectedChatUid }) {
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
-  const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: "", width: 0, height: 0 });
+  const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
   const [ messageValue, setMessageValue ] = useState("");
 
   const imageInputRef = useRef(null);
@@ -17,8 +18,10 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
   const conversationId = getConversationId(ownUid, selectedChatUid);
 
   const resizeInput = () => {
-    inputContainerRef.current.style.height = "auto";
-    inputContainerRef.current.style.height = `${messageInputRef.current.scrollHeight + 24}px`;
+    if (inputContainerRef.current && messageInputRef.current) {
+      inputContainerRef.current.style.height = "auto";
+      inputContainerRef.current.style.height = `${messageInputRef.current.scrollHeight + 24}px`;
+    }
   }
 
   const focusInput = () => {
@@ -45,6 +48,7 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
     setMessageValue("");
     requestAnimationFrame(() => {
       resizeInput();
+      focusInput();
     });
 
     if (chosenImageFile) {
@@ -91,6 +95,10 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
 
   useEffect(() => {
     resizeInput();
+
+    window.addEventListener("resize", resizeInput);
+
+    return () => window.removeEventListener("resize", resizeInput);
   }, []);
 
   return (
@@ -149,8 +157,26 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
             >
               <CloseCirleSVG />
             </button>
-            <img src={chosenImageData.url || "/empty-pfp.webp"} />
-            <span className="text-overflow-support">
+            <img
+              src={chosenImageData.url || "/empty-pfp.webp"}
+              tabIndex={0}
+              onClick={() => previewImage(chosenImageData.url)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  previewImage(chosenImageData.url);
+                }
+              }}
+            />
+            <span
+              className="text-overflow-support"
+              tabIndex={0}
+              onClick={() => previewImage(chosenImageData.url)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  previewImage(chosenImageData.url);
+                }
+              }}
+            >
               {chosenImageData.name}
             </span>
           </div>

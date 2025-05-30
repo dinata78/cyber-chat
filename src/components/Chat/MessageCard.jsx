@@ -4,6 +4,7 @@ import { MessageFeatures } from "./MessageFeatures";
 import { EditInput } from "./EditInput";
 import { EditedMark } from "./EditedMark";
 import { notify } from "../Notification";
+import { previewImage } from "../ImagePreview";
 
 export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
@@ -97,7 +98,15 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
                     }
                   </span>
 
-              : <img className="content" src={content} />
+              : <img
+                  tabIndex={0}
+                  className="content"
+                  src={content}
+                  onClick={() => previewImage(content)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") previewImage(content);
+                  }}
+                />
             }
 
           </div>
@@ -134,9 +143,14 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
                 </span>
 
               : <img
+                  tabIndex={0}
                   className="content"
                   style={{marginLeft: "68px"}}
                   src={content}
+                  onClick={() => previewImage(content)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") previewImage(content);
+                  }}
                 />
             }
           </>
