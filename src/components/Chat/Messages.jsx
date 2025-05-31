@@ -3,7 +3,7 @@ import { getConversationId, processDate } from "../../utils"
 import { MessageCard } from "./MessageCard"
 import { MessageDelete } from "./MessageDelete";
 
-export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, devData, friendDisplayNameMap, friendPfpUrlMap }) {
+export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -44,22 +44,14 @@ export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, i
             isDeleted={message.isDeleted}
             isEdited={message.isEdited}
             isSending={message.isSending}
-            senderPfpUrl={
-              currentSenderId === ownData.uid ? ownData.pfpUrl
-              : currentSenderId === devData.uid ? devData.pfpUrl
-              : friendPfpUrlMap[message.senderId]
-            }
-            senderName={
-              currentSenderId === ownData.uid ? ownData.displayName
-              : currentSenderId === devData.uid ? devData.displayName
-              : friendDisplayNameMap[message.senderId]
-            }
+            senderPfpUrl={chatPfpUrlMap[currentSenderId]}
+            senderName={chatDisplayNameMap[currentSenderId] || "..."}
             timeCreated={currentTimeCreated}
             type={message.type}
             content={message.content}
           />
         )
-      })      
+      })     
     )
 
   };
@@ -82,9 +74,7 @@ export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, i
           <span style={{wordBreak: "break-word", color: "#ddf"}}>
             {
               selectedChatUid === "globalChat" ? "Global Chat"
-              : selectedChatUid === ownData.uid ? ownData.displayName + " (You)" || "..."
-              : selectedChatUid === devData.uid ? devData.displayName || "..."
-              : friendDisplayNameMap[selectedChatUid] || "..."
+              : chatDisplayNameMap[selectedChatUid] || "..."
             }
           </span>
         </span>

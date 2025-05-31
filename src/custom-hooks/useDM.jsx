@@ -70,5 +70,5 @@ export function useDM(uid) {
 
   }, [DMIds]);
 
-  return { DMDatas };
+  return { DMIds, DMDatas };
 }

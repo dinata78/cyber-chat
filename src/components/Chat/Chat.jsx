@@ -14,7 +14,7 @@ import { useUserData } from "../../custom-hooks/useUserData"
 import { useDM } from "../../custom-hooks/useDM" 
 import { useFriendList } from "../../custom-hooks/useFriendList";
 import { Friends } from "./Friends/Friends";
-import { useChats } from "../../custom-hooks/useChats";
+import { useChat } from "../../custom-hooks/useChat";
 import { useStatus } from "../../custom-hooks/useStatus";
 import { MessageInput } from "./MessageInput";
 import { Messages } from "./Messages";
@@ -33,29 +33,22 @@ export function Chat() {
   const { ownData } = useOwnData();
   const [ ownStatus ] = useStatusByUid(ownData?.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
-  const { DMDatas } = useDM(ownData?.uid);
+  const { DMIds, DMDatas } = useDM(ownData?.uid);
   const { friendUids, friendDatas } = useFriendList(ownData?.uid);
 
   const { statusMap } = useStatus(friendUids);
 
-  const { chatMessagesMap, chatUsernamesMap, messagesAmountMap } = useChats(ownData?.uid, friendUids);
+  const {
+    chatMessagesMap,
+    chatDisplayNameMap,
+    chatUsernameMap,
+    chatPfpUrlMap,
+    messagesAmountMap,
+    setMessagesAmountMap
+  } = useChat(ownData?.uid, DMIds);
 
   const conversationId = getConversationId(ownData.uid, selectedChatUid);
   const selectedChatMessages = chatMessagesMap[conversationId];
-
-  const [ friendDisplayNameMap, friendUsernameMap, friendPfpUrlMap ] = (() => {
-    const displayNameMap = {};
-    const usernameMap = {};
-    const pfpUrlMap = {};
-
-    friendDatas.forEach(friendData => {
-      displayNameMap[friendData.uid] = friendData.displayName;
-      usernameMap[friendData.uid] = friendData.username;
-      pfpUrlMap[friendData.uid] = friendData.pfpUrl;
-    });
-
-    return [ displayNameMap, usernameMap, pfpUrlMap ];
-  })();
 
   const isFirstRender = useRef(true);
 
@@ -66,7 +59,9 @@ export function Chat() {
 
   // useEffect(() => {
   //   console.log(chatMessagesMap)
-  //   console.log(chatUsernamesMap)
+  //   console.log(chatDisplayNameMap)
+  //   console.log(chatUsernameMap)
+  //   console.log(chatPfpUrlMap)
   //   console.log(messagesAmountMap)
   //   console.log(statusMap)
   // })
@@ -121,16 +116,13 @@ export function Chat() {
             <span className="display-name text-overflow-support">
               {
                 selectedChatUid === "globalChat" ? "Global Chat"
-                : selectedChatUid === devData.uid ? devData.displayName
-                : selectedChatUid === ownData.uid ? `${ownData.displayName} (You)`
-                : friendDisplayNameMap[selectedChatUid] || "Loading..."
+                : chatDisplayNameMap[selectedChatUid] || "Loading..."
               }
             </span>
             <span className="username text-overflow-support">
               {
-                selectedChatUid === devData.uid ? "@" + devData.username
-                : selectedChatUid === ownData.uid ? "@" + ownData.username
-                : friendUsernameMap[selectedChatUid] ? "@" + friendUsernameMap[selectedChatUid]
+                chatUsernameMap[selectedChatUid] ?
+                  `@${chatUsernameMap[selectedChatUid]}`
                 : null
               }
             </span>
@@ -236,9 +228,8 @@ export function Chat() {
             isLastMessageEditing={isLastMessageEditing}
             closeLastMessageEdit={() => setIsLastMessageEditing(false)}
             ownData={ownData}
-            devData={devData}
-            friendDisplayNameMap={friendDisplayNameMap}
-            friendPfpUrlMap={friendPfpUrlMap}
+            chatDisplayNameMap={chatDisplayNameMap}
+            chatPfpUrlMap={chatPfpUrlMap}
           />
           
           <div className="footer"></div>
