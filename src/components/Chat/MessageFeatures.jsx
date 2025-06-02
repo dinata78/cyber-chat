@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../svg";
 
-export function MessageFeatures({ cursorYPos, isOwn, handleEdit, handleDelete, handleCopyText }) {
+export function MessageFeatures({ cursorYPos, isOwn, type, handleReply, handleEdit, handleDelete, handleCopyText }) {
   const [ featuresTopValue, setFeaturesTopValue ] = useState(0);
 
   const featuresRef = useRef(null);
@@ -42,35 +42,42 @@ export function MessageFeatures({ cursorYPos, isOwn, handleEdit, handleDelete, h
       }}
     >
 
-      <button>
+      <button onClick={handleReply}>
         Reply
         <ReplySVG />
       </button>
 
-      <button onClick={handleCopyText}>
-        Copy Text
-        <CopySVG />
-      </button>
-
       {
-        isOwn ?
-          <>
-            <button onClick={handleEdit}>
-              Edit
-              <EditSVG />
-            </button>
-
-            <button style={{color: "red", fill: "red"}} onClick={handleDelete}>
-              Delete
-              <TrashCanSVG />
-            </button>        
-          </>
-        : <button style={{color: "red", fill: "red"}}>
-            Report
-            <FlagSVG />
-          </button>
+        type === "text" &&
+        <button onClick={handleCopyText}>
+          Copy Text
+          <CopySVG />
+        </button>
       }
 
+      {
+        isOwn && type === "text"&&
+        <button onClick={handleEdit}>
+          Edit
+          <EditSVG />
+        </button>
+      }
+
+      {
+        isOwn &&
+        <button style={{color: "red", fill: "red"}} onClick={handleDelete}>
+          Delete
+          <TrashCanSVG />
+        </button>
+      }
+
+      {
+        !isOwn &&
+        <button style={{color: "red", fill: "red"}}>
+          Report
+          <FlagSVG />
+        </button>
+      }
       
     </div>
   )

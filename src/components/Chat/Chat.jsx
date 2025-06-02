@@ -16,16 +16,13 @@ import { useFriendList } from "../../custom-hooks/useFriendList";
 import { Friends } from "./Friends/Friends";
 import { useChat } from "../../custom-hooks/useChat";
 import { useStatus } from "../../custom-hooks/useStatus";
-import { MessageInput } from "./MessageInput";
-import { Messages } from "./Messages";
+import { Message } from "./Message";
 
 export function Chat() {
   const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
   const [ isSettingsVisible, setIsSettingsVisible ] = useState(false);
   const [ currentNav, setCurrentNav ] = useState("chats");
   const [ theme, setTheme ] = useState("light");
-
-  const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
 
   const [ selectedChatUid, setSelectedChatUid ] = useState(null);
 
@@ -166,8 +163,8 @@ export function Chat() {
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
-                  messageInputRef={messageInputRef}
                   messagesRef={messagesRef}
+                  messageInputRef={messageInputRef}
                 />
               : <Friends 
                   ownUid={ownData.uid}
@@ -215,38 +212,18 @@ export function Chat() {
           </div>
 
         </aside>
-
-        <div
-          id="chat-message"
-          className="overflow-y-support"
-          onClick={() => setIsSidebarVisible(false)}
-        >
-          <Messages
-            messagesRef={messagesRef}
-            selectedChatUid={selectedChatUid}
-            selectedChatMessages={selectedChatMessages}
-            isLastMessageEditing={isLastMessageEditing}
-            closeLastMessageEdit={() => setIsLastMessageEditing(false)}
-            ownData={ownData}
-            chatDisplayNameMap={chatDisplayNameMap}
-            chatPfpUrlMap={chatPfpUrlMap}
-          />
-          
-          <div className="footer"></div>
-
-          <MessageInput
-            messageInputRef={messageInputRef}
-            editLastMessage={() => setIsLastMessageEditing(true)}
-            ownUid={ownData.uid}
-            selectedChatUid={selectedChatUid}
-          />
-
-          {
-            isSidebarVisible &&
-            <div className="dark-overlay"></div>
-          }
-
-        </div>
+        
+        <Message
+          ownData={ownData}
+          isSidebarVisible={isSidebarVisible}
+          setIsSidebarVisible={setIsSidebarVisible}
+          selectedChatUid={selectedChatUid}
+          messagesRef={messagesRef}
+          messageInputRef={messageInputRef}
+          selectedChatMessages={selectedChatMessages}
+          chatDisplayNameMap={chatDisplayNameMap}
+          chatPfpUrlMap={chatPfpUrlMap}
+        />
       </div>
         
       {

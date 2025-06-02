@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { getConversationId, processDate } from "../../utils"
 import { MessageCard } from "./MessageCard"
 import { MessageDelete } from "./MessageDelete";
+import { ReplyingMessage } from "./ReplyingMessage";
 
-export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, isLastMessageEditing, closeLastMessageEdit, ownData, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, setReplyingId, isLastMessageEditing, closeLastMessageEdit, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
   const [ isDeleting, setIsDeleting ] = useState(false);
-  const [ deletingData, setDeletingData ] = useState({ id: "", timeCreated: "", type: "", content: "..." })
+  const [ deletingData, setDeletingData ] = useState({ id: "", timeCreated: "", type: "", content: "..." });
   
   const renderedMessages = () => {
     let previousId;
@@ -16,6 +17,8 @@ export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, i
 
     return (
       selectedChatMessages.map((message, index) => {
+        const replyingMessage = selectedChatMessages?.filter(chatMessage => chatMessage.id === message.isReplyingId)?.[0];
+        
         const previousTimeCreated = previousTime;
         const previousSenderId = previousId;
 
@@ -26,30 +29,42 @@ export function Messages({ messagesRef, selectedChatUid, selectedChatMessages, i
         previousTime = currentTimeCreated;
         
         return (
-          <MessageCard
-            key={message.id + index}
-            conversationId={getConversationId(ownData.uid, selectedChatUid)}
-            messageId={message.id}
-            isHovered={message.id === hoveredId}
-            setHoveredId={setHoveredId}
-            isEditing={message.id === editingId}
-            setEditingId={setEditingId}
-            setIsDeleting={setIsDeleting}
-            setDeletingData={setDeletingData}
-            isOwn={currentSenderId === ownData.uid}
-            isSubset={
-              currentSenderId === previousSenderId &&
-              currentTimeCreated === previousTimeCreated
+          <Fragment key={message.id + index}>
+            {
+              message.isReplyingId &&
+              <ReplyingMessage
+                replyingMessage={replyingMessage}
+                senderPfpUrl={chatPfpUrlMap?.[replyingMessage?.senderId]}
+                senderDisplayName={chatDisplayNameMap?.[replyingMessage?.senderId]}
+              />
             }
-            isDeleted={message.isDeleted}
-            isEdited={message.isEdited}
-            isSending={message.isSending}
-            senderPfpUrl={chatPfpUrlMap[currentSenderId]}
-            senderName={chatDisplayNameMap[currentSenderId] || "..."}
-            timeCreated={currentTimeCreated}
-            type={message.type}
-            content={message.content}
-          />
+
+            <MessageCard
+              conversationId={getConversationId(ownData.uid, selectedChatUid)}
+              messageId={message.id}
+              isHovered={message.id === hoveredId}
+              setHoveredId={setHoveredId}
+              setReplyingId={setReplyingId}
+              isEditing={message.id === editingId}
+              setEditingId={setEditingId}
+              setIsDeleting={setIsDeleting}
+              setDeletingData={setDeletingData}
+              isOwn={currentSenderId === ownData.uid}
+              isSubset={
+                currentSenderId === previousSenderId &&
+                currentTimeCreated === previousTimeCreated
+              }
+              isReplyingId={message.isReplyingId}
+              isDeleted={message.isDeleted}
+              isEdited={message.isEdited}
+              isSending={message.isSending}
+              senderPfpUrl={chatPfpUrlMap[currentSenderId]}
+              senderName={chatDisplayNameMap[currentSenderId] || "..."}
+              timeCreated={currentTimeCreated}
+              type={message.type}
+              content={message.content}
+            />
+          </Fragment>
         )
       })     
     )

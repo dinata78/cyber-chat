@@ -6,10 +6,15 @@ import { EditedMark } from "./EditedMark";
 import { notify } from "../Notification";
 import { previewImage } from "../ImagePreview";
 
-export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
+export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
   const [ cursorYPos, setCursorYPos ] = useState(null);
+
+  const handleReply = () => {
+    setReplyingId(messageId);
+    setIsFeaturesVisible(false);
+  }
 
   const handleEdit = () => {
     setEditingId(messageId);
@@ -47,8 +52,8 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
       className="message-card"
       style={{
         backgroundColor: isHovered ? "#27282f" : null,
-        marginTop: isSubset ? "0px" : null,
-        paddingTop: isSubset ? "0px" : null
+        marginTop: isSubset && !isReplyingId ? "0px" : null,
+        paddingTop: isSubset && !isReplyingId ? "0px" : null
       }}
       onMouseEnter={() => {
         if (!isFeaturesVisible) setHoveredId(messageId);
@@ -57,60 +62,60 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
         if (!isFeaturesVisible) setHoveredId(null);
       }}
     >
-
+      
       {
-        !isSubset ?
-        <>
-          <img className="pfp" src={senderPfpUrl || "/empty-pfp.webp"} />
+        !isSubset || isReplyingId ?
+          <>
+            <img className="pfp" src={senderPfpUrl || "/empty-pfp.webp"} />
 
-          <div className="right">
+            <div className="right">
 
-            <div className="top">
-              <span className="name text-overflow-support">{senderName}</span>
-              <span className="time">{timeCreated}</span>
-            </div>
+              <div className="top">
+                <span className="name text-overflow-support">{senderName}</span>
+                <span className="time">{timeCreated}</span>
+              </div>
 
-            {
-              isEditing ?
+              {
+                isEditing ?
 
-                <EditInput
-                  conversationId={conversationId}
-                  messageId={messageId}
-                  isSubset={isSubset}
-                  content={content}
-                  closeEdit={() => setEditingId(null)}
-                />
+                  <EditInput
+                    conversationId={conversationId}
+                    messageId={messageId}
+                    isSubset={isSubset}
+                    content={content}
+                    closeEdit={() => setEditingId(null)}
+                  />
 
-              : type === "text" ?
+                : type === "text" ?
 
-                  <span
+                    <span
+                      className="content"
+                      style={{
+                        color: isSending || isDeleted ? "#a1a5ad" : null,
+                        fontStyle: isDeleted && "italic"
+                      }}
+                    >
+                      {!isDeleted ? content : "This message was deleted."}
+
+                      {
+                        !isDeleted && isEdited &&
+                        <EditedMark />
+                      }
+                    </span>
+
+                : <img
+                    tabIndex={0}
                     className="content"
-                    style={{
-                      color: isSending || isDeleted ? "#a1a5ad" : null,
-                      fontStyle: isDeleted && "italic"
+                    src={content}
+                    onClick={() => previewImage(content)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") previewImage(content);
                     }}
-                  >
-                    {!isDeleted ? content : "This message was deleted."}
+                  />
+              }
 
-                    {
-                      !isDeleted && isEdited &&
-                      <EditedMark />
-                    }
-                  </span>
-
-              : <img
-                  tabIndex={0}
-                  className="content"
-                  src={content}
-                  onClick={() => previewImage(content)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") previewImage(content);
-                  }}
-                />
-            }
-
-          </div>
-        </>
+            </div>
+          </>
         : <>
             {
               isEditing ?
@@ -182,6 +187,8 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
           <MessageFeatures
             cursorYPos={cursorYPos}
             isOwn={isOwn}
+            type={type}
+            handleReply={handleReply}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
             handleCopyText={handleCopyText}

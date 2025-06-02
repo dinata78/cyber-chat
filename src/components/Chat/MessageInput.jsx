@@ -6,8 +6,9 @@ import { addDoc, collection } from "firebase/firestore";
 import { useProcessImageFile } from "../../custom-hooks/useProcessImageFile";
 import { notify } from "../Notification";
 import { previewImage } from "../ImagePreview";
+import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messageInputRef, editLastMessage, ownUid, selectedChatUid }) {
+export function MessageInput({ messageInputRef, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) {
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
   const [ messageValue, setMessageValue ] = useState("");
@@ -46,6 +47,7 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
     let newMessage = messageValue.trim();
 
     setMessageValue("");
+    stopReplying();
     requestAnimationFrame(() => {
       resizeInput();
       focusInput();
@@ -82,6 +84,7 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
 
     await addDoc(messagesRef, {
       type: chosenImageFile ? "image" : "text",
+      isReplyingId: replyingId,
       isEdited: false,
       isDeleted: false,
       content: newMessage,
@@ -188,6 +191,16 @@ export function MessageInput({ messageInputRef, editLastMessage, ownUid, selecte
       >
         <SendSVG />
       </button>
+
+      {
+        replyingMessage &&
+        <ReplyingMessagePopup
+          focusInput={focusInput}
+          replyingMessage={replyingMessage}
+          replyingMessageSenderName={replyingMessageSenderName}
+          stopReplying={stopReplying}
+        />
+      }
     </div>
   )
 }
