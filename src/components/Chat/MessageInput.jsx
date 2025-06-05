@@ -7,8 +7,9 @@ import { useProcessImageFile } from "../../custom-hooks/useProcessImageFile";
 import { notify } from "../Notification";
 import { previewImage } from "../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
+import { useTrackTyping } from "../../custom-hooks/useTrackTyping";
 
-export function MessageInput({ messageInputRef, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) {
+export function MessageInput({ messageInputRef, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid, typingUids }) {
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
   const [ messageValue, setMessageValue ] = useState("");
@@ -95,6 +96,8 @@ export function MessageInput({ messageInputRef, replyingId, replyingMessage, rep
   }
 
   useProcessImageFile(chosenImageFile, setChosenImageData, clearChosenImage);
+
+  useTrackTyping(conversationId, ownUid, messageValue, typingUids);
 
   useEffect(() => {
     resizeInput();

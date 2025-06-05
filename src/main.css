@@ -1374,6 +1374,16 @@ button {
   left: 0;
   width: 100%;
   height: 60px;
+  padding-bottom: 8px;
+  padding-inline: 24px;
+  display: flex;
+  align-items: flex-end;
+
+  span {
+    color: #aab;
+    font-size: 12px;
+    line-height: 1;
+  }
 }
 
 #chat-message .message-input {

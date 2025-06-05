@@ -4,7 +4,7 @@ import { MessageCard } from "./MessageCard"
 import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 
-export function Messages({ ownData, messagesRef, setReplyingId, isLastMessageEditing, closeLastMessageEdit, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, setReplyingId, isReplying, isLastMessageEditing, closeLastMessageEdit, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -81,7 +81,11 @@ export function Messages({ ownData, messagesRef, setReplyingId, isLastMessageEdi
   }, [isLastMessageEditing]);
 
   return (
-    <div ref={messagesRef} className="messages overflow-y-support">
+    <div
+      ref={messagesRef}
+      className="messages overflow-y-support"
+      style={{paddingBottom: isReplying && "76px"}}
+    >
       <div className="beginning">
         <span>
           This is the beginning of your conversation with

@@ -21,7 +21,7 @@ export function ReplyingMessage({ replyingMessage, senderPfpUrl, senderDisplayNa
       >
         {
           replyingMessage.type === "text" ?
-            replyingMessage.content || "<deleted>"
+            replyingMessage.content || "[deleted]"
           : "[Image]"
         }
       </span>
