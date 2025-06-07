@@ -1,7 +1,7 @@
-import { collection, limit, onSnapshot, orderBy } from "firebase/firestore";
+import { collection, doc, limit, onSnapshot, orderBy } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { fetchDataFromUid, getConversationId, getOtherUid } from "../utils";
+import { getConversationId, getOtherUid } from "../utils";
 import { query } from "firebase/database";
 
 export function useChat(ownUid, DMIds) {
@@ -16,7 +16,8 @@ export function useChat(ownUid, DMIds) {
   useEffect(() => {
     if (!ownUid) return;
 
-    let unsubscribeList = [];
+    let unsubscribeMessagesList = [];
+    let unsubscribeDatasList = [];
     
     for (const conversationId of ["globalChat", devConversationId, ownUid, ...DMIds]) {
 
@@ -26,7 +27,7 @@ export function useChat(ownUid, DMIds) {
         limit(messagesAmountMap[conversationId] || messagesAmountMap["default"])
       );
 
-      const unsubscribe = onSnapshot(messagesQuery, { includeMetadataChanges: true }, async (snapshot) => {
+      const unsubscribeMessages = onSnapshot(messagesQuery, { includeMetadataChanges: true }, async (snapshot) => {
         const messages = snapshot.docs.map(doc => {
           return {
             id: doc.id,
@@ -43,6 +44,8 @@ export function useChat(ownUid, DMIds) {
           return prevMessages;
         });
 
+
+        // fetch (subscribe to) message sender's necessary datas
         if (conversationId === "globalChat") {
           const uniqueSenderIds = Array.from(new Set(messages.map(message => message.senderId)));
 
@@ -60,23 +63,27 @@ export function useChat(ownUid, DMIds) {
             const fetchedPfpUrls = {};
       
             for (const senderId of missingDataIds) {
-              const senderDocData = await fetchDataFromUid(senderId);
-      
-              if (senderDocData) {
-                fetchedDisplayNames[senderId] = senderDocData.displayName;
-                fetchedUsernames[senderId] = senderDocData.username;
-                fetchedPfpUrls[senderId] = senderDocData.pfpUrl;
-              }
-              else {
-                fetchedDisplayNames[senderId] = "<???>";
-                fetchedUsernames[senderId] = "";
-                fetchedPfpUrls[senderId] = "";
-              }
-            }
+              const senderDocRef = doc(db, "users", senderId);
 
-            setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayNames}));
-            setChatUsernameMap(prev => ({...prev, ...fetchedUsernames}));
-            setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrls}));
+              const unsubscribeDatas = onSnapshot(senderDocRef, (snapshot) => {
+                if (snapshot.exists()) {
+                  fetchedDisplayNames[senderId] = snapshot.data().displayName;
+                  fetchedUsernames[senderId] = snapshot.data().username;
+                  fetchedPfpUrls[senderId] = snapshot.data().pfpUrl;
+                }
+                else {
+                  fetchedDisplayNames[senderId] = "<???>";
+                  fetchedUsernames[senderId] = "";
+                  fetchedPfpUrls[senderId] = "";
+                }
+
+                setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayNames}));
+                setChatUsernameMap(prev => ({...prev, ...fetchedUsernames}));
+                setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrls}));
+              });
+
+              unsubscribeDatasList.push(unsubscribeDatas);
+            }
           }
         }
         else {
@@ -91,35 +98,46 @@ export function useChat(ownUid, DMIds) {
             const fetchedUsername = {};
             const fetchedPfpUrl = {};
 
-            const userDocData = await fetchDataFromUid(uid);
-    
-            if (userDocData) {
-              fetchedDisplayName[uid] = userDocData.displayName;
-              fetchedUsername[uid] = userDocData.username;
-              fetchedPfpUrl[uid] = userDocData.pfpUrl;
-            }
-            else {
-              fetchedDisplayName[uid] = "<???>";
-              fetchedUsername[uid] = "";
-              fetchedPfpUrl[uid] = "";
-            }
+            const userDocRef = doc(db, "users", uid);
 
-            setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayName}));
-            setChatUsernameMap(prev => ({...prev, ...fetchedUsername}));
-            setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrl}));            
+            const unsubscribeDatas = onSnapshot(userDocRef, (snapshot) => {
+              if (snapshot.exists()) {
+                fetchedDisplayName[uid] = snapshot.data().displayName;
+                fetchedUsername[uid] = snapshot.data().username;
+                fetchedPfpUrl[uid] = snapshot.data().pfpUrl;
+              }
+              else {
+                fetchedDisplayName[uid] = "<???>";
+                fetchedUsername[uid] = "";
+                fetchedPfpUrl[uid] = "";
+              }
+
+              setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayName}));
+              setChatUsernameMap(prev => ({...prev, ...fetchedUsername}));
+              setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrl}));
+            });
+
+            unsubscribeDatasList.push(unsubscribeDatas);
           }
         }
       });
 
-      unsubscribeList.push(unsubscribe);
+      unsubscribeMessagesList.push(unsubscribeMessages);
     }
 
     return () => {
-      if (unsubscribeList.length) {
-        for (const unsubscribe of unsubscribeList) {
-          unsubscribe();
+      if (unsubscribeMessagesList.length) {
+        for (const unsubscribeMessages of unsubscribeMessagesList) {
+          unsubscribeMessages();
         }
-        unsubscribeList = [];
+        unsubscribeMessagesList = [];
+      }
+
+      if (unsubscribeDatasList.length) {
+        for (const unsubscribeDatas of unsubscribeDatasList) {
+          unsubscribeDatas();
+        }
+        unsubscribeDatasList = [];
       }
     }
   }, [ownUid, DMIds, messagesAmountMap]);

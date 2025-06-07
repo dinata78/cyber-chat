@@ -1,23 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Messages } from "./Messages";
 import { MessageInput } from "./MessageInput";
-import { useTypingUids } from "../../custom-hooks/useTypingUids";
-import { getConversationId } from "../../utils";
-import { TypingInfo } from "./TypingInfo";
 
 export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ replyingId, setReplyingId ] = useState(null);
   const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
 
-  const { typingUids } = useTypingUids(getConversationId(ownData.uid, selectedChatUid));
-
   const replyingMessage = selectedChatMessages?.filter(message => message.id === replyingId)?.[0];
   const replyingMessageSenderName = chatDisplayNameMap[replyingMessage?.senderId];
-
-  useEffect(() => {
-    console.log(typingUids)
-  }, [typingUids]);
 
   return (
     <div
@@ -38,14 +29,7 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         chatPfpUrlMap={chatPfpUrlMap}
       />
       
-      <div className="footer">
-        {
-          <TypingInfo
-            typingUids={typingUids.filter(uid => uid !== ownData.uid)}
-            chatDisplayNameMap={chatDisplayNameMap}
-          />
-        }
-      </div>
+      <div className="footer"></div>
 
       <MessageInput
         messageInputRef={messageInputRef}
@@ -56,7 +40,6 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         editLastMessage={() => setIsLastMessageEditing(true)}
         ownUid={ownData.uid}
         selectedChatUid={selectedChatUid}
-        typingUids={typingUids}
       />
 
       {
