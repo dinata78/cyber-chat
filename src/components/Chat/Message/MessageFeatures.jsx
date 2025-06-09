@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../svg";
+import { CopySVG, EditSVG, FlagSVG, ReplySVG, TrashCanSVG } from "../../svg";
 
-export function MessageFeatures({ cursorYPos, isOwn, type, handleReply, handleEdit, handleDelete, handleCopyText }) {
+export function MessageFeatures({ cursorYPos, isOwn, type, handleReply, handleCopyText, handleEdit, handleDelete, handleReport }) {
   const [ featuresTopValue, setFeaturesTopValue ] = useState(0);
 
   const featuresRef = useRef(null);
@@ -73,7 +73,7 @@ export function MessageFeatures({ cursorYPos, isOwn, type, handleReply, handleEd
 
       {
         !isOwn &&
-        <button style={{color: "red", fill: "red"}}>
+        <button style={{color: "red", fill: "red"}} onClick={handleReport}>
           Report
           <FlagSVG />
         </button>

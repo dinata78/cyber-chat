@@ -3,12 +3,13 @@ import { Messages } from "./Messages";
 import { MessageInput } from "./MessageInput";
 
 export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
-
+  
+  const [ messageValueMap, setMessageValueMap ] = useState({});
   const [ replyingId, setReplyingId ] = useState(null);
   const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
 
   const replyingMessage = selectedChatMessages?.filter(message => message.id === replyingId)?.[0];
-  const replyingMessageSenderName = chatDisplayNameMap[replyingMessage?.senderId];
+  const replyingMessageSenderName = chatDisplayNameMap[replyingMessage?.senderUid];
 
   return (
     <div
@@ -33,6 +34,8 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
 
       <MessageInput
         messageInputRef={messageInputRef}
+        messageValueMap={messageValueMap}
+        setMessageValueMap={setMessageValueMap}
         replyingId={replyingId}
         replyingMessage={replyingMessage}
         replyingMessageSenderName={replyingMessageSenderName}

@@ -47,9 +47,9 @@ export function useChat(ownUid, DMIds) {
 
         // fetch (subscribe to) message sender's necessary datas
         if (conversationId === "globalChat") {
-          const uniqueSenderIds = Array.from(new Set(messages.map(message => message.senderId)));
+          const uniqueSenderUids = Array.from(new Set(messages.map(message => message.senderUid)));
 
-          const missingDataIds = uniqueSenderIds.filter(id => {
+          const missingDataIds = uniqueSenderUids.filter(id => {
             return (
               !chatDisplayNameMap[id]
               || !chatUsernameMap[id]
@@ -62,19 +62,19 @@ export function useChat(ownUid, DMIds) {
             const fetchedUsernames = {};
             const fetchedPfpUrls = {};
       
-            for (const senderId of missingDataIds) {
-              const senderDocRef = doc(db, "users", senderId);
+            for (const senderUid of missingDataIds) {
+              const senderDocRef = doc(db, "users", senderUid);
 
               const unsubscribeDatas = onSnapshot(senderDocRef, (snapshot) => {
                 if (snapshot.exists()) {
-                  fetchedDisplayNames[senderId] = snapshot.data().displayName;
-                  fetchedUsernames[senderId] = snapshot.data().username;
-                  fetchedPfpUrls[senderId] = snapshot.data().pfpUrl;
+                  fetchedDisplayNames[senderUid] = snapshot.data().displayName;
+                  fetchedUsernames[senderUid] = snapshot.data().username;
+                  fetchedPfpUrls[senderUid] = snapshot.data().pfpUrl;
                 }
                 else {
-                  fetchedDisplayNames[senderId] = "<???>";
-                  fetchedUsernames[senderId] = "";
-                  fetchedPfpUrls[senderId] = "";
+                  fetchedDisplayNames[senderUid] = "<???>";
+                  fetchedUsernames[senderUid] = "";
+                  fetchedPfpUrls[senderUid] = "";
                 }
 
                 setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayNames}));

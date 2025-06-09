@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { ThreeDotsSVG } from "../svg";
+import { ThreeDotsSVG } from "../../svg";
 import { MessageFeatures } from "./MessageFeatures";
 import { EditInput } from "./EditInput";
 import { EditedMark } from "./EditedMark";
-import { notify } from "../Notification";
-import { previewImage } from "../ImagePreview";
+import { notify } from "../../Notification";
+import { previewImage } from "../../ImagePreview";
 
-export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderName, timeCreated, type, content }) {
+export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderDisplayName, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
   const [ cursorYPos, setCursorYPos ] = useState(null);
@@ -14,23 +14,6 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
   const handleReply = () => {
     setReplyingId(messageId);
     setIsFeaturesVisible(false);
-  }
-
-  const handleEdit = () => {
-    setEditingId(messageId);
-    setIsFeaturesVisible(false);
-  }
-
-  const handleDelete = () => {
-    setIsDeleting(true);
-    setDeletingData({
-      id: messageId,
-      timeCreated: timeCreated,
-      type: type,
-      content: content,
-    });
-    setIsFeaturesVisible(false);
-    setHoveredId(null);
   }
 
   const handleCopyText = async () => {
@@ -46,6 +29,38 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
       setIsFeaturesVisible(false);
     }
   }
+
+  const handleEdit = () => {
+    setEditingId(messageId);
+    setIsFeaturesVisible(false);
+  }
+
+  const handleDelete = () => {
+    setIsDeleting(true);
+    setDeletingData({
+      messageId: messageId,
+      timeCreated: timeCreated,
+      type: type,
+      content: content,
+    });
+    setIsFeaturesVisible(false);
+    setHoveredId(null);
+  }
+
+  const handleReport = () => {
+    setIsReporting(true);
+    setReportingData({
+      messageId: messageId,
+      pfpUrl: senderPfpUrl,
+      displayName: senderDisplayName,
+      timeCreated: timeCreated,
+      type: type,
+      content: content,
+    });
+    setIsFeaturesVisible(false);
+    setHoveredId(null);
+  }
+
 
   return (
     <div
@@ -71,7 +86,7 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
             <div className="right">
 
               <div className="top">
-                <span className="name text-overflow-support">{senderName}</span>
+                <span className="name text-overflow-support">{senderDisplayName}</span>
                 <span className="time">{timeCreated}</span>
               </div>
 
@@ -189,9 +204,10 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
             isOwn={isOwn}
             type={type}
             handleReply={handleReply}
+            handleCopyText={handleCopyText}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
-            handleCopyText={handleCopyText}
+            handleReport={handleReport}
           />
         </>
       }

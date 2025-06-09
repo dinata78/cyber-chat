@@ -1,6 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
-import { db } from "../../../firebase";
+import { db } from "../../../../firebase";
 
 export function EditInput({ closeEdit, conversationId, messageId, isSubset, content }) {
   

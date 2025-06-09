@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { CloseSVG, ReplySVG } from "../svg";
+import { CloseSVG, ReplySVG } from "../../svg";
 
 export function ReplyingMessagePopup({ focusInput, replyingMessage, replyingMessageSenderName, stopReplying }) {
 

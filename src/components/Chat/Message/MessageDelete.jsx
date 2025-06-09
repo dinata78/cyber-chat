@@ -1,10 +1,10 @@
 import { doc, updateDoc } from "firebase/firestore";
-import { CloseSVG } from "../svg";
-import { db } from "../../../firebase";
-import { deleteImageFromDb } from "../../utils";
-import { notify } from "../Notification";
+import { db } from "../../../../firebase";
+import { deleteImageFromDb } from "../../../utils";
+import { notify } from "../../Notification";
 
-export function MessageDelete({ closeModal, conversationId, messageId, senderPfpUrl, senderDisplayName, timeCreated, contentType, content }) {
+export function MessageDelete({ closeModal, conversationId, deletingData }) {
+  const { messageId, pfpUrl, displayName, timeCreated, type, content } = deletingData;
 
   const deleteMessage = async () => {
     closeModal();
@@ -12,7 +12,7 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
     const currentMessageRef = doc(db, "conversations", conversationId, "messages", messageId);
 
     try {
-      if (contentType === "image") {
+      if (type === "image") {
         const success = await deleteImageFromDb(content);
 
         if (!success) {
@@ -28,7 +28,7 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
         content: null,
       });
 
-      notify(null, "Message deleted successfully.");      
+      notify(null, "Message deleted successfully.");
     }
     catch (error) {
       console.error(error);
@@ -38,7 +38,7 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
   }
 
   return (
-    <div id="message-delete" onClick={closeModal}>
+    <div id="message-modal" onClick={closeModal}>
       <div className="container" onClick={(e) => e.stopPropagation()}>
 
         <h1>Delete Message</h1>
@@ -48,11 +48,11 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
         </span>
 
         <div className="message">
-          <img className="pfp" src={senderPfpUrl || "/empty-pfp.webp"} />
+          <img className="pfp" src={pfpUrl || "/empty-pfp.webp"} />
           <div className="right">
             <div className="top">
               <span className="text-overflow-support" style={{fontSize: "15px"}}>
-                {senderDisplayName}
+                {displayName}
               </span>
               <span
                 style={{
@@ -65,13 +65,13 @@ export function MessageDelete({ closeModal, conversationId, messageId, senderPfp
               </span>
             </div>
             {
-              contentType === "text" &&              
+              type === "text" &&              
               <span className="content">
                 {content}
               </span>
             }
             {
-              contentType === "image" &&
+              type === "image" &&
               <img className="content" src={content} />
             }
           </div>

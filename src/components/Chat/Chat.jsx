@@ -16,7 +16,7 @@ import { useFriendList } from "../../custom-hooks/useFriendList";
 import { Friends } from "./Friends/Friends";
 import { useChat } from "../../custom-hooks/useChat";
 import { useStatus } from "../../custom-hooks/useStatus";
-import { Message } from "./Message";
+import { Message } from "./Message/Message";
 
 export function Chat() {
   const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);

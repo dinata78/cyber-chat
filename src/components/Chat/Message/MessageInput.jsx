@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { CloseCirleSVG, ImageSVG, SendSVG } from "../svg";
-import { getConversationId } from "../../utils";
-import { db } from "../../../firebase";
+import { CloseCirleSVG, ImageSVG, SendSVG } from "../../svg";
+import { getConversationId } from "../../../utils";
+import { db } from "../../../../firebase";
 import { addDoc, collection } from "firebase/firestore";
-import { useProcessImageFile } from "../../custom-hooks/useProcessImageFile";
-import { notify } from "../Notification";
-import { previewImage } from "../ImagePreview";
+import { useProcessImageFile } from "../../../custom-hooks/useProcessImageFile";
+import { notify } from "../../Notification";
+import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messageInputRef, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) {
+export function MessageInput({ messageInputRef, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
+{
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
-  const [ messageValue, setMessageValue ] = useState("");
 
   const imageInputRef = useRef(null);
   const inputContainerRef = useRef(null);
 
   const conversationId = getConversationId(ownUid, selectedChatUid);
+  const messageValue = messageValueMap[conversationId] || "";
 
   const resizeInput = () => {
     if (inputContainerRef.current && messageInputRef.current) {
@@ -29,6 +30,19 @@ export function MessageInput({ messageInputRef, replyingId, replyingMessage, rep
     messageInputRef.current.focus();
     messageInputRef.current.selectionStart = messageInputRef.current.value.length;
     messageInputRef.current.selectionEnd = messageInputRef.current.value.length;
+  }
+
+  const setMessageValue = (newValue) => {
+    setMessageValueMap(prev => {
+      const map = {...prev};
+      if (newValue === "") {
+        delete map[conversationId];
+      }
+      else {
+        map[conversationId] = newValue;
+      }
+      return map;
+    });
   }
 
   const inputMessage = (e) => {
@@ -88,7 +102,7 @@ export function MessageInput({ messageInputRef, replyingId, replyingMessage, rep
       isEdited: false,
       isDeleted: false,
       content: newMessage,
-      senderId: ownUid,
+      senderUid: ownUid,
       timeCreated: new Date(),
       isUnread: ["globalChat", ownUid].includes(selectedChatUid) ? false : true,
     });
