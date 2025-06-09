@@ -272,3 +272,22 @@ export const isContentSearched = (contentArray, searchedValue) => {
 
   return false;
 }
+
+export const loadImagesAndScrollToBottom = async (container) => {
+  const images = container.querySelectorAll("img");
+
+  const promises = Array.from(images).map(image => {
+    if (image.complete) return Promise.resolve();
+    return new Promise(resolve => {
+      image.onload = resolve;
+      image.onerror = resolve;
+    });
+  });
+
+  await Promise.all(promises);
+
+  container.scrollTo({
+    top: container.scrollHeight - container.clientHeight,
+    behavior: "smooth",
+  });
+}

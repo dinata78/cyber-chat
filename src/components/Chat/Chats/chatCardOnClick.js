@@ -1,3 +1,4 @@
+import { loadImagesAndScrollToBottom } from "../../../utils";
 
 export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
   
@@ -9,12 +10,10 @@ export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedC
   setIsSidebarVisible(false);
 
   requestAnimationFrame(() => {
-    messageInputRef.current.focus();
+    messageInputRef?.current?.focus();
 
-    messagesRef.current.scrollTo({
-      top: messagesRef.current.scrollHeight,
-    });
-
+    loadImagesAndScrollToBottom(messagesRef.current);
+    
   });
   
 }
