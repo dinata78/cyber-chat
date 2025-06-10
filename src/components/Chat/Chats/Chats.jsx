@@ -1,6 +1,6 @@
 import { ChatCard } from "./ChatCard"
 
-export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
+export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
   return (
     <>
       <ChatCard
@@ -14,8 +14,6 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        messagesRef={messagesRef}
-        messageInputRef={messageInputRef}
       />
 
       <ChatCard
@@ -29,8 +27,6 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        messagesRef={messagesRef}
-        messageInputRef={messageInputRef}
       />
 
       <ChatCard
@@ -47,8 +43,6 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
-        messagesRef={messagesRef}
-        messageInputRef={messageInputRef}
       />
 
       <div className="tag">
@@ -57,7 +51,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         <hr />
       </div>
 
-      <div className="chat-cards overflow-y-support smaller-scrollbar">
+      <div className="chat-cards overflow-y-support">
         {
           DMDatas.map((dm, index) => {
             return (
@@ -73,8 +67,6 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
                 setIsSidebarVisible={setIsSidebarVisible}
-                messagesRef={messagesRef}
-                messageInputRef={messageInputRef}
               />
             )
           })

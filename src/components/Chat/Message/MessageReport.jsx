@@ -36,7 +36,10 @@ export function MessageReport({ closeModal, ownUid, conversationId, reportingDat
           Are you sure you want to report this message?
         </span>
 
-        <div className="message" style={{border: "1px solid #f009"}}>
+        <div
+          className="message overflow-y-support"
+          style={{border: "1px solid #f009"}}
+        >
           <img className="pfp" src={pfpUrl || "/empty-pfp.webp"} />
           <div className="right">
             <div className="top">

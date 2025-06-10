@@ -495,27 +495,6 @@ button {
     background-image: url('data:image/svg+xml;utf8,<svg fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4,4H20L12,14" /></svg>');
   }
 }
-    
-*.overflow-y-support.smaller-scrollbar {
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    box-shadow: none;
-  }
-
-  &::-webkit-scrollbar-button:single-button:decrement,
-  &::-webkit-scrollbar-button:single-button:increment {
-    display: none;
-  }
-}
 
 .indicator.online {
   background-color: lime;
@@ -1302,6 +1281,7 @@ button {
 
   .message {
     background-color: #17171cbb;
+    max-height: 35vh;
     margin-top: 12px;
     margin-inline: 12px;
     padding-block: 16px;

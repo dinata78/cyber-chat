@@ -144,7 +144,7 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
         !chosenImageFile ?
           <textarea
             ref={messageInputRef}
-            className="overflow-y-support smaller-scrollbar"
+            className="overflow-y-support"
             type="text"
             rows={1}
             placeholder="Type something.."

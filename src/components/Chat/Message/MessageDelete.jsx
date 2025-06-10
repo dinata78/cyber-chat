@@ -47,7 +47,7 @@ export function MessageDelete({ closeModal, conversationId, deletingData }) {
           Are you sure you want to delete this message?
         </span>
 
-        <div className="message">
+        <div className="message overflow-y-support">
           <img className="pfp" src={pfpUrl || "/empty-pfp.webp"} />
           <div className="right">
             <div className="top">

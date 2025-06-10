@@ -1,7 +1,7 @@
 import { getIndicatorClass } from "../../../utils";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, unreadMessagesCount, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
+export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, unreadMessagesCount, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
 
   const handleChatCardOnClick = () => {
     chatCardOnClick({
@@ -10,8 +10,6 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
       selectedChatUid: selectedChatUid,
       setSelectedChatUid: setSelectedChatUid,
       setIsSidebarVisible: setIsSidebarVisible,
-      messagesRef: messagesRef,
-      messageInputRef: messageInputRef,
     });
   }
 

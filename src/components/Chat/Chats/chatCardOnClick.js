@@ -1,19 +1,10 @@
-import { loadImagesAndScrollToBottom } from "../../../utils";
 
-export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, messagesRef, messageInputRef }) {
+export function chatCardOnClick({ ownUid, chatUid, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
   
   if (!ownUid) return;
   if (chatUid === selectedChatUid) return;
   
   setSelectedChatUid(chatUid);
 
-  setIsSidebarVisible(false);
-
-  requestAnimationFrame(() => {
-    messageInputRef?.current?.focus();
-
-    loadImagesAndScrollToBottom(messagesRef.current);
-    
-  });
-  
+  setIsSidebarVisible(false);  
 }

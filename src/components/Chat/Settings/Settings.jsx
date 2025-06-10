@@ -56,7 +56,7 @@ export function Settings({ ownData, ownStatus, setIsSettingsVisible }) {
 
         </nav>
         
-        <div id="settings-bottom" className="overflow-y-support smaller-scrollbar">
+        <div id="settings-bottom" className="overflow-y-support">
 
           {
             currentNav === "profile" ?

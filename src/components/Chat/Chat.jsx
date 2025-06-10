@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
 import { ChatsNavSVG, CloseSVG, FriendsNavSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
-import { getConversationId, getIndicatorClass } from "../../utils";
+import { getConversationId, getIndicatorClass, loadImagesAndScrollToBottom } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
 import { get, ref, update } from "firebase/database";
@@ -17,6 +17,7 @@ import { Friends } from "./Friends/Friends";
 import { useChat } from "../../custom-hooks/useChat";
 import { useStatus } from "../../custom-hooks/useStatus";
 import { Message } from "./Message/Message";
+import { useHandleLastMessageModified } from "../../custom-hooks/useHandleLastMessageModified";
 
 export function Chat() {
   const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
@@ -44,26 +45,22 @@ export function Chat() {
     setMessagesAmountMap
   } = useChat(ownData?.uid, DMIds);
 
-  const conversationId = getConversationId(ownData.uid, selectedChatUid);
-  const selectedChatMessages = chatMessagesMap[conversationId];
+  const navigate = useNavigate();
 
   const isFirstRender = useRef(true);
-
   const messagesRef = useRef(null);
   const messageInputRef = useRef(null);
 
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   console.log(chatMessagesMap)
-  //   console.log(chatDisplayNameMap)
-  //   console.log(chatUsernameMap)
-  //   console.log(chatPfpUrlMap)
-  //   console.log(messagesAmountMap)
-  //   console.log(statusMap)
-  // })
+  const conversationId = getConversationId(ownData.uid, selectedChatUid);
+  const selectedChatMessages = chatMessagesMap[conversationId];
 
   useSetOwnStatus(ownData?.uid);
+
+  useHandleLastMessageModified(messagesRef, selectedChatMessages, ownData.uid);
+
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
 
   useEffect(() => {
     if (!isAuth && !isFirstRender.current && ownData.uid) {
@@ -89,8 +86,13 @@ export function Chat() {
   }, [isAuth]);
 
   useEffect(() => {
-    isFirstRender.current = false;
-  }, []);
+    const focusInputAndScrollMessages = async () => {
+      messageInputRef?.current?.focus();
+      await loadImagesAndScrollToBottom(messagesRef.current);
+    }
+
+    focusInputAndScrollMessages();
+  }, [conversationId]);
 
   return (
     <div id="chat-page">
@@ -163,8 +165,6 @@ export function Chat() {
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
-                  messagesRef={messagesRef}
-                  messageInputRef={messageInputRef}
                 />
               : <Friends 
                   ownUid={ownData.uid}

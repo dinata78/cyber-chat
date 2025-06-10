@@ -57,7 +57,7 @@ export function EditInput({ closeEdit, conversationId, messageId, isSubset, cont
       >
         <textarea
           ref={inputRef}
-          className="input overflow-y-support smaller-scrollbar"
+          className="input overflow-y-support"
           rows={1}
           placeholder={content}
           value={editedMessage}
