@@ -406,7 +406,7 @@ button {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #000a;
+  background-color: #000c;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -415,28 +415,81 @@ button {
   .menu {
     z-index: 1;
     position: fixed;
-    top: 24px;
+    top: 32px;
     right: 0;
-    background-color: #445;
-    margin-inline: 24px;
-    padding-block: 12px;
-    padding-inline: 18px;
+    margin-inline: 32px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 6px;
-    color: #bbd;
-    font-family: monospace;
-    font-size: 14px;
-    font-weight: bold
+    gap: 8px;
   }
 
-  label {
+  .menu .wrapper {
+    background-color: #17171c;
+    padding: 4px;
+    border: 1px solid #2c2c32;
+    border-radius: 6px;
     display: flex;
-    align-items: center;
-    gap: 6px;
+    gap: 4px;
   }
+
+  .menu button {
+    background-color: transparent;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    fill: #99a;
+  }
+
+  .menu button:hover, .menu button:focus-visible {
+    background-color: #ffffff20;
+    fill: white
+  }
+
+  .menu .details-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #17171c;
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #2c2c32;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .menu .detail {
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .menu .detail:hover {
+    background-color: #ffffff20;
+  }
+
+  .menu .detail span:first-child {
+    color: white;
+    font-size: 12px;
+  }
+
+  .menu .detail span:last-child {
+    color: #bbb;
+    font-size: 12px;
+  }
+
+  img {
+    max-width: 90vw;
+    max-height: 70vh;
+  }
+
 }
 
 *.text-overflow-support {
