@@ -4,7 +4,7 @@ export function ReplyingMessage({ replyingMessage, senderPfpUrl, senderDisplayNa
     <div className="replying-message">
       <div className="v-line"></div>
       <div className="h-line"></div>
-      <img src={senderPfpUrl} />
+      <img src={senderPfpUrl || "/empty-pfp.webp"} />
       <span
         className="text-overflow-support"
       >

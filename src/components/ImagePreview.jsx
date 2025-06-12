@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { CloseSVG, DownloadSVG, FileQuestionSVG, LinkSVG, OpenInNewSVG } from "../components/svg"
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { db } from "../../firebase";
+import { notify } from "./Notification";
 
 let previewImageGlobal = null;
 
@@ -8,17 +11,92 @@ export function previewImage(url) {
 }
 
 export function ImagePreview() {
-  const [ imageUrl, setImageUrl ] = useState(null);
-  const [ imageSize, setImageSize ] = useState({ width: 0, height: 0 });
+  const [ url, setUrl ] = useState(null);
+  const [ resolution, setResolution ] = useState({ width: 0, height: 0 });
+  const [ detailsMap, setDetailsMap ] = useState({});
+
   const [ isDetailsVisible, setIsDetailsVisible ] = useState(false);
 
+  const isLocalImage = url?.startsWith("blob");
+  const currentImageDetails = detailsMap[url] || null;
+
   const closeImagePreview = () => {
-    setImageUrl(null);
+    setUrl(null);
     setIsDetailsVisible(false);
   }
 
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      notify("text-copied", "Copied image link to clipboard!");
+    }
+    catch {
+      console.error("Error: Failed to copy image link.");
+      notify(null, "Failed to copy image link.");
+    }
+  }
+
+  const openInBrowser = () => {
+    window.open(url, "_blank");
+  }
+
+  const saveImage = async () => {
+    const response = await fetch(url, { mode: "cors" });
+    const blob = await response.blob();
+    const downloadUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = currentImageDetails?.name || "image";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.removeObjectURL(downloadUrl);
+  }
+
+  const fetchAndSetDetails = async (url) => {
+    const imagesQueryRef = query(
+      collection(db, "images"),
+      where("url", "==", url),
+      limit(1),
+    );
+
+    const imagesDocs = await getDocs(imagesQueryRef);
+
+    if (imagesDocs.docs.length) {
+      setDetailsMap(prev => {
+        const map = {...prev};
+        const data = imagesDocs.docs[0].data();
+        map[url] = { name: data.name, sizeInBytes: data.sizeInBytes }
+        return map;
+      });
+    }
+  }
+
+  const getImageFormat = (url) => {
+    const split = url.split(".");
+    return split[split.length - 1];
+  }
+
+  const stringifyBytes = (bytes) => {
+    if (bytes < 1000) {
+      return `${bytes} B`;
+    }
+    else if (bytes < 1000000) {
+      const kilobytes = bytes / 1000;
+      const roundedKilobytes = Math.round(kilobytes * 10) / 10;
+      return `${roundedKilobytes} KB`;
+    }
+    else {
+      const megabytes = bytes / 1000000;
+      const roundedMegabytes = Math.round(megabytes * 10) / 10;
+
+      return `${roundedMegabytes} MB`;
+    }
+  }
+
   useEffect(() => {
-    previewImageGlobal = setImageUrl;
+    previewImageGlobal = setUrl;
 
     return () => {
       previewImageGlobal = null;
@@ -27,17 +105,19 @@ export function ImagePreview() {
 
   useEffect(() => {
     const image = new Image();
-    image.src = imageUrl;
+    image.src = url;
 
     image.onload = () => {
-      console.log(image.filename)
-
-      setImageSize({
+      setResolution({
         width: image.width,
         height: image.height,
       })
     }
-  }, [imageUrl]);
+
+    if (!detailsMap[url]) {
+      fetchAndSetDetails(url);
+    }
+  }, [url]);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -46,7 +126,7 @@ export function ImagePreview() {
       }
     }
 
-    if (imageUrl) {
+    if (url) {
       document.addEventListener("keydown", handleEscape);
     }
     else {
@@ -56,9 +136,9 @@ export function ImagePreview() {
     return () => {
       document.removeEventListener("keydown", handleEscape);
     }
-  }, [imageUrl]);
+  }, [url]);
 
-  if (!imageUrl) return null;
+  if (!url) return null;
 
   return (
     <div
@@ -69,29 +149,32 @@ export function ImagePreview() {
         className="menu"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="wrapper">
-          <button
-            title="View Details" 
-            style={{
-              fill: isDetailsVisible && "white"
-            }}
-            onClick={() => setIsDetailsVisible(prev => !prev)}
-          >
-            <FileQuestionSVG />
-          </button>
+        {
+          !isLocalImage &&
+          <div className="wrapper">
+            <button
+              title="View Details" 
+              style={{
+                fill: isDetailsVisible && "white"
+              }}
+              onClick={() => setIsDetailsVisible(prev => !prev)}
+            >
+              <FileQuestionSVG />
+            </button>
 
-          <button title="Open in Browser">
-            <OpenInNewSVG />
-          </button>
+            <button title="Open in Browser" onClick={openInBrowser}>
+              <OpenInNewSVG />
+            </button>
 
-          <button title="Copy Link">
-            <LinkSVG />
-          </button>
+            <button title="Copy Link" onClick={copyLink}>
+              <LinkSVG />
+            </button>
 
-          <button title="Download">
-            <DownloadSVG />
-          </button>
-        </div>
+            <button title="Save Image" onClick={saveImage}>
+              <DownloadSVG />
+            </button>
+          </div>
+        }
 
         <div className="wrapper">
           <button title="Close" onClick={closeImagePreview}>
@@ -107,27 +190,27 @@ export function ImagePreview() {
                 Filename
               </span>
               <span>
-                {"image-name.jpg"}
+                {currentImageDetails?.name}
               </span>
             </div>
             <div className="detail">
               <span>Type</span>
-              <span>Image (webp)</span>
+              <span>Image ({getImageFormat(url).toUpperCase()})</span>
             </div>
             <div className="detail">
               <span>Resolution</span>
-              <span>{imageSize.width} x {imageSize.height}</span>
+              <span>{resolution.width} x {resolution.height}</span>
             </div>
             <div className="detail">
               <span>Size</span>
-              <span>53.62 KB</span>
+              <span>{stringifyBytes(currentImageDetails?.sizeInBytes)}</span>
             </div>
           </div>
         }
       </div>
 
       <img
-        src={imageUrl}
+        src={url}
         onClick={(e) => e.stopPropagation()}
       />
 

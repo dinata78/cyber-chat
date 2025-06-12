@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { CloseCirleSVG, ImageSVG, SendSVG } from "../../svg";
 import { getConversationId } from "../../../utils";
 import { db } from "../../../../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 import { useProcessImageFile } from "../../../custom-hooks/useProcessImageFile";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
@@ -59,6 +59,7 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
 
   const sendMessage = async () => {
     let newMessage = messageValue.trim();
+    let imageName; 
 
     setMessageValue("");
     stopReplying();
@@ -85,9 +86,23 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
 
         const data = await response.json();
         const url = data?.secure_url;
-        newMessage = url;
+
+        if (url) {
+          newMessage = url;
+
+          const imagesRef = collection(db, "images");
+
+          await addDoc(imagesRef, {
+            url: url,
+            name: chosenImageFile.name,
+            sizeInBytes: chosenImageFile.size
+          });
+
+        }
+
       }
-      catch {
+      catch (error) {
+        console.error(error)
         notify(null, "Failed to send image.");
       }
     }

@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { deleteImageFromDb } from "../../../utils";
 import { notify } from "../../Notification";
@@ -16,10 +16,21 @@ export function MessageDelete({ closeModal, conversationId, deletingData }) {
         const success = await deleteImageFromDb(content);
 
         if (!success) {
-          console.error("Error: Failed to delete image.");
+          console.error("Error: Failed to delete image from db.");
           notify(null, "Failed to delete image.");
           return;
         }
+
+        const imagesQueryRef = query(
+          collection(db, "images"),
+          where("url", "==", content),
+          limit(1),
+        );
+
+        const imagesDocs = await getDocs(imagesQueryRef);
+
+        await deleteDoc(imagesDocs.docs[0].ref);
+        
       }
 
       await updateDoc(currentMessageRef, {
