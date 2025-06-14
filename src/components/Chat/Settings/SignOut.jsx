@@ -11,7 +11,7 @@ export function SignOut() {
     else {
       const statusRef = ref(realtimeDb, `users/${auth.currentUser.uid}`);
 
-      const currentStatus = await get(statusRef); 
+      const currentStatus = await get(statusRef);
 
       if (currentStatus.val()?.status !== "hidden") {
         await update(statusRef, { status: "offline" });

@@ -97,9 +97,7 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
             name: chosenImageFile.name,
             sizeInBytes: chosenImageFile.size
           });
-
         }
-
       }
       catch (error) {
         console.error(error)

@@ -1,8 +1,9 @@
 import { useRef, useState } from "react"
 import { useGenerateImgUrl } from "../../../custom-hooks/useGenerateImgUrl";
-import { doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../../../../firebase";
 import { deleteImageFromDb } from "../../../utils";
+import { previewImage } from "../../ImagePreview";
 
 export function ProfilePicture({ ownUid, ownPfpUrl }) {
   const [ chosenPfpFile, setChosenPfpFile ] = useState(null);
@@ -41,7 +42,13 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
       
       if (data.secure_url) {
         const ownDocRef = doc(db, "users", ownUid);
+        const imagesRef = collection(db, "images");
         await updateDoc(ownDocRef, { pfpUrl: data.secure_url });
+        await addDoc(imagesRef, {
+          url: data.secure_url,
+          name: chosenPfpFile.name,
+          sizeInBytes: chosenPfpFile.size, 
+        });
       }
 
       clearChosenPfp();
@@ -59,7 +66,18 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
     try {
       if (success) {
         const ownDocRef = doc(db, "users", ownUid);
+        const imagesQueryRef = query(
+          collection(db, "images"),
+          where("url", "==", ownPfpUrl),
+          limit(1),
+        )
+        const imagesDocs = await getDocs(imagesQueryRef);
+
         await updateDoc(ownDocRef, { pfpUrl: "" });
+
+        if (imagesDocs.docs.length) {
+          await deleteDoc(imagesDocs.docs[0].ref);
+        }
       }
       else {
         setErrorInfo("Failed to delete profile picture.");
@@ -86,6 +104,7 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
             <img
               src={chosenPfpUrl || "/empty-pfp.webp"}
               style={{cursor: "pointer"}}
+              onClick={() => previewImage(chosenPfpUrl || "/empty-pfp.webp")}
             />
             <button
               style={{backgroundColor: "#363", color: "lime"}}
@@ -105,6 +124,7 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
               src={ownPfpUrl || "/empty-pfp.webp"}
               alt="Profile Picture"
               style={{cursor: "pointer"}}
+              onClick={() => previewImage(ownPfpUrl || "/empty-pfp.webp")}
             />
             <button onClick={changePfp}>
               Change

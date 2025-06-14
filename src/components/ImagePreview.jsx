@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { CloseSVG, DownloadSVG, FileQuestionSVG, LinkSVG, OpenInNewSVG } from "../components/svg"
+import { CloseSVG, DownloadSVG, FileQuestionSVG, LinkCopiedSVG, LinkSVG, OpenInNewSVG } from "../components/svg"
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { notify } from "./Notification";
@@ -12,22 +12,27 @@ export function previewImage(url) {
 
 export function ImagePreview() {
   const [ url, setUrl ] = useState(null);
+  const [ isLinkCopied, setIsLinkCopied ] = useState(false);
   const [ resolution, setResolution ] = useState({ width: 0, height: 0 });
   const [ detailsMap, setDetailsMap ] = useState({});
-
   const [ isDetailsVisible, setIsDetailsVisible ] = useState(false);
 
-  const isLocalImage = url?.startsWith("blob");
+  const isLocalImage = !url?.startsWith("https://");
   const currentImageDetails = detailsMap[url] || null;
 
   const closeImagePreview = () => {
     setUrl(null);
+    setIsLinkCopied(false);
+    setResolution({ width: 0, height: 0 });
     setIsDetailsVisible(false);
   }
 
   const copyLink = async () => {
+    if (isLinkCopied) return;
+
     try {
       await navigator.clipboard.writeText(url);
+      setIsLinkCopied(true);
       notify("text-copied", "Copied image link to clipboard!");
     }
     catch {
@@ -55,6 +60,8 @@ export function ImagePreview() {
   }
 
   const fetchAndSetDetails = async (url) => {
+    if (!url) return;
+
     const imagesQueryRef = query(
       collection(db, "images"),
       where("url", "==", url),
@@ -111,7 +118,7 @@ export function ImagePreview() {
       setResolution({
         width: image.width,
         height: image.height,
-      })
+      });
     }
 
     if (!detailsMap[url]) {
@@ -166,8 +173,11 @@ export function ImagePreview() {
               <OpenInNewSVG />
             </button>
 
-            <button title="Copy Link" onClick={copyLink}>
-              <LinkSVG />
+            <button
+              title={!isLinkCopied ? "Copy Link" : "Link Copied"}
+              onClick={copyLink}
+            >
+              {!isLinkCopied ? <LinkSVG /> : <LinkCopiedSVG />}
             </button>
 
             <button title="Save Image" onClick={saveImage}>

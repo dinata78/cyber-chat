@@ -29,7 +29,9 @@ export function MessageDelete({ closeModal, conversationId, deletingData }) {
 
         const imagesDocs = await getDocs(imagesQueryRef);
 
-        await deleteDoc(imagesDocs.docs[0].ref);
+        if (imagesDocs.docs.length) {
+          await deleteDoc(imagesDocs.docs[0].ref);
+        }
         
       }
 
