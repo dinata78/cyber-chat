@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { CloseCirleSVG, ImageSVG, SendSVG } from "../../svg";
 import { getConversationId } from "../../../utils";
 import { db } from "../../../../firebase";
-import { addDoc, collection, updateDoc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { useProcessImageFile } from "../../../custom-hooks/useProcessImageFile";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messageInputRef, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
+export function MessageInput({ messagesRef, messageInputRef, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
 {
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
@@ -59,7 +59,6 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
 
   const sendMessage = async () => {
     let newMessage = messageValue.trim();
-    let imageName; 
 
     setMessageValue("");
     stopReplying();
@@ -222,6 +221,7 @@ export function MessageInput({ messageInputRef, messageValueMap, setMessageValue
       {
         replyingMessage &&
         <ReplyingMessagePopup
+          messagesRef={messagesRef}
           focusInput={focusInput}
           replyingMessage={replyingMessage}
           replyingMessageSenderName={replyingMessageSenderName}

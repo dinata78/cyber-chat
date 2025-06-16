@@ -33,6 +33,7 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
       <div className="footer"></div>
 
       <MessageInput
+        messagesRef={messagesRef}
         messageInputRef={messageInputRef}
         messageValueMap={messageValueMap}
         setMessageValueMap={setMessageValueMap}
