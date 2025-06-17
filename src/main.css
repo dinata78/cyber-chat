@@ -1403,9 +1403,9 @@ button {
 
 #chat-message .footer {
   position: relative;
-  background-color: #25262d;
   bottom: 0;
   left: 0;
+  background-color: #25262d;
   width: 100%;
   height: 60px;
 
@@ -1413,17 +1413,17 @@ button {
     position: absolute;
     top: -64px;
     right: 24px;
-    background-color: #445;
+    background-color: #22252c;
     width: 32px;
     height: 32px;
     padding: 6px;
-    border: none;
+    border: 1px solid #17171c;
     border-radius: 100%;
     fill: #ccd;
   }
 
   button.scroll-newest:active {
-    background-color: #667;
+    background-color: #17171c;
   }
 }
 

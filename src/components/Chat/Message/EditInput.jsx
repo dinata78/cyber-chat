@@ -2,7 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../../../../firebase";
 
-export function EditInput({ closeEdit, conversationId, messageId, isSubset, content }) {
+export function EditInput({ closeEdit, conversationId, messageId, hasExtraPadding, content }) {
   
   const [ editedMessage, setEditedMessage ] = useState(content);
   
@@ -41,14 +41,18 @@ export function EditInput({ closeEdit, conversationId, messageId, isSubset, cont
     inputRef.current.focus();
     inputRef.current.selectionStart = inputRef.current.value.length;
     inputRef.current.selectionEnd = inputRef.current.value.length;
+
+    inputRef.current.scrollTo({
+      top: inputRef.current.scrollHeight - inputRef.current.clientHeight,
+    });
   }, []);
 
   return (
     <div
       id="edit-input"
       style={{
-        paddingLeft: isSubset ? "68px" : null,
-        paddingRight: isSubset ? "12px" : null
+        paddingLeft: hasExtraPadding ? "68px" : null,
+        paddingRight: hasExtraPadding ? "12px" : null
       }}
     >
       <div

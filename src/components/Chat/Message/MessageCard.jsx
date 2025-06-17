@@ -6,7 +6,7 @@ import { EditedMark } from "./EditedMark";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 
-export function MessageCard({ conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderDisplayName, timeCreated, type, content }) {
+export function MessageCard({ focusMessageInput, conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderDisplayName, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
   const [ cursorYPos, setCursorYPos ] = useState(null);
@@ -94,11 +94,14 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
                 isEditing ?
 
                   <EditInput
+                    closeEdit={() => {
+                      setEditingId(null);
+                      focusMessageInput();
+                    }}
                     conversationId={conversationId}
                     messageId={messageId}
-                    isSubset={isSubset}
+                    hasExtraPadding={isSubset && !isReplyingId}
                     content={content}
-                    closeEdit={() => setEditingId(null)}
                   />
 
                 : type === "text" ?
@@ -136,10 +139,13 @@ export function MessageCard({ conversationId, messageId, isHovered, setHoveredId
               isEditing ?
 
                 <EditInput
-                  closeEdit={() => setEditingId(null)}
+                  closeEdit={() => {
+                    setEditingId(null);
+                    focusMessageInput();
+                  }}
                   conversationId={conversationId}
                   messageId={messageId}
-                  isSubset={isSubset}
+                  hasExtraPadding={isSubset ? true : false}
                   content={content}
                 />
 

@@ -5,7 +5,7 @@ import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 import { MessageReport } from "./MessageReport";
 
-export function Messages({ ownData, messagesRef, setReplyingId, isReplying, isLastMessageEditing, closeLastMessageEdit, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -13,6 +13,10 @@ export function Messages({ ownData, messagesRef, setReplyingId, isReplying, isLa
   const [ deletingData, setDeletingData ] = useState({ messageId: "", timeCreated: "", type: "", content: "..." });
   const [ isReporting, setIsReporting ] = useState(false);
   const [ reportingData, setReportingData ] = useState({ messageId: "", timeCreated: "", type: "", content: "..." });
+
+  const lastMessageIndex = selectedChatMessages?.length - 1;
+  const lastMessageId = selectedChatMessages?.[lastMessageIndex].id;
+  const isLastMessageEditable = selectedChatMessages?.[lastMessageIndex].type === "text" && !selectedChatMessages?.[lastMessageIndex].isDeleted;
   
   const renderedMessages = () => {
     let previousUid;
@@ -43,6 +47,7 @@ export function Messages({ ownData, messagesRef, setReplyingId, isReplying, isLa
             }
 
             <MessageCard
+              focusMessageInput={focusMessageInput}
               conversationId={getConversationId(ownData.uid, selectedChatUid)}
               messageId={message.id}
               isHovered={message.id === hoveredId}
@@ -78,12 +83,18 @@ export function Messages({ ownData, messagesRef, setReplyingId, isReplying, isLa
 
   useEffect(() => {
     if (isLastMessageEditing) {
-      setEditingId(
-        selectedChatMessages[selectedChatMessages.length - 1].id
-      );
-      closeLastMessageEdit();
+      if (isLastMessageEditable) setEditingId(lastMessageId);
+      setIsLastMessageEditing(false);
     }
   }, [isLastMessageEditing]);
+
+  useEffect(() => {
+    if (editingId === lastMessageId) {
+      messagesRef.current.scrollTo({
+        top: messagesRef.current.scrollHeight - messagesRef.current.clientHeight,
+      });
+    }
+  }, [editingId]);
 
   return (
     <div

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Messages } from "./Messages";
 import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
@@ -11,8 +11,25 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
   const [ replyingId, setReplyingId ] = useState(null);
   const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
 
+  const inputContainerRef = useRef(null);
+
   const replyingMessage = selectedChatMessages?.filter(message => message.id === replyingId)?.[0];
   const replyingMessageSenderName = chatDisplayNameMap[replyingMessage?.senderUid];
+
+  const focusMessageInput = () => {
+    messageInputRef.current.focus();
+    messageInputRef.current.selectionStart = messageInputRef.current.value.length;
+    messageInputRef.current.selectionEnd = messageInputRef.current.value.length;
+  }
+
+  const resizeMessageInput = () => {
+    if (inputContainerRef.current && messageInputRef.current) {
+      console.log("resizing message input..");
+      inputContainerRef.current.style.height = "auto";
+      inputContainerRef.current.style.height = `${messageInputRef.current.scrollHeight + 24}px`;
+      console.log("Done")
+    }
+  }
 
   const scrollNewest = async () => {
     await loadImagesAndScrollToBottom(messagesRef.current);
@@ -29,6 +46,12 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
     return () => messagesRef.current.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    resizeMessageInput();
+    setMessagesScrollBottom(0);
+    messagesRef.current.scrollTop = 0;
+  }, [selectedChatUid]);
+
   return (
     <div
       id="chat-message"
@@ -38,10 +61,11 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
       <Messages
         ownData={ownData}
         messagesRef={messagesRef}
+        focusMessageInput={focusMessageInput}
         setReplyingId={setReplyingId}
         isReplying={replyingMessage ? true : false}
         isLastMessageEditing={isLastMessageEditing}
-        closeLastMessageEdit={() => setIsLastMessageEditing(false)}
+        setIsLastMessageEditing={setIsLastMessageEditing}
         selectedChatUid={selectedChatUid}
         selectedChatMessages={selectedChatMessages}
         chatDisplayNameMap={chatDisplayNameMap}
@@ -60,6 +84,9 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
       <MessageInput
         messagesRef={messagesRef}
         messageInputRef={messageInputRef}
+        inputContainerRef={inputContainerRef}
+        focusMessageInput={focusMessageInput}
+        resizeMessageInput={resizeMessageInput}
         messageValueMap={messageValueMap}
         setMessageValueMap={setMessageValueMap}
         replyingId={replyingId}

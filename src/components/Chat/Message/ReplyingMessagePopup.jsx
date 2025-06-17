@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { CloseSVG, ReplySVG } from "../../svg";
 import { loadImagesAndScrollToBottom } from "../../../utils";
 
-export function ReplyingMessagePopup({ messagesRef, focusInput, replyingMessage, replyingMessageSenderName, stopReplying }) {
+export function ReplyingMessagePopup({ messagesRef, focusMessageInput, replyingMessage, replyingMessageSenderName, stopReplying }) {
 
   useEffect(() => {
     const focusInputAndScrollMessages = async () => {
-      focusInput();
+      focusMessageInput();
       await loadImagesAndScrollToBottom(messagesRef.current);
     }
 

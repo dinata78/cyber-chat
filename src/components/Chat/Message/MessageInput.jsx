@@ -8,29 +8,15 @@ import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messagesRef, messageInputRef, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
+export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
 {
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
 
   const imageInputRef = useRef(null);
-  const inputContainerRef = useRef(null);
 
   const conversationId = getConversationId(ownUid, selectedChatUid);
   const messageValue = messageValueMap[conversationId] || "";
-
-  const resizeInput = () => {
-    if (inputContainerRef.current && messageInputRef.current) {
-      inputContainerRef.current.style.height = "auto";
-      inputContainerRef.current.style.height = `${messageInputRef.current.scrollHeight + 24}px`;
-    }
-  }
-
-  const focusInput = () => {
-    messageInputRef.current.focus();
-    messageInputRef.current.selectionStart = messageInputRef.current.value.length;
-    messageInputRef.current.selectionEnd = messageInputRef.current.value.length;
-  }
 
   const setMessageValue = (newValue) => {
     setMessageValueMap(prev => {
@@ -63,8 +49,8 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
     setMessageValue("");
     stopReplying();
     requestAnimationFrame(() => {
-      resizeInput();
-      focusInput();
+      resizeMessageInput();
+      focusMessageInput();
     });
 
     if (chosenImageFile) {
@@ -123,11 +109,11 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
   useProcessImageFile(chosenImageFile, setChosenImageData, clearChosenImage);
 
   useEffect(() => {
-    resizeInput();
+    resizeMessageInput();
 
-    window.addEventListener("resize", resizeInput);
+    window.addEventListener("resize", resizeMessageInput);
 
-    return () => window.removeEventListener("resize", resizeInput);
+    return () => window.removeEventListener("resize", resizeMessageInput);
   }, []);
 
   return (
@@ -140,7 +126,7 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
         onChange={(e) => {
           setChosenImageFile(e.target.files[0]);
           requestAnimationFrame(() => {
-            resizeInput();
+            inputContainerRef.current.style.height = "auto";
           })
         }}
       />
@@ -173,7 +159,7 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
                 } 
               }
             }}
-            onInput={resizeInput}
+            onInput={resizeMessageInput}
           >
           </textarea>
         : <div className="img-attached">
@@ -181,8 +167,8 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
               onClick={() => {
                 clearChosenImage();
                 requestAnimationFrame(() => {
-                  resizeInput();
-                  focusInput();
+                  resizeMessageInput();
+                  focusMessageInput();
                 })
               }}
             >
@@ -224,7 +210,7 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
         replyingMessage &&
         <ReplyingMessagePopup
           messagesRef={messagesRef}
-          focusInput={focusInput}
+          focusMessageInput={focusMessageInput}
           replyingMessage={replyingMessage}
           replyingMessageSenderName={replyingMessageSenderName}
           stopReplying={stopReplying}
