@@ -168,7 +168,9 @@ export function MessageInput({ messagesRef, messageInputRef, messageValueMap, se
                 sendMessage();
               }
               else if (e.key === "ArrowUp") {
-                editLastMessage();
+                if (!messageValue.length) {
+                  editLastMessage();
+                } 
               }
             }}
             onInput={resizeInput}

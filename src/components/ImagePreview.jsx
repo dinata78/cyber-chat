@@ -56,7 +56,7 @@ export function ImagePreview() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.removeObjectURL(downloadUrl);
+    URL.revokeObjectURL(downloadUrl);
   }
 
   const fetchAndSetDetails = async (url) => {
