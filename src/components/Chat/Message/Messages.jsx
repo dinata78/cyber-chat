@@ -5,7 +5,7 @@ import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 import { MessageReport } from "./MessageReport";
 
-export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -14,9 +14,11 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
   const [ isReporting, setIsReporting ] = useState(false);
   const [ reportingData, setReportingData ] = useState({ messageId: "", timeCreated: "", type: "", content: "..." });
 
+  const hasMoreMessages = selectedChatMessages?.length === selectedChatMessagesAmount;
+
   const lastMessageIndex = selectedChatMessages?.length - 1;
-  const lastMessageId = selectedChatMessages?.[lastMessageIndex].id;
-  const isLastMessageEditable = selectedChatMessages?.[lastMessageIndex].type === "text" && !selectedChatMessages?.[lastMessageIndex].isDeleted;
+  const lastMessageId = selectedChatMessages?.[lastMessageIndex]?.id;
+  const isLastMessageEditable = selectedChatMessages?.[lastMessageIndex]?.type === "text" && !selectedChatMessages?.[lastMessageIndex].isDeleted;
   
   const renderedMessages = () => {
     let previousUid;
@@ -102,18 +104,31 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
       className="messages overflow-y-support"
       style={{paddingBottom: isReplying && "76px"}}
     >
-      <div className="beginning">
-        <span>
-          This is the beginning of your conversation with
-          {" "}
-          <span style={{wordBreak: "break-word", color: "#ddf"}}>
-            {
-              selectedChatUid === "globalChat" ? "Global Chat"
-              : chatDisplayNameMap[selectedChatUid] || "..."
-            }
+
+      {
+        !hasMoreMessages &&
+        <div className="beginning">
+          <span>
+            This is the beginning of your conversation with
+            {" "}
+            <span style={{wordBreak: "break-word", color: "#ddf"}}>
+              {
+                selectedChatUid === "globalChat" ? "Global Chat"
+                : chatDisplayNameMap[selectedChatUid] || "..."
+              }
+            </span>
           </span>
-        </span>
-      </div>
+        </div>
+      }
+
+      {
+        hasMoreMessages &&
+        <div className="load-messages">
+          <button onClick={() => addSelectedChatMessagesAmount(25)}>
+            Load More Messages
+          </button>
+        </div>
+      }
 
       {
         selectedChatMessages &&

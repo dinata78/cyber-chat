@@ -1048,6 +1048,29 @@ button {
     line-height: 1.4;
   }
 
+  .load-messages {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .load-messages button {
+    background-color: #22252c;
+    padding-block: 8px;
+    padding-inline: 16px;
+    border: 1px solid #17171c;
+    border-radius: 4px;
+    color: #bbc;
+    font-family: inherit;
+    font-size: 12px;
+  }
+
+  .load-messages button:active {
+    background-color: #17171c;
+  }
+
   .message-card {
     position: relative;
     display: flex;

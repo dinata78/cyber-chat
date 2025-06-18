@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { CloseSVG, ReplySVG } from "../../svg";
-import { loadImagesAndScrollToBottom } from "../../../utils";
+import { loadImagesAndScrollTo } from "../../../utils";
 
 export function ReplyingMessagePopup({ messagesRef, focusMessageInput, replyingMessage, replyingMessageSenderName, stopReplying }) {
 
   useEffect(() => {
     const focusInputAndScrollMessages = async () => {
       focusMessageInput();
-      await loadImagesAndScrollToBottom(messagesRef.current);
+      await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
     }
 
     focusInputAndScrollMessages();

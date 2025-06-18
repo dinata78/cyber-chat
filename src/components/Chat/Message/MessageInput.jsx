@@ -8,8 +8,8 @@ import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid }) 
-{
+export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid, isMessagesAmountMax, incrementMessagesAmount }) {
+
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
 
@@ -92,6 +92,8 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
 
     if (!newMessage) return;
 
+    if (isMessagesAmountMax) incrementMessagesAmount();
+
     const messagesRef = collection(db, "conversations", conversationId, "messages");
 
     await addDoc(messagesRef, {
@@ -126,8 +128,14 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
         onChange={(e) => {
           setChosenImageFile(e.target.files[0]);
           requestAnimationFrame(() => {
-            inputContainerRef.current.style.height = "auto";
-          })
+            if (e.target.files[0]) {
+              inputContainerRef.current.style.height = "auto";
+            }
+            else {
+              resizeMessageInput();
+              focusMessageInput();
+            }
+          });
         }}
       />
 

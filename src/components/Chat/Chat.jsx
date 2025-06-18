@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
 import { ChatsNavSVG, CloseSVG, FriendsNavSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
-import { getConversationId, getIndicatorClass, loadImagesAndScrollToBottom } from "../../utils";
+import { getConversationId, getIndicatorClass, loadImagesAndScrollTo } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
 import { get, ref, update } from "firebase/database";
@@ -52,7 +52,16 @@ export function Chat() {
   const messageInputRef = useRef(null);
 
   const conversationId = getConversationId(ownData.uid, selectedChatUid);
-  const selectedChatMessages = chatMessagesMap[conversationId];
+  const selectedChatMessages = chatMessagesMap[conversationId] || [];
+  const selectedChatMessagesAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
+
+  const addSelectedChatMessagesAmount = (amount) => {
+    setMessagesAmountMap(prev => {
+      const map = {...prev};
+      map[conversationId] = selectedChatMessagesAmount + amount;
+      return map;
+    });
+  }
 
   useSetOwnStatus(ownData?.uid);
 
@@ -84,15 +93,6 @@ export function Chat() {
       logOut();
     }
   }, [isAuth]);
-
-  useEffect(() => {
-    const focusInputAndScrollMessages = async () => {
-      messageInputRef?.current?.focus();
-      await loadImagesAndScrollToBottom(messagesRef.current);
-    }
-
-    focusInputAndScrollMessages();
-  }, [conversationId]);
 
   return (
     <div id="chat-page">
@@ -221,6 +221,8 @@ export function Chat() {
           messagesRef={messagesRef}
           messageInputRef={messageInputRef}
           selectedChatMessages={selectedChatMessages}
+          selectedChatMessagesAmount={selectedChatMessagesAmount}
+          addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
           chatDisplayNameMap={chatDisplayNameMap}
           chatPfpUrlMap={chatPfpUrlMap}
         />

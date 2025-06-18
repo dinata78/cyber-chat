@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { loadImagesAndScrollToBottom } from "../utils";
+import { loadImagesAndScrollTo } from "../utils";
 
 export function useHandleLastMessageModified(messagesRef, selectedChatMessages, ownUid) {
   const prevLastMessage = useRef(null);
@@ -10,13 +10,13 @@ export function useHandleLastMessageModified(messagesRef, selectedChatMessages, 
   useEffect(() => {
     const handleLastMessageModified = async () => {
       if (lastMessage?.senderUid === ownUid) {
-        await loadImagesAndScrollToBottom(messagesRef.current);
+        await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
       }
       else {
         const messagesScrollBottom = messagesRef.current.scrollHeight - messagesRef.current.scrollTop - messagesRef.current.clientHeight;
 
         if (messagesScrollBottom < messagesRef.current.clientHeight) {
-          await loadImagesAndScrollToBottom(messagesRef.current);
+          await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
         }
       }
     }

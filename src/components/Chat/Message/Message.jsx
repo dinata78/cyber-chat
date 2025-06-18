@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Messages } from "./Messages";
 import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
-import { loadImagesAndScrollToBottom } from "../../../utils";
+import { loadImagesAndScrollTo } from "../../../utils";
 
-export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
   
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
@@ -24,15 +24,13 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
 
   const resizeMessageInput = () => {
     if (inputContainerRef.current && messageInputRef.current) {
-      console.log("resizing message input..");
       inputContainerRef.current.style.height = "auto";
       inputContainerRef.current.style.height = `${messageInputRef.current.scrollHeight + 24}px`;
-      console.log("Done")
     }
   }
 
   const scrollNewest = async () => {
-    await loadImagesAndScrollToBottom(messagesRef.current);
+    await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
   }
 
   useEffect(() => {
@@ -41,15 +39,28 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
       setMessagesScrollBottom(messagesBottom);
     }
 
-    messagesRef.current.addEventListener("scroll", handleScroll);
+    if (messagesRef.current) {
+      messagesRef.current.addEventListener("scroll", handleScroll);
+    }
 
-    return () => messagesRef.current.removeEventListener("scroll", handleScroll);
+    return () => {
+      if (messagesRef.current) {
+        messagesRef.current.removeEventListener("scroll", handleScroll);
+      }
+    };
   }, []);
 
   useEffect(() => {
+    const focusInputAndScrollMessages = async () => {
+      messageInputRef?.current?.focus();
+      await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
+    }
+
     resizeMessageInput();
     setMessagesScrollBottom(0);
     messagesRef.current.scrollTop = 0;
+    focusInputAndScrollMessages();
+
   }, [selectedChatUid]);
 
   return (
@@ -68,6 +79,8 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         setIsLastMessageEditing={setIsLastMessageEditing}
         selectedChatUid={selectedChatUid}
         selectedChatMessages={selectedChatMessages}
+        selectedChatMessagesAmount={selectedChatMessagesAmount}
+        addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
         chatDisplayNameMap={chatDisplayNameMap}
         chatPfpUrlMap={chatPfpUrlMap}
       />
@@ -96,6 +109,8 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         editLastMessage={() => setIsLastMessageEditing(true)}
         ownUid={ownData.uid}
         selectedChatUid={selectedChatUid}
+        isMessagesAmountMax={selectedChatMessages?.length === selectedChatMessagesAmount}
+        incrementMessagesAmount={() => addSelectedChatMessagesAmount(1)}
       />
 
       {

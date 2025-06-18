@@ -273,7 +273,7 @@ export const isContentSearched = (contentArray, searchedValue) => {
   return false;
 }
 
-export const loadImagesAndScrollToBottom = async (container) => {
+export const loadImagesAndScrollTo = async (container, { top, behavior }) => {
   const images = container.querySelectorAll("img");
 
   const promises = Array.from(images).map(image => {
@@ -286,8 +286,11 @@ export const loadImagesAndScrollToBottom = async (container) => {
 
   await Promise.all(promises);
 
+  const scrollTop = top === "max" ? container.scrollHeight - container.clientHeight : top;
+
+
   container.scrollTo({
-    top: container.scrollHeight - container.clientHeight,
-    behavior: "smooth",
+    top: scrollTop,
+    behavior: behavior,
   });
 }
