@@ -1,6 +1,7 @@
+import { getConversationId } from "../../../utils"
 import { ChatCard } from "./ChatCard"
 
-export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
+export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadCountMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
   return (
     <>
       <ChatCard
@@ -10,7 +11,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         username={null}
         status={"online"}
         pfpUrl={null}
-        unreadMessagesCount={null}
+        unreadMessagesCount={0}
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
@@ -23,7 +24,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         username={devData.username}
         status={statusMap[devData.uid]}
         pfpUrl={devData.pfpUrl}
-        unreadMessagesCount={7}
+        unreadMessagesCount={unreadCountMap[devData.uid] || 0}
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
@@ -39,7 +40,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
         username={ownData.username}
         status={ownStatus}
         pfpUrl={ownData.pfpUrl}
-        unreadMessagesCount={9}
+        unreadMessagesCount={0}
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}
@@ -54,6 +55,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
       <div className="chat-cards overflow-y-support">
         {
           DMDatas.map((dm, index) => {
+            const conversationId = getConversationId(ownData.uid, dm.uid);
             return (
               <ChatCard
                 key={dm.uid + index}
@@ -63,7 +65,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, selecte
                 username={dm.username}
                 status={statusMap[dm.uid]}
                 pfpUrl={dm.pfpUrl}
-                unreadMessagesCount={0}
+                unreadMessagesCount={unreadCountMap[conversationId]}
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
                 setIsSidebarVisible={setIsSidebarVisible}

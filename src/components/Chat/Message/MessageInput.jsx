@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CloseCirleSVG, ImageSVG, SendSVG } from "../../svg";
-import { getConversationId } from "../../../utils";
+import { getConversationId, getOtherUid } from "../../../utils";
 import { db } from "../../../../firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useProcessImageFile } from "../../../custom-hooks/useProcessImageFile";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
@@ -32,7 +32,7 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
   }
 
   const inputMessage = (e) => {
-    if (e.target.value.length < 2000) {
+    if (e.target.value.length < 10000) {
       setMessageValue(e.target.value);
     }
   }
@@ -40,7 +40,7 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
   const clearChosenImage = () => {
     imageInputRef.current.value = null;
     setChosenImageFile(null);
-    setChosenImageData({ url: "", name: "", width: 0, height: 0 });
+    setChosenImageData({ url: "", name: "" });
   }
 
   const sendMessage = async () => {
@@ -94,17 +94,28 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
 
     if (isMessagesAmountMax) incrementMessagesAmount();
 
-    const messagesRef = collection(db, "conversations", conversationId, "messages");
+    const otherUid = getOtherUid(conversationId, ownUid);
+    const conversationRef = doc(db, "conversations", conversationId);
+    const conversationDoc = await getDoc(conversationRef);
+    const conversationUnreadCount = conversationDoc.data().unreadCount || {};
+    const otherUnreadCount = conversationUnreadCount[otherUid] || 0;
+    const newUnreadCount = {...conversationUnreadCount};
+    newUnreadCount[otherUid] = otherUnreadCount + 1;
 
-    await addDoc(messagesRef, {
+    const conversationMessagesRef = collection(db, "conversations", conversationId, "messages");
+
+    await addDoc(conversationMessagesRef, {
       type: chosenImageFile ? "image" : "text",
-      isReplyingId: replyingId,
-      isEdited: false,
-      isDeleted: false,
       content: newMessage,
       senderUid: ownUid,
       timeCreated: new Date(),
-      isUnread: ["globalChat", ownUid].includes(selectedChatUid) ? false : true,
+      isReplyingId: replyingId,
+      isEdited: false,
+      isDeleted: false,
+    });
+
+    await updateDoc(conversationRef, {
+      unreadCount: {...newUnreadCount},
     });
   }
 
@@ -161,7 +172,7 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
                 e.preventDefault();
                 sendMessage();
               }
-              else if (e.key === "ArrowUp") {
+              if (e.key === "ArrowUp") {
                 if (!messageValue.length) {
                   editLastMessage();
                 } 

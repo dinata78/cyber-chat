@@ -18,6 +18,8 @@ import { useChat } from "../../custom-hooks/useChat";
 import { useStatus } from "../../custom-hooks/useStatus";
 import { Message } from "./Message/Message";
 import { useHandleLastMessageModified } from "../../custom-hooks/useHandleLastMessageModified";
+import { useUnreadCount } from "../../custom-hooks/useUnreadCount";
+import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
 
 export function Chat() {
   const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
@@ -44,6 +46,8 @@ export function Chat() {
     messagesAmountMap,
     setMessagesAmountMap
   } = useChat(ownData?.uid, DMIds);
+
+  const { unreadCountMap } = useUnreadCount(ownData?.uid, DMIds);
 
   const navigate = useNavigate();
 
@@ -93,6 +97,8 @@ export function Chat() {
       logOut();
     }
   }, [isAuth]);
+
+  useClearUnreadCount(ownData?.uid, conversationId);
 
   return (
     <div id="chat-page">
@@ -162,6 +168,7 @@ export function Chat() {
                   devData={devData}
                   DMDatas={DMDatas}
                   statusMap={statusMap}
+                  unreadCountMap={unreadCountMap}
                   selectedChatUid={selectedChatUid}
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}

@@ -221,7 +221,10 @@ export function ImagePreview() {
 
       <img
         src={url}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsDetailsVisible(false);
+        }}
       />
 
     </div>

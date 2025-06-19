@@ -38,7 +38,12 @@ export function ReplyingMessagePopup({ messagesRef, focusMessageInput, replyingM
         </span>
       </div>
 
-      <button onClick={stopReplying}>
+      <button
+        onClick={() => {
+          stopReplying();
+          focusMessageInput();
+        }}
+      >
         <CloseSVG />
       </button>
 
