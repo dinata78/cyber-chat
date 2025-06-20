@@ -30,6 +30,6 @@ export function useClearUnreadCount(ownUid, conversationId) {
 
     return () => unsubscribe();
 
-  }, [ownUid, conversationId]); 
+  }, [ownUid, conversationId]);
 
 }

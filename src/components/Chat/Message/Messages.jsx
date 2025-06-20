@@ -5,7 +5,7 @@ import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 import { MessageReport } from "./MessageReport";
 
-export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -24,6 +24,10 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
     let previousUid;
     let previousTime;
 
+    const index = selectedChatMessages.length - selectedChatUnreadCount;
+
+    const unreadMessagesStartIndex = index > 0 ? index : 0;
+
     return (
       selectedChatMessages.map((message, index) => {
         const replyingMessage = selectedChatMessages?.filter(chatMessage => chatMessage.id === message.isReplyingId)?.[0];
@@ -39,6 +43,14 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
         
         return (
           <Fragment key={message.id + index}>
+            {
+              index === unreadMessagesStartIndex &&
+              <div id="unread-indicator">
+                <hr />
+                <span>NEW</span>
+              </div>
+            }
+
             {
               replyingMessage &&
               <ReplyingMessage

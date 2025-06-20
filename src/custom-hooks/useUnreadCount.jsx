@@ -1,28 +1,31 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
+import { getConversationId } from "../utils";
 
-export function useUnreadCount(ownUid, DMIds) {
+export function useUnreadCount(ownUid, DMIds, devUid) {
   const [ unreadCountMap, setUnreadCountMap ] = useState({});
+
+  const devConversationId = getConversationId(ownUid, devUid);
 
   useEffect(() => {
     if (!ownUid) return;
-    if (!DMIds.length) {
+    if (!DMIds.length && !devConversationId) {
       setUnreadCountMap({});
       return;
     }
 
     let unsubscribeList = [];
 
-    for (const DMId of DMIds) {
-      const conversationRef = doc(db, "conversations", DMId);
+    for (const conversationId of [...DMIds, devConversationId]) {
+      const conversationRef = doc(db, "conversations", conversationId);
 
       const unsubscribe = onSnapshot(conversationRef, (snapshot) => {
         const count = snapshot.data().unreadCount?.[ownUid] || 0;
 
         setUnreadCountMap(prev => {
           const map = {...prev};
-          map[DMId] = count;
+          map[conversationId] = count;
           return map;
         });
       });
@@ -39,7 +42,7 @@ export function useUnreadCount(ownUid, DMIds) {
       }
     }
 
-  }, [ownUid, DMIds]);
+  }, [ownUid, DMIds, devUid]);
   
   return { unreadCountMap };
 }

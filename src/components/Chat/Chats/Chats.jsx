@@ -24,7 +24,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadC
         username={devData.username}
         status={statusMap[devData.uid]}
         pfpUrl={devData.pfpUrl}
-        unreadMessagesCount={unreadCountMap[devData.uid] || 0}
+        unreadMessagesCount={unreadCountMap[getConversationId(ownData.uid, devData.uid)] || 0}
         selectedChatUid={selectedChatUid}
         setSelectedChatUid={setSelectedChatUid}
         setIsSidebarVisible={setIsSidebarVisible}

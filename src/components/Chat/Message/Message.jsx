@@ -4,7 +4,7 @@ import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
 import { loadImagesAndScrollTo } from "../../../utils";
 
-export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
   
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
@@ -60,7 +60,6 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
     setMessagesScrollBottom(0);
     messagesRef.current.scrollTop = 0;
     focusInputAndScrollMessages();
-
   }, [selectedChatUid]);
 
   return (
@@ -79,6 +78,7 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         setIsLastMessageEditing={setIsLastMessageEditing}
         selectedChatUid={selectedChatUid}
         selectedChatMessages={selectedChatMessages}
+        selectedChatUnreadCount={selectedChatUnreadCount}
         selectedChatMessagesAmount={selectedChatMessagesAmount}
         addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
         chatDisplayNameMap={chatDisplayNameMap}
@@ -109,6 +109,7 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
         editLastMessage={() => setIsLastMessageEditing(true)}
         ownUid={ownData.uid}
         selectedChatUid={selectedChatUid}
+        clearSelectedChatUnreadCount={clearSelectedChatUnreadCount}
         isMessagesAmountMax={selectedChatMessages?.length === selectedChatMessagesAmount}
         incrementMessagesAmount={() => addSelectedChatMessagesAmount(1)}
       />

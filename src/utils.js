@@ -288,7 +288,6 @@ export const loadImagesAndScrollTo = async (container, { top, behavior }) => {
 
   const scrollTop = top === "max" ? container.scrollHeight - container.clientHeight : top;
 
-
   container.scrollTo({
     top: scrollTop,
     behavior: behavior,

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
 import { ChatsNavSVG, CloseSVG, FriendsNavSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
-import { getConversationId, getIndicatorClass, loadImagesAndScrollTo } from "../../utils";
+import { getConversationId, getIndicatorClass } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
 import { get, ref, update } from "firebase/database";
@@ -29,6 +29,8 @@ export function Chat() {
 
   const [ selectedChatUid, setSelectedChatUid ] = useState(null);
 
+  const [ selectedChatUnreadCount, setSelectedChatUnreadCount ] = useState(0);
+
   const { isAuth } = useIsAuth();
   const { ownData } = useOwnData();
   const [ ownStatus ] = useStatusByUid(ownData?.uid);
@@ -47,7 +49,7 @@ export function Chat() {
     setMessagesAmountMap
   } = useChat(ownData?.uid, DMIds);
 
-  const { unreadCountMap } = useUnreadCount(ownData?.uid, DMIds);
+  const { unreadCountMap } = useUnreadCount(ownData?.uid, DMIds, devData?.uid);
 
   const navigate = useNavigate();
 
@@ -67,13 +69,22 @@ export function Chat() {
     });
   }
 
-  useSetOwnStatus(ownData?.uid);
-
-  useHandleLastMessageModified(messagesRef, selectedChatMessages, ownData.uid);
-
   useEffect(() => {
     isFirstRender.current = false;
   }, []);
+
+  useEffect(() => {
+    const unreadCount = unreadCountMap[conversationId];
+
+    setSelectedChatUnreadCount(unreadCount);
+  }, [conversationId]);
+
+  useSetOwnStatus(ownData?.uid);
+
+  useClearUnreadCount(ownData?.uid, conversationId);
+
+  useHandleLastMessageModified(messagesRef, selectedChatMessages, ownData.uid);
+
 
   useEffect(() => {
     if (!isAuth && !isFirstRender.current && ownData.uid) {
@@ -97,8 +108,6 @@ export function Chat() {
       logOut();
     }
   }, [isAuth]);
-
-  useClearUnreadCount(ownData?.uid, conversationId);
 
   return (
     <div id="chat-page">
@@ -228,6 +237,8 @@ export function Chat() {
           messagesRef={messagesRef}
           messageInputRef={messageInputRef}
           selectedChatMessages={selectedChatMessages}
+          selectedChatUnreadCount={selectedChatUnreadCount}
+          clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
           selectedChatMessagesAmount={selectedChatMessagesAmount}
           addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
           chatDisplayNameMap={chatDisplayNameMap}

@@ -8,7 +8,7 @@ import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid, isMessagesAmountMax, incrementMessagesAmount }) {
+export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid, clearSelectedChatUnreadCount, isMessagesAmountMax, incrementMessagesAmount }) {
 
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
@@ -92,15 +92,8 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
 
     if (!newMessage) return;
 
+    clearSelectedChatUnreadCount();
     if (isMessagesAmountMax) incrementMessagesAmount();
-
-    const otherUid = getOtherUid(conversationId, ownUid);
-    const conversationRef = doc(db, "conversations", conversationId);
-    const conversationDoc = await getDoc(conversationRef);
-    const conversationUnreadCount = conversationDoc.data().unreadCount || {};
-    const otherUnreadCount = conversationUnreadCount[otherUid] || 0;
-    const newUnreadCount = {...conversationUnreadCount};
-    newUnreadCount[otherUid] = otherUnreadCount + 1;
 
     const conversationMessagesRef = collection(db, "conversations", conversationId, "messages");
 
@@ -114,9 +107,19 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
       isDeleted: false,
     });
 
-    await updateDoc(conversationRef, {
-      unreadCount: {...newUnreadCount},
-    });
+    if (conversationId !== "globalChat" && conversationId !== ownUid) {
+      const otherUid = getOtherUid(conversationId, ownUid);
+      const conversationRef = doc(db, "conversations", conversationId);
+      const conversationDoc = await getDoc(conversationRef);
+      const conversationUnreadCount = conversationDoc.data().unreadCount || {};
+      const otherUnreadCount = conversationUnreadCount[otherUid] || 0;
+      const newUnreadCount = {...conversationUnreadCount};
+      newUnreadCount[otherUid] = otherUnreadCount + 1;
+
+      await updateDoc(conversationRef, {
+        unreadCount: {...newUnreadCount},
+      });
+    }
   }
 
   useProcessImageFile(chosenImageFile, setChosenImageData, clearChosenImage);

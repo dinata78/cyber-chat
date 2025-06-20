@@ -7,13 +7,12 @@ export function MessageReport({ closeModal, ownUid, conversationId, reportingDat
 
   const reportMessage = async () => {
     closeModal();
-    console.log("Reporting: " + messageId);
 
     const reportsRef = collection(db, "reports");
 
     try {
       await addDoc(reportsRef, {
-        senderUid: ownUid,
+        reporterUid: ownUid,
         conversationId: conversationId,
         messageId: messageId,
       })

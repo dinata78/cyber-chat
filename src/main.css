@@ -1214,6 +1214,29 @@ button {
   }
 }
 
+#unread-indicator {
+  user-select: none;
+  padding-inline: 12px;
+  display: flex;
+  align-items: center;
+
+  hr {
+    flex-grow: 1;
+    border-color: #ff0000bb;
+  }
+
+  span {
+    background-color: red;
+    padding-block: 2px;
+    padding-inline: 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: bold;
+  }
+}
+
 #message-features {
   z-index: 1;
   position: absolute;
