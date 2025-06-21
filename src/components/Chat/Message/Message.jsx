@@ -53,7 +53,7 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
   useEffect(() => {
     const focusInputAndScrollMessages = async () => {
       messageInputRef?.current?.focus();
-      await loadImagesAndScrollTo(messagesRef.current, { top: "max", behavior: "smooth" });
+      await scrollNewest();
     }
 
     resizeMessageInput();
@@ -61,6 +61,10 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
     messagesRef.current.scrollTop = 0;
     focusInputAndScrollMessages();
   }, [selectedChatUid]);
+
+  useEffect(() => {
+    scrollNewest();
+  }, [selectedChatUnreadCount]);
 
   return (
     <div

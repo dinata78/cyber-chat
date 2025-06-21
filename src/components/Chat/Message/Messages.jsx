@@ -23,10 +23,12 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
   const renderedMessages = () => {
     let previousUid;
     let previousTime;
+    let unreadMessagesStartIndex;
 
-    const index = selectedChatMessages.length - selectedChatUnreadCount;
-
-    const unreadMessagesStartIndex = index > 0 ? index : 0;
+    if (selectedChatUnreadCount) {
+      const index = selectedChatMessages.length - selectedChatUnreadCount;
+      unreadMessagesStartIndex = index > 0 ? index : 0;
+    }
 
     return (
       selectedChatMessages.map((message, index) => {

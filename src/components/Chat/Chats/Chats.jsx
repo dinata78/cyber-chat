@@ -1,7 +1,29 @@
+import { collection, deleteDoc, getDocs, limit, query, where } from "firebase/firestore";
 import { getConversationId } from "../../../utils"
 import { ChatCard } from "./ChatCard"
+import { db } from "../../../../firebase";
 
 export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadCountMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
+
+  const conversationId = getConversationId(ownData?.uid, selectedChatUid);
+
+  const hideDM = async () => {
+    if (!ownData?.uid || !conversationId) return;
+
+    const activeDMQueryRef = query(
+      collection(db, "users", ownData.uid, "activeDM"),
+      where("conversationId", "==", conversationId),
+      limit(1)
+    );
+
+    const activeDMDocs = await getDocs(activeDMQueryRef);
+
+    if (activeDMDocs.docs.length) {
+      await deleteDoc(activeDMDocs.docs[0].ref);
+      setSelectedChatUid("")
+    }
+  }
+
   return (
     <>
       <ChatCard
@@ -69,6 +91,8 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadC
                 selectedChatUid={selectedChatUid}
                 setSelectedChatUid={setSelectedChatUid}
                 setIsSidebarVisible={setIsSidebarVisible}
+                isDM={true}
+                hideDM={hideDM}
               />
             )
           })

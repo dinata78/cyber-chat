@@ -1,21 +1,39 @@
+import { addDoc, collection, deleteDoc, getDocs, limit, query, where } from "firebase/firestore";
 import { getIndicatorClass } from "../../../utils";
-import { addInbox } from "../_Friends/addInbox";
-import { removeFriend } from "../_Friends/modifyFriendList";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
+import { db } from "../../../../firebase";
 
-export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendStatus, friendPfpUrl, setSelectedChatUid, setIsSidebarVisible }) {
+export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendStatus, friendPfpUrl, setSelectedChatUid, setIsSidebarVisible, setCurrentNav, conversationId, isInDM }) {
 
-  const chatFriend = (friendUid) => {
-    setSelectedChatUid(friendUid);
-    setIsSidebarVisible(false);
+  const chatFriend = async () => {
+    if (!isInDM) {
+      const activeDMRef = collection(db, "users", ownUid, "activeDM");
+      await addDoc(activeDMRef, { conversationId: conversationId });
+      setSelectedChatUid(friendUid);
+      setCurrentNav("chats");
+    }
+    else {
+      setSelectedChatUid(friendUid);
+      setIsSidebarVisible(false);
+    }
+  }
+
+  const removeDM = async () => {
+    const activeDMQueryRef = query(
+      collection(db, "users", ownUid, "activeDM"),
+      where(conversationId, "==", conversationId),
+      limit(1)
+    );
+
+    const activeDMDocs = await getDocs(activeDMQueryRef);
+
+    if (activeDMDocs.docs.length) {
+      await deleteDoc(activeDMDocs.docs[0].ref);
+    }
   }
 
   const handleRemoveFriend = async () => {
-    setIsPopUpVisible(false);
 
-    await removeFriend(ownUid, friendUid);
-    await addInbox(ownUid, "friend-removed", friendUid);
-    await addInbox(friendUid, "friend-removed", ownUid);
   }
 
   return (
@@ -36,7 +54,7 @@ export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsernam
       </div>
 
       <div className="buttons">
-        <button onClick={() => chatFriend(friendUid)}>
+        <button onClick={chatFriend}>
           <ChatSVG />
         </button>
         <button onClick={handleRemoveFriend}>

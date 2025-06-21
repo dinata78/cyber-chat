@@ -182,12 +182,14 @@ export function Chat() {
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
                 />
-              : <Friends 
+              : <Friends
                   ownUid={ownData.uid}
                   friendDatas={friendDatas}
                   statusMap={statusMap}
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
+                  setCurrentNav={setCurrentNav}
+                  DMIds={DMIds}
                 />
             }
 

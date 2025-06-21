@@ -796,6 +796,25 @@ button {
     user-select: none;
   }
 
+  .chat-card .hide-dm {
+    position: absolute;
+    right: 6px;
+    height: 50%;
+    aspect-ratio: 1 / 1;
+    padding: 2px;
+    background-color: transparent;
+    border: none;
+    fill: #bbb;
+  }
+
+  .chat-card .hide-dm:hover {
+    fill: #fff;
+  }
+
+  .chat-card .hide-dm:focus-visible {
+    border: 1px solid white;
+  }
+
   .search-input {
     position: relative;
     display: flex;

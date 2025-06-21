@@ -1,7 +1,9 @@
 import { getIndicatorClass } from "../../../utils";
+import { CloseSVG } from "../../svg";
 import { chatCardOnClick } from "./chatCardOnClick";
 
-export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, unreadMessagesCount, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
+export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, unreadMessagesCount, selectedChatUid, setSelectedChatUid, setIsSidebarVisible, isDM, hideDM }) {
+  const isSelected = uid === selectedChatUid;
 
   const handleChatCardOnClick = () => {
     chatCardOnClick({
@@ -16,10 +18,7 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
   return (
     <div 
       tabIndex={0}
-      className={
-        uid === selectedChatUid ? "chat-card selected"
-        : "chat-card"
-      } 
+      className={isSelected ? "chat-card selected" : "chat-card"}
       onClick={handleChatCardOnClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -59,6 +58,13 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
         >
           {unreadMessagesCount < 100 ? unreadMessagesCount : "99+"}
         </span>
+      }
+
+      {
+        isSelected && isDM &&
+        <button className="hide-dm" onClick={hideDM}>
+          <CloseSVG />
+        </button>
       }
 
     </div>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { SearchSVG } from "../../svg";
 import { FriendCard } from "./FriendCard";
-import { isContentSearched } from "../../../utils";
+import { getConversationId, isContentSearched } from "../../../utils";
 
-export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, setIsSidebarVisible }) {
+export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, setIsSidebarVisible, setCurrentNav, DMIds }) {
   const [ searchedValue, setSearchedValue ] = useState("");
 
   const filteredFriendDatas = friendDatas.filter(friendData => {
@@ -30,6 +30,8 @@ export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, se
       {
         filteredFriendDatas.length > 0 &&
         filteredFriendDatas.map((friendData, index) => {
+          const conversationId = getConversationId(ownUid, friendData.uid);
+
           return (
             <FriendCard
               key={index + friendData.uid}
@@ -41,6 +43,9 @@ export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, se
               friendPfpUrl={friendData.pfpUrl}
               setSelectedChatUid={setSelectedChatUid}
               setIsSidebarVisible={setIsSidebarVisible}
+              setCurrentNav={setCurrentNav}
+              conversationId={conversationId}
+              isInDM={DMIds.includes(conversationId)}
             />
           )
         })
