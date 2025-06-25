@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
-import { ChatsNavSVG, CloseSVG, FriendsNavSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
+import { AccountArrowDownSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
 import { getConversationId, getIndicatorClass } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
@@ -20,12 +20,14 @@ import { Message } from "./Message/Message";
 import { useHandleLastMessageModified } from "../../custom-hooks/useHandleLastMessageModified";
 import { useUnreadCount } from "../../custom-hooks/useUnreadCount";
 import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
+import { ChatDialog } from "./ChatDialog/ChatDialog";
 
 export function Chat() {
+  const [ currentNav, setCurrentNav ] = useState("chats");
+  const [ currentDialogNav, setCurrentDialogNav ] = useState(null);
   const [ isSidebarVisible, setIsSidebarVisible ] = useState(false);
   const [ isSettingsVisible, setIsSettingsVisible ] = useState(false);
-  const [ currentNav, setCurrentNav ] = useState("chats");
-  const [ theme, setTheme ] = useState("light");
+  const [ theme, setTheme ] = useState("light");  
 
   const [ selectedChatUid, setSelectedChatUid ] = useState(null);
 
@@ -54,6 +56,13 @@ export function Chat() {
   const navigate = useNavigate();
 
   const isFirstRender = useRef(true);
+
+  const toggleSidebarRef = useRef(null);
+  const sidebarRef = useRef(null);
+
+  const requestsButtonRef = useRef(null);
+  const inboxButtonRef = useRef(null);
+  
   const messagesRef = useRef(null);
   const messageInputRef = useRef(null);
 
@@ -74,6 +83,29 @@ export function Chat() {
   }, []);
 
   useEffect(() => {
+    const handleClick = (e) => {
+      if (
+        isSidebarVisible &&
+        toggleSidebarRef.current &&
+        sidebarRef.current &&
+        !toggleSidebarRef.current.contains(e.target) &&
+        !sidebarRef.current.contains(e.target)
+      ) {
+        setIsSidebarVisible(false);
+      }
+    }
+
+    if (isSidebarVisible) {
+      document.addEventListener("click", handleClick);      
+    }
+    else {
+      document.removeEventListener("click", handleClick);
+    }
+
+    return () => document.removeEventListener("click", handleClick);
+  }, [isSidebarVisible]);
+
+  useEffect(() => {
     const unreadCount = unreadCountMap[conversationId];
 
     setSelectedChatUnreadCount(unreadCount);
@@ -84,7 +116,6 @@ export function Chat() {
   useClearUnreadCount(ownData?.uid, conversationId);
 
   useHandleLastMessageModified(messagesRef, selectedChatMessages, ownData.uid);
-
 
   useEffect(() => {
     if (!isAuth && !isFirstRender.current && ownData.uid) {
@@ -120,10 +151,13 @@ export function Chat() {
         <div id="chat-header">
 
           <button
+            ref={toggleSidebarRef}
             className="toggle-sidebar"
             onClick={() => setIsSidebarVisible(prev => !prev)}
           >
-            {isSidebarVisible ? <CloseSVG /> : <MenuSVG />}
+            <div className="wrapper">
+              {!isSidebarVisible ? <MenuSVG /> : <CloseSVG />}
+            </div>
           </button>
 
           <div className="name">
@@ -142,11 +176,40 @@ export function Chat() {
             </span>
           </div>
 
+          <div className="v-line"></div>
+
+          <button
+            ref={requestsButtonRef}
+            title="Friend Requests"
+            className="right"
+            style={{
+              fill: currentDialogNav === "requests" && "white" 
+            }}
+            onClick={() => setCurrentDialogNav("requests")}
+          >
+            <AccountArrowDownSVG />
+          </button>
+
+          <button
+            ref={inboxButtonRef}
+            title="Inbox"
+            className="right"
+            style={{
+              marginLeft: "8px",
+              marginRight: "12px",
+              fill: currentDialogNav === "inbox" && "white"
+            }}
+            onClick={() => setCurrentDialogNav("inbox")}
+          >
+            <InboxSVG />
+          </button>
+
         </div>
       </div>
 
       <div className="bottom">
         <aside
+          ref={sidebarRef}
           id="chat-sidebar"
           className={isSidebarVisible ? "visible" : null}
         >
@@ -188,7 +251,6 @@ export function Chat() {
                   statusMap={statusMap}
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
-                  setCurrentNav={setCurrentNav}
                   DMIds={DMIds}
                 />
             }
@@ -234,7 +296,6 @@ export function Chat() {
         <Message
           ownData={ownData}
           isSidebarVisible={isSidebarVisible}
-          setIsSidebarVisible={setIsSidebarVisible}
           selectedChatUid={selectedChatUid}
           messagesRef={messagesRef}
           messageInputRef={messageInputRef}
@@ -246,6 +307,17 @@ export function Chat() {
           chatDisplayNameMap={chatDisplayNameMap}
           chatPfpUrlMap={chatPfpUrlMap}
         />
+
+        {
+          currentDialogNav &&
+          <ChatDialog
+            currentDialogNav={currentDialogNav}
+            closeDialog={() => setCurrentDialogNav(null)}
+            requestsButtonRef={requestsButtonRef}
+            inboxButtonRef={inboxButtonRef}
+          />
+        }
+
       </div>
         
       {

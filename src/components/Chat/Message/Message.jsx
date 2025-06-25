@@ -4,7 +4,7 @@ import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
 import { loadImagesAndScrollTo } from "../../../utils";
 
-export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
   
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
@@ -70,7 +70,6 @@ export function Message({ ownData, isSidebarVisible, setIsSidebarVisible, select
     <div
       id="chat-message"
       className="overflow-y-support"
-      onClick={() => setIsSidebarVisible(false)}
     >
       <Messages
         ownData={ownData}

@@ -3,7 +3,7 @@ import { SearchSVG } from "../../svg";
 import { FriendCard } from "./FriendCard";
 import { getConversationId, isContentSearched } from "../../../utils";
 
-export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, setIsSidebarVisible, setCurrentNav, DMIds }) {
+export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, setIsSidebarVisible, DMIds }) {
   const [ searchedValue, setSearchedValue ] = useState("");
 
   const filteredFriendDatas = friendDatas.filter(friendData => {
@@ -43,7 +43,6 @@ export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, se
               friendPfpUrl={friendData.pfpUrl}
               setSelectedChatUid={setSelectedChatUid}
               setIsSidebarVisible={setIsSidebarVisible}
-              setCurrentNav={setCurrentNav}
               conversationId={conversationId}
               isInDM={DMIds.includes(conversationId)}
             />

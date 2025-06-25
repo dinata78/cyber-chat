@@ -3,33 +3,15 @@ import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
 import { db } from "../../../../firebase";
 
-export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendStatus, friendPfpUrl, setSelectedChatUid, setIsSidebarVisible, setCurrentNav, conversationId, isInDM }) {
+export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendStatus, friendPfpUrl, setSelectedChatUid, setIsSidebarVisible, conversationId, isInDM }) {
 
   const chatFriend = async () => {
     if (!isInDM) {
       const activeDMRef = collection(db, "users", ownUid, "activeDM");
       await addDoc(activeDMRef, { conversationId: conversationId });
-      setSelectedChatUid(friendUid);
-      setCurrentNav("chats");
     }
-    else {
-      setSelectedChatUid(friendUid);
-      setIsSidebarVisible(false);
-    }
-  }
-
-  const removeDM = async () => {
-    const activeDMQueryRef = query(
-      collection(db, "users", ownUid, "activeDM"),
-      where(conversationId, "==", conversationId),
-      limit(1)
-    );
-
-    const activeDMDocs = await getDocs(activeDMQueryRef);
-
-    if (activeDMDocs.docs.length) {
-      await deleteDoc(activeDMDocs.docs[0].ref);
-    }
+    setSelectedChatUid(friendUid);
+    setIsSidebarVisible(false);
   }
 
   const handleRemoveFriend = async () => {

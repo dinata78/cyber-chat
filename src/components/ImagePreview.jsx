@@ -20,6 +20,11 @@ export function ImagePreview() {
   const isLocalImage = !url?.startsWith("https://");
   const currentImageDetails = detailsMap[url] || null;
 
+  const handleOnClick = (e) => {
+    if (isDetailsVisible) setIsDetailsVisible(false);
+    e.stopPropagation();
+  }
+
   const closeImagePreview = () => {
     setUrl(null);
     setIsLinkCopied(false);
@@ -154,17 +159,15 @@ export function ImagePreview() {
     >
       <div
         className="menu"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleOnClick}
       >
         {
           !isLocalImage &&
           <div className="wrapper">
             <button
               title="View Details" 
-              style={{
-                fill: isDetailsVisible && "white"
-              }}
-              onClick={() => setIsDetailsVisible(prev => !prev)}
+              style={{fill: isDetailsVisible && "white"}}
+              onClick={() => setIsDetailsVisible(true)}
             >
               <FileQuestionSVG />
             </button>
@@ -221,10 +224,7 @@ export function ImagePreview() {
 
       <img
         src={url}
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsDetailsVisible(false);
-        }}
+        onClick={handleOnClick}
       />
 
     </div>

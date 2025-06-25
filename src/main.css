@@ -606,17 +606,21 @@ button {
     background-color: transparent;
     width: 55px;
     height: 55px;
-    padding: 12px;
+    padding: 0;
     border: none;
     display: none;
+    fill: #aab;
+  }
+
+  .toggle-sidebar .wrapper {
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
   }
 
   .toggle-sidebar:focus-visible {
     border: 1px solid white;
-  }
-
-  .toggle-sidebar svg {
-    fill: #aab;
   }
 
   .name {
@@ -635,6 +639,27 @@ button {
   .name .username {
     color: #ccf;
     white-space: nowrap;
+  }
+
+  .v-line {
+    height: 50%;
+    margin-inline: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  button.right {
+    background-color: transparent;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border: none;
+    border-radius: 100%;
+    fill: #bbb;
+  }
+
+  button.right:hover, button.right:focus-visible {
+    background-color: #fff2;
+    fill: white;
   }
 }
 
@@ -2021,6 +2046,60 @@ button {
 
   input:focus {
     outline: none;
+  }
+}
+
+#chat-dialog {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 320px;
+  min-height: 160px;
+  border: 1px solid black;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+
+  > .bottom {
+    flex-grow: 1;
+    background-color: #24252c;
+  }
+}
+
+#chat-dialog > .top {
+  background-color: #121216;
+  height: 50px;
+  padding-left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  color: white;
+  font-size: 16px;
+
+  svg {
+    fill: white;
+    height: 24px;
+  }
+}
+
+#chat-dialog > .bottom {
+  display: flex;
+
+  .empty-dialog {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    color: #eee;
+    font-size: 14px;
+  }
+
+  .empty-dialog svg {
+    fill: #eee;
+    width: 20px;
+    height: 20px;
   }
 }
 
