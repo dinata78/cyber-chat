@@ -35,10 +35,10 @@ export function Chat() {
 
   const { isAuth } = useIsAuth();
   const { ownData } = useOwnData();
-  const [ ownStatus ] = useStatusByUid(ownData?.uid);
+  const [ ownStatus ] = useStatusByUid(ownData.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
-  const { DMIds, DMDatas } = useDM(ownData?.uid);
-  const { friendUids, friendDatas } = useFriendList(ownData?.uid);
+  const { DMIds, DMDatas } = useDM(ownData.uid);
+  const { friendUids, friendDatas } = useFriendList(ownData.uid);
 
   const { statusMap } = useStatus(friendUids);
 
@@ -49,9 +49,9 @@ export function Chat() {
     chatPfpUrlMap,
     messagesAmountMap,
     setMessagesAmountMap
-  } = useChat(ownData?.uid, DMIds);
+  } = useChat(ownData.uid, DMIds);
 
-  const { unreadCountMap } = useUnreadCount(ownData?.uid, DMIds, devData?.uid);
+  const { unreadCountMap } = useUnreadCount(ownData.uid, DMIds, devData?.uid);
 
   const navigate = useNavigate();
 
@@ -111,9 +111,9 @@ export function Chat() {
     setSelectedChatUnreadCount(unreadCount);
   }, [conversationId]);
 
-  useSetOwnStatus(ownData?.uid);
+  useSetOwnStatus(ownData.uid);
 
-  useClearUnreadCount(ownData?.uid, conversationId);
+  useClearUnreadCount(ownData.uid, conversationId);
 
   useHandleLastMessageModified(messagesRef, selectedChatMessages, ownData.uid);
 

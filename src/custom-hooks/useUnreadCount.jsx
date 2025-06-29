@@ -21,7 +21,7 @@ export function useUnreadCount(ownUid, DMIds, devUid) {
       const conversationRef = doc(db, "conversations", conversationId);
 
       const unsubscribe = onSnapshot(conversationRef, (snapshot) => {
-        const count = snapshot.data().unreadCount?.[ownUid] || 0;
+        const count = snapshot.data()?.unreadCount?.[ownUid] || 0;
 
         setUnreadCountMap(prev => {
           const map = {...prev};

@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "emulators": "firebase emulators:start --import=./emulator-data --export-on-exit",
+    "emulators:test": "firebase emulators:start --import=./emulator-data"
   },
   "dependencies": {
     "firebase": "^11.1.0",

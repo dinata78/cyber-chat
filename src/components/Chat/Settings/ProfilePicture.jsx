@@ -51,6 +51,20 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
         });
       }
 
+      if (ownPfpUrl) {
+        const imagesQueryRef = query(
+          collection(db, "images"),
+          where("url", "==", ownPfpUrl),
+          limit(1),
+        );
+
+        const imagesDocs = await getDocs(imagesQueryRef);
+
+        if (imagesDocs.docs.length) {
+          await deleteDoc(imagesDocs.docs[0].ref);
+        }
+      }
+
       clearChosenPfp();
     }
     catch (error) {

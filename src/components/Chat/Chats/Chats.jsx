@@ -5,10 +5,10 @@ import { db } from "../../../../firebase";
 
 export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadCountMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
 
-  const conversationId = getConversationId(ownData?.uid, selectedChatUid);
+  const conversationId = getConversationId(ownData.uid, selectedChatUid);
 
   const hideDM = async () => {
-    if (!ownData?.uid || !conversationId) return;
+    if (!ownData.uid || !conversationId) return;
 
     const activeDMQueryRef = query(
       collection(db, "users", ownData.uid, "activeDM"),

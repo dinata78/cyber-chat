@@ -4,28 +4,36 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 export function useOwnData() {
-    const [ ownData, setOwnData ] = useState([]);
+  const [ ownData, setOwnData ] = useState({});
 
-    useEffect(() => {
-      let unsubscribeSnapshot;
+  useEffect(() => {
+    let unsubscribeSnapshot;
 
-      const unsubcribeAuth = onAuthStateChanged(auth, (user) => {
-        if (!user?.uid) return;
-
-        const ownDocRef = doc(db, "users", user.uid);
-
-        unsubscribeSnapshot = onSnapshot(ownDocRef, (snapshot) => {
-          const data = snapshot.data();
-          setOwnData(data);
-        });
-      })
-
-      return () => {
-        if (unsubcribeAuth) unsubcribeAuth();
-        if (unsubscribeSnapshot) unsubscribeSnapshot;
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (!user?.uid) {
+        setOwnData({});
+        return;
       }
 
-    }, []);
+      const ownDocRef = doc(db, "users", user.uid);
 
-    return { ownData };
+      unsubscribeSnapshot = onSnapshot(ownDocRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setOwnData(data);
+        }
+        else {
+          setOwnData({});
+        }
+      });
+    });
+
+    return () => {
+      if (unsubscribeAuth) unsubscribeAuth;
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+    }
+
+  }, []);
+
+  return { ownData };
 }

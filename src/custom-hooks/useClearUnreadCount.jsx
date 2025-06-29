@@ -23,7 +23,7 @@ export function useClearUnreadCount(ownUid, conversationId) {
     const conversationRef = doc(db, "conversations", conversationId);
 
     const unsubscribe = onSnapshot(conversationRef, (snapshot) => {
-      if (snapshot.data().unreadCount?.[ownUid] > 0) {
+      if (snapshot.data()?.unreadCount?.[ownUid] > 0) {
         clearUnreadCount(conversationId);
       }
     });
