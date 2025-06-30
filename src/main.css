@@ -647,17 +647,38 @@ button {
     border: 1px solid var(--border-color);
   }
 
-  button.right {
+  button.add-friend {
+    background-color: #212126;
+    height: 32px;
+    margin-left: 8px;
+    padding-inline: 12px;
+    border: 1px solid #17171c;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-family: inherit;
+  }
+
+  button.add-friend svg {
+    fill: white;
+    width: 20px;
+    height: 20px;
+  }
+
+  button.dialog {
     background-color: transparent;
     width: 36px;
     height: 36px;
+    margin-left: 8px;
     padding: 6px;
     border: none;
     border-radius: 100%;
     fill: #bbb;
   }
 
-  button.right:hover, button.right:focus-visible {
+  button.dialog:hover, button.dialog:focus-visible {
     background-color: #fff2;
     fill: white;
   }
@@ -672,6 +693,7 @@ button {
 #chat-sidebar > .top {
   flex-grow: 1;
   background-color: var(--sidebar-background);
+  padding-bottom: 8px;
   display: flex;
   flex-direction: column;
 
@@ -874,6 +896,42 @@ button {
 
   .search-input .search-svg svg {
     fill: #ffffff99;
+  }
+
+  button.add-friend {
+    background-color: #8800dd;
+    height: 32px;
+    margin-inline: 6px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  button.add-friend svg {
+    fill: white;
+    width: 18px;
+    height: 18px;
+  }
+
+  button.add-friend:focus-visible {
+    border: 1px solid white;
+  }
+
+  .h-line {
+    margin-block: 12px;
+    margin-inline: 6px;
+    border: 1px solid var(--border-color);
+  }
+
+  .friend-cards {
+    flex-grow: 1;
+    height: 0;
   }
 
   .friend-card {

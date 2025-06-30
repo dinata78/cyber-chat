@@ -95,7 +95,7 @@ export function ResetPassword() {
           {
             !isSent ? 
               "Enter your email and we'll send you a link to reset your password."
-            : `We have sent a password reset link to ${email || "your email"}.`
+            : `We have sent a password reset link to ${email || "your email"}`
           }
         </span>
 

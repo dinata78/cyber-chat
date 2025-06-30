@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
-import { AccountArrowDownSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
+import { AccountArrowDownSVG, AccountPlusSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
 import { getConversationId, getIndicatorClass } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
@@ -181,9 +181,10 @@ export function Chat() {
           <button
             ref={requestsButtonRef}
             title="Friend Requests"
-            className="right"
+            className="dialog"
             style={{
-              fill: currentDialogNav === "requests" && "white" 
+              fill: currentDialogNav === "requests" && "white", 
+              marginLeft: "0"
             }}
             onClick={() => setCurrentDialogNav("requests")}
           >
@@ -193,11 +194,10 @@ export function Chat() {
           <button
             ref={inboxButtonRef}
             title="Inbox"
-            className="right"
+            className="dialog"
             style={{
-              marginLeft: "8px",
-              marginRight: "12px",
-              fill: currentDialogNav === "inbox" && "white"
+              fill: currentDialogNav === "inbox" && "white",
+              marginRight: "12px"
             }}
             onClick={() => setCurrentDialogNav("inbox")}
           >

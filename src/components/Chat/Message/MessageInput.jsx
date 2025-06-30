@@ -111,7 +111,7 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
       const otherUid = getOtherUid(conversationId, ownUid);
       const conversationRef = doc(db, "conversations", conversationId);
       const conversationDoc = await getDoc(conversationRef);
-      const conversationUnreadCount = conversationDoc.data().unreadCount || {};
+      const conversationUnreadCount = conversationDoc.data()?.unreadCount || {};
       const otherUnreadCount = conversationUnreadCount[otherUid] || 0;
       const newUnreadCount = {...conversationUnreadCount};
       newUnreadCount[otherUid] = otherUnreadCount + 1;
@@ -140,6 +140,10 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
         accept="image/jpg, image/jpeg, image/png, image/webp"
         style={{display: "none", pointerEvents: "none"}}
         onChange={(e) => {
+          if (e.target.files[0]?.size > 5 * 1000 * 1000) {
+            notify(null, "Image size exceeds 5MB.");
+            return;
+          }
           setChosenImageFile(e.target.files[0]);
           requestAnimationFrame(() => {
             if (e.target.files[0]) {
