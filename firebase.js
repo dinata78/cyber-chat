@@ -26,3 +26,9 @@ if (location.hostname === "localhost") {
   connectDatabaseEmulator(realtimeDb, "localhost", 9001);
   connectFunctionsEmulator(functions, "localhost", 5001)
 }
+else if (location.hostname.startsWith("192.168")) {
+  connectAuthEmulator(auth, "http://192.168.1.12:9099", { disableWarnings: true });
+  connectFirestoreEmulator(db, "192.168.1.12", 8081);
+  connectDatabaseEmulator(realtimeDb, "192.168.1.12", 9001);
+  connectFunctionsEmulator(functions, "192.168.1.12", 5001)  
+}

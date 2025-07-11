@@ -60,6 +60,8 @@ export function Auth() {
         else {
           setErrorInfo("Error occured while trying to log you in. Make sure you entered the correct credentials or try again later.");
         }
+
+        alert(error)
       }
     }
     else if (signType === "up") {

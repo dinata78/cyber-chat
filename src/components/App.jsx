@@ -4,6 +4,7 @@ import { Chat } from "./Chat/Chat";
 import { ResetPassword } from "./ResetPassword/ResetPassword";
 import { Notifier } from "./Notification";
 import { ImagePreview } from "./ImagePreview";
+import { AccountPreview } from "./AccountPreview";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,7 @@ export function App() {
       <RouterProvider router={router}/>
       <Notifier />
       <ImagePreview />
+      <AccountPreview />
     </>
   )
 }

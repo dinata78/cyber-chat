@@ -258,35 +258,37 @@ export function Chat() {
           </div>
 
           <div className="bottom">
-            
-            <div className="pfp">
-              <img src={ownData.pfpUrl || "/empty-pfp.webp"} />
-              <div className={getIndicatorClass(ownStatus)}></div>
-            </div>
 
-            <div className="side">
+            <div tabIndex={0} className="account">
+              <div className="pfp">
+                <img src={ownData.pfpUrl || "/empty-pfp.webp"} />
+                <div className={getIndicatorClass(ownStatus)}></div>
+              </div>
               <div className="name">
-                <span className="display-name text-overflow-support">
+                <span className="text-overflow-support">
                   {ownData.displayName || "Loading..."}
                 </span>
-                <span className="username text-overflow-support">
+                <span
+                  className="text-overflow-support"
+                  style={{color: "#ccccff", fontSize: "12px"}}
+                >
                   {
                     ownData.username === "" ? "(Not Set)"
                     : ownData.username ? "@" + ownData.username: null
                   }
                 </span>
               </div>
+            </div>            
 
-              <div className="buttons">
-                <button 
-                  onClick={() => theme === "light" ? setTheme("dark") : setTheme("light")}
-                >
-                  <ThemeSVG theme={theme} />
-                </button>
-                <button onClick={() => setIsSettingsVisible(true)}>
-                  <SettingSVG />
-                </button>
-              </div>
+            <div className="buttons">
+              <button 
+                onClick={() => theme === "light" ? setTheme("dark") : setTheme("light")}
+              >
+                <ThemeSVG theme={theme} />
+              </button>
+              <button onClick={() => setIsSettingsVisible(true)}>
+                <SettingSVG />
+              </button>
             </div>
             
           </div>

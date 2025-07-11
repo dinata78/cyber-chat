@@ -9,6 +9,7 @@ import { Email } from "./Email";
 import { SignOut } from "./SignOut";
 import { PasswordReset } from "./PasswordReset";
 import { AccountRemoval } from "./AccountRemoval";
+import { UID } from "./UID";
 
 export function Settings({ ownData, ownStatus, setIsSettingsVisible }) {
   const [ currentNav, setCurrentNav ] = useState("profile");
@@ -93,6 +94,10 @@ export function Settings({ ownData, ownStatus, setIsSettingsVisible }) {
 
             : currentNav === "account" ?
               <>
+                <UID ownUid={ownData.uid} />
+
+                <hr />
+
                 <Email />
 
                 <hr />

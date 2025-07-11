@@ -120,7 +120,7 @@ export function Username({ ownUid, ownUsername }) {
       </div>
 
       <span className="info">
-        You can let others add you by giving them your username. Maximum character limit for username is 15 characters.
+        You can let others add you by giving them your username. Maximum length is 15 characters.
       </span>
 
       { 

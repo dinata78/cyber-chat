@@ -106,7 +106,7 @@ export function DisplayName({ ownUid, ownDisplayName }) {
       </div>
 
       <span className="info">
-        Your display name is shared publicly with others. Maximum character limit for display name is 25 characters.
+        Your display name is shared publicly with others. Maximum length is 25 characters.
       </span>
 
       {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PlusSVG, SearchSVG } from "../../svg";
+import { AccountPlusSVG, PlusSVG, SearchSVG } from "../../svg";
 import { FriendCard } from "./FriendCard";
 import { getConversationId, isContentSearched } from "../../../utils";
 

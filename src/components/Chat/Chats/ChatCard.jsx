@@ -22,6 +22,7 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
       onClick={handleChatCardOnClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
           handleChatCardOnClick();
         }
       }}

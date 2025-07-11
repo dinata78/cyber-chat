@@ -197,7 +197,7 @@ export function ImagePreview() {
 
         {
           isDetailsVisible &&
-          <div className="details-container">
+          <div className="details-container" onClick={(e) => e.stopPropagation()}>
             <div className="detail">
               <span>
                 Filename

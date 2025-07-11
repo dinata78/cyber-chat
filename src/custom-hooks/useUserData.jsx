@@ -6,13 +6,21 @@ export function useUserData(uid) {
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    if (!uid) return;
+    if (!uid) {
+      setUserData({});
+      return;
+    }
 
     const userDocRef = doc(db, "users", uid);
 
     const unsubscribe = onSnapshot(userDocRef, (snapshot) => {
-      const userData = snapshot.data();
-      setUserData(userData);
+      if (snapshot.exists()) {
+        const userData = snapshot.data();
+        setUserData(userData);
+      }
+      else {
+        setUserData({});
+      }
     });
 
     return () => unsubscribe();

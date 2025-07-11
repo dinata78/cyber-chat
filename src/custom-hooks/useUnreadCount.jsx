@@ -10,7 +10,7 @@ export function useUnreadCount(ownUid, DMIds, devUid) {
 
   useEffect(() => {
     if (!ownUid) return;
-    if (!DMIds.length && !devConversationId) {
+    if (!DMIds.length || !devConversationId) {
       setUnreadCountMap({});
       return;
     }

@@ -492,6 +492,100 @@ button {
 
 }
 
+#account-preview {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000cc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > .container {
+    background-color: #2e2f38;
+    width: 360px;
+    height: 480px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+#account-preview .header {
+  z-index: 1;
+  background-color: #19191e;
+  width: 100%;
+  height: 100px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+
+  img {
+    position: relative;
+    bottom: -36px;
+    width: 84px;
+    object-fit: cover;
+    height: 84px;
+    border: 2px solid var(--border-color);
+    border-radius: 18px;
+  }
+}
+
+#account-preview main {
+  flex-grow: 1;
+  height: 0;
+  padding-block: 12px;
+  padding-inline: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .cell {
+    background-color: #09090e;
+    height: 50%;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cell hr {
+    margin: 0;
+    width: 90%;
+    border: 1px solid var(--border-color);
+    opacity: 70%;
+  }
+
+  .cell button {
+    background-color: #80d;
+    width: 90%;
+    height: 36px;
+    margin-block: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #ddd;
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  .cell span.about-me {
+    flex-grow: 1;
+    background-color: #27272f;
+    width: 90%;
+    height: 0;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    padding: 8px;
+    color: #ccd;
+    font-size: 14px;
+  }
+}
+
 *.text-overflow-support {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -773,18 +867,20 @@ button {
     border-radius: 6px;
     display: flex;
     align-items: center;
-  }
-
-  .chat-card:hover, .chat-card.selected {
-    background-color: #ffffff20;
+    user-select: none;
+    cursor: pointer;
   }
 
   .chat-card:focus {
     outline: none;
   }
 
-  .chat-card:focus-visible {
-    border: 1px solid white;
+  .chat-card.selected {
+    background-color: #ffffff35;
+  }
+
+  .chat-card:hover, .chat-card:focus-visible {
+    background-color: #ffffff25;
   }
 
   .chat-card .pfp {
@@ -943,16 +1039,12 @@ button {
     align-items: center;
   }
 
-  .friend-card:hover {
-    background-color: #ffffff20;
-  }
-
   .friend-card:focus {
     outline: none;
   }
 
-  .friend-card:focus-visible {
-    border: 1px solid white;
+  .friend-card:hover, .friend-card:focus-visible {
+    background-color: #ffffff25;
   }
 
   .friend-card .pfp {
@@ -1031,83 +1123,83 @@ button {
 #chat-sidebar > .bottom {
   background-color: #17171c;
   height: 60px;
-  padding-inline: 8px;
   border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
 
-  .pfp {
+  .account {
+    flex-grow: 1;
+    margin-left: 6px;
+    padding: 6px;
+    border-radius: 8px;
+    display: flex;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  .account:focus {
+    outline: none;
+  }
+
+  .account:hover, .account:focus-visible {
+    background-color: #ffffff25;
+  }
+
+  .account .pfp {
     position: relative;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     margin-right: 12px;
     border-radius: 100%;
   }
   
-  .pfp img {
+  .account .pfp img {
     width: 100%;
     height: 100%;
     border-radius: 100%;
   }
 
-  .pfp .indicator {
+  .account .pfp .indicator {
     position: absolute;
     bottom: 0;
     right: -5px;
-    width: 18px;
-    height: 18px;
-    border: 4px solid black;
+    width: 14px;
+    height: 14px;
+    border: 3px solid black;
     border-radius: 100%;
   }
-  
-  .side {
+
+  .account .name {
+    width: 0;
     flex-grow: 1;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .side .name {
-    width: 110px;
-    display: flex;
     flex-direction: column;
-  }
-  
-  .side .name .display-name {
-    color: white;
+    justify-content: center;
     font-size: 14px;
   }
- 
-  .side .name .username {
-    color: #ccccff;
-    font-size: 12px;
-  }
-  
-  .side .buttons {
+
+  .buttons {    
+    margin-inline: 6px;
     display: flex;
-    gap: 4px;
-  }
-  
-  .side .buttons button {
-    background-color: transparent;
-    height: 32px;
-    aspect-ratio: 1 / 1;
-    padding: 5px;
-    border: none;
-    border-radius: 6px;
-  }
-  
-  .side .buttons button:hover {
-    background-color: #ffffff20;
+    gap: 6px;
   }
 
-  .side .buttons button:focus-visible {
-    border: 1px solid white;
+  .buttons button {
+    background-color: transparent;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: white;
   }
-  
-  .side .buttons svg {
-    fill: #ccc;
+
+  .buttons button:hover, .buttons button:focus-visible {
+    background-color: #ffffff25;
   }
+    
 }
 
 #chat-message {
@@ -1777,8 +1869,8 @@ button {
 #chat-settings > .container {
   position: relative;
   background-color: var(--sidebar-background);
-  width: 360px;
-  height: 500px;
+  width: 380px;
+  height: 520px;
   padding-bottom: 18px;
   border-radius: 15px;
   display: flex;
@@ -1924,6 +2016,11 @@ button {
 
   button:first-of-type:hover {
     background-color: #1d1d1f;
+  }
+
+  button svg {
+    width: 16px;
+    height: 16px;
   }
 
   .pfp {

@@ -119,7 +119,7 @@ export function Bio({ ownUid, ownBio }) {
       </div>
 
       <span className="info">
-        Your bio is shared publicly with others. Maximum character limit for bio is 250 characters.
+        Your bio is shared publicly with others. Maximum length is 250 characters.
       </span>
 
       {
