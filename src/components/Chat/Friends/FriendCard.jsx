@@ -1,25 +1,25 @@
-import { addDoc, collection, deleteDoc, getDocs, limit, query, where } from "firebase/firestore";
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
-import { db } from "../../../../firebase";
+import { previewAccount } from "../../AccountPreview";
 
-export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsername, friendStatus, friendPfpUrl, setSelectedChatUid, setIsSidebarVisible, conversationId, isInDM }) {
-
-  const chatFriend = async () => {
-    if (!isInDM) {
-      const activeDMRef = collection(db, "users", ownUid, "activeDM");
-      await addDoc(activeDMRef, { conversationId: conversationId });
-    }
-    setSelectedChatUid(friendUid);
-    setIsSidebarVisible(false);
-  }
+export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend }) {
 
   const handleRemoveFriend = async () => {
 
   }
 
   return (
-    <div className="friend-card" tabIndex={0}>
+    <div
+      tabIndex={0}
+      className="friend-card"
+      onClick={() => previewAccount({
+        uid: friendUid,
+        pfpUrl: friendPfpUrl,
+        displayName: friendDisplayName,
+        username: friendUsername,
+        bio: friendBio
+      })}
+    >
 
       <div className="pfp">
         <img src={friendPfpUrl || "/empty-pfp.webp"} />
@@ -36,10 +36,16 @@ export function FriendCard({ ownUid, friendUid, friendDisplayName, friendUsernam
       </div>
 
       <div className="buttons">
-        <button onClick={chatFriend}>
+        <button onClick={(e) => {
+          e.stopPropagation();
+          messageFriend(ownUid, friendUid);
+        }}>
           <ChatSVG />
         </button>
-        <button onClick={handleRemoveFriend}>
+        <button onClick={(e) => {
+          e.stopPropagation();
+          handleRemoveFriend();
+        }}>
           <AccountMinusSVG />
         </button>
       </div>

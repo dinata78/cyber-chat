@@ -1,20 +1,93 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { auth } from "../../firebase";
+import { previewImage } from "./ImagePreview";
+import { useFriendList } from "../custom-hooks/useFriendList";
+import { chatFriend, openSettings } from "./Chat/Chat";
 
-export function previewAccount() {
+let previewAccountGlobal;
 
+export function previewAccount(accountData) {
+  previewAccountGlobal?.(
+    accountData.uid,
+    accountData.pfpUrl,
+    accountData.displayName,
+    accountData.username,
+    accountData.bio
+  );
 }
 
 export function AccountPreview() {
-  const [ a, b ] = useState(true) 
+  const [ uid, setUid ] = useState("");
+  const [ pfpUrl, setPfpUrl ]= useState("");
+  const [ displayName, setDisplayName ] = useState("");
+  const [ username, setUsername ] = useState("");
+  const [ bio, setBio ]= useState("");
 
-  if (!a) return null;
+  const ownUid = auth.currentUser?.uid;
+
+  const { friendUids } = useFriendList(ownUid);
+
+  const profileType = 
+    uid === ownUid ? "own"
+    : friendUids.includes(uid) ? "friend"
+    : "new"
+
+  const closeAccountPreview = () => {
+    setUid("");
+    setPfpUrl("");
+    setDisplayName("");
+    setUsername("");
+    setBio("");
+  }
+
+  const handleEditProfile = () => {
+    openSettings();
+    closeAccountPreview();
+  }
+
+  const handleMessageFriend = async () => {
+    await chatFriend(ownUid, uid);
+    closeAccountPreview();
+  }
+
+  useEffect(() => {
+    previewAccountGlobal = (uid, pfpUrl, displayName, username, bio) => {
+      setUid(uid);
+      setPfpUrl(pfpUrl);
+      setDisplayName(displayName);
+      setUsername(username);
+      setBio(bio);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        closeAccountPreview();
+      }
+    }
+
+    if (uid) {
+      document.addEventListener("keydown", handleEscape);
+    }
+    else {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [uid])
+
+  if (!uid) return null;
 
   return (
-    <div id="account-preview">
-      <div className="container">
+    <div id="account-preview" onClick={closeAccountPreview}>
+      <div className="container" onClick={(e) => e.stopPropagation()}>
 
         <div className="header">
-          <img src="/empty-pfp.webp" />
+          <img
+            src={pfpUrl || "/empty-pfp.webp"}
+            onClick={() => previewImage(pfpUrl || "/empty-pfp.webp")}
+          />
         </div>
 
         <main>
@@ -26,7 +99,7 @@ export function AccountPreview() {
                 marginTop: "32px"
               }}
             >
-              Steven Dinata
+              {displayName || "Anonymous"}
             </span>
             <span
               className="text-overflow-support"
@@ -36,7 +109,7 @@ export function AccountPreview() {
                 fontSize: "14px"
               }}
             >
-              @stevendinata
+              {username && `@${username}`}
             </span>
             <span
               className="text-overflow-support"
@@ -48,11 +121,21 @@ export function AccountPreview() {
                 fontSize: "12px"
               }}
             >
-              ID: {import.meta.env.VITE_DEV_UID}
+              ID: {uid || "..."}
             </span>
             <hr />
-            <button>
-              Edit Profile
+            <button
+              onClick={
+                profileType === "own" ? handleEditProfile
+                : profileType === "friend" ? handleMessageFriend
+                : null
+              }
+            >
+              {
+                profileType === "own" ? "Edit Profile"
+                : profileType === "friend" ? "Message Friend"
+                : "Add Friend"
+              }
             </button>
           </div>
           <div className="cell">
@@ -65,7 +148,7 @@ export function AccountPreview() {
               ABOUT ME
             </span>
             <span className="about-me overflow-y-support">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Velit hic distinctio pariatur eligendi, voluptatem quam voluptatibus ducimus ad alias eveniet cupiditate a quos aperiam laborum!
+              {bio || "-"}
             </span>
           </div>
         </main>

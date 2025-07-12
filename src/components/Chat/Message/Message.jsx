@@ -4,7 +4,7 @@ import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
 import { loadImagesAndScrollTo } from "../../../utils";
 
-export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
   
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
@@ -14,7 +14,7 @@ export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRe
   const inputContainerRef = useRef(null);
 
   const replyingMessage = selectedChatMessages?.filter(message => message.id === replyingId)?.[0];
-  const replyingMessageSenderName = chatDisplayNameMap[replyingMessage?.senderUid];
+  const replyingMessageSenderName = chatDataMap[replyingMessage?.senderUid]?.displayName;
 
   const focusMessageInput = () => {
     messageInputRef.current.focus();
@@ -84,8 +84,7 @@ export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRe
         selectedChatUnreadCount={selectedChatUnreadCount}
         selectedChatMessagesAmount={selectedChatMessagesAmount}
         addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
-        chatDisplayNameMap={chatDisplayNameMap}
-        chatPfpUrlMap={chatPfpUrlMap}
+        chatDataMap={chatDataMap}
       />
       
       <div className="footer">

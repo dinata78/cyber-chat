@@ -6,9 +6,7 @@ import { query } from "firebase/database";
 
 export function useChat(ownUid, DMIds) {
   const [ chatMessagesMap, setChatMessagesMap ] = useState({});
-  const [ chatDisplayNameMap, setChatDisplayNameMap ] = useState({});
-  const [ chatUsernameMap, setChatUsernameMap ] = useState({});
-  const [ chatPfpUrlMap, setChatPfpUrlMap ] = useState({});
+  const [ chatDataMap, setChatDataMap ]= useState({});
   const [ messagesAmountMap, setMessagesAmountMap ] = useState({ default: 25 });
 
   const devConversationId = getConversationId(ownUid, import.meta.env.VITE_DEV_UID);
@@ -38,48 +36,30 @@ export function useChat(ownUid, DMIds) {
 
         setChatMessagesMap(prev => {
           const prevMessages = {...prev};
-
           prevMessages[conversationId] = messages.sort((a, b) => a.timeCreated - b.timeCreated);
 
           return prevMessages;
         });
 
 
-        // fetch (subscribe to) message sender's necessary datas
+        // fetch (subscribe to) message sender's datas
         if (conversationId === "globalChat") {
           const uniqueSenderUids = Array.from(new Set(messages.map(message => message.senderUid)));
 
-          const missingDataIds = uniqueSenderUids.filter(id => {
-            return (
-              !chatDisplayNameMap[id]
-              || !chatUsernameMap[id]
-              || !chatPfpUrlMap[id]
-            );
-          });
+          const missingDataIds = uniqueSenderUids.filter(id => !chatDataMap[id]);
 
           if (missingDataIds.length > 0) {
-            const fetchedDisplayNames = {};
-            const fetchedUsernames = {};
-            const fetchedPfpUrls = {};
-      
+            const fetchedDatas = {};
+
             for (const senderUid of missingDataIds) {
               const senderDocRef = doc(db, "users", senderUid);
 
               const unsubscribeDatas = onSnapshot(senderDocRef, (snapshot) => {
                 if (snapshot.exists()) {
-                  fetchedDisplayNames[senderUid] = snapshot.data().displayName;
-                  fetchedUsernames[senderUid] = snapshot.data().username;
-                  fetchedPfpUrls[senderUid] = snapshot.data().pfpUrl;
-                }
-                else {
-                  fetchedDisplayNames[senderUid] = "<???>";
-                  fetchedUsernames[senderUid] = "";
-                  fetchedPfpUrls[senderUid] = "";
+                  fetchedDatas[senderUid] = snapshot.data();
                 }
 
-                setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayNames}));
-                setChatUsernameMap(prev => ({...prev, ...fetchedUsernames}));
-                setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrls}));
+                setChatDataMap(prev => ({...prev, ...fetchedDatas}));
               });
 
               unsubscribeDatasList.push(unsubscribeDatas);
@@ -89,32 +69,17 @@ export function useChat(ownUid, DMIds) {
         else {
           const uid = getOtherUid(conversationId, ownUid) || ownUid;
 
-          if (
-            !chatDisplayNameMap[uid]
-            || !chatUsernameMap[uid]
-            || !chatPfpUrlMap[uid]
-          ) {
-            const fetchedDisplayName = {};
-            const fetchedUsername = {};
-            const fetchedPfpUrl = {};
+          if (!chatDataMap[uid]) {
+            const fetchedDatas = {};
 
             const userDocRef = doc(db, "users", uid);
 
             const unsubscribeDatas = onSnapshot(userDocRef, (snapshot) => {
               if (snapshot.exists()) {
-                fetchedDisplayName[uid] = snapshot.data().displayName;
-                fetchedUsername[uid] = snapshot.data().username;
-                fetchedPfpUrl[uid] = snapshot.data().pfpUrl;
-              }
-              else {
-                fetchedDisplayName[uid] = "<???>";
-                fetchedUsername[uid] = "";
-                fetchedPfpUrl[uid] = "";
+                fetchedDatas[uid] = snapshot.data();
               }
 
-              setChatDisplayNameMap(prev => ({...prev, ...fetchedDisplayName}));
-              setChatUsernameMap(prev => ({...prev, ...fetchedUsername}));
-              setChatPfpUrlMap(prev => ({...prev, ...fetchedPfpUrl}));
+              setChatDataMap(prev => ({...prev, ...fetchedDatas}));
             });
 
             unsubscribeDatasList.push(unsubscribeDatas);
@@ -144,9 +109,7 @@ export function useChat(ownUid, DMIds) {
 
   return {
     chatMessagesMap,
-    chatDisplayNameMap,
-    chatUsernameMap,
-    chatPfpUrlMap,
+    chatDataMap,
     messagesAmountMap,
     setMessagesAmountMap
   };

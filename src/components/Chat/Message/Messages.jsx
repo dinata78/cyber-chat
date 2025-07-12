@@ -5,7 +5,7 @@ import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 import { MessageReport } from "./MessageReport";
 
-export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDisplayNameMap, chatPfpUrlMap }) {
+export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -57,8 +57,8 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
               replyingMessage &&
               <ReplyingMessage
                 replyingMessage={replyingMessage}
-                senderPfpUrl={chatPfpUrlMap?.[replyingMessage?.senderUid]}
-                senderDisplayName={chatDisplayNameMap?.[replyingMessage?.senderUid]}
+                senderPfpUrl={chatDataMap[replyingMessage?.senderUid]?.pfpUrl}
+                senderDisplayName={chatDataMap[replyingMessage?.senderUid]?.displayName}
               />
             }
 
@@ -84,8 +84,7 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
               isDeleted={message.isDeleted}
               isEdited={message.isEdited}
               isSending={message.isSending}
-              senderPfpUrl={chatPfpUrlMap[currentSenderUid]}
-              senderDisplayName={chatDisplayNameMap[currentSenderUid] || "..."}
+              senderData={chatDataMap[currentSenderUid] || {}}
               timeCreated={currentTimeCreated}
               type={message.type}
               content={message.content}
@@ -128,7 +127,7 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
             <span style={{wordBreak: "break-word", color: "#ddf"}}>
               {
                 selectedChatUid === "globalChat" ? "Global Chat"
-                : chatDisplayNameMap[selectedChatUid] || "..."
+                : chatDataMap[selectedChatUid]?.displayName || "..."
               }
             </span>
           </span>

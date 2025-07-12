@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
-import { AccountArrowDownSVG, AccountPlusSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
+import { AccountArrowDownSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
 import { getConversationId, getIndicatorClass } from "../../utils";
 import { Settings } from "./Settings/Settings";
 import { useIsAuth } from "../../custom-hooks/useIsAuth";
 import { get, ref, update } from "firebase/database";
-import { realtimeDb } from "../../../firebase";
+import { db, realtimeDb } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import { useStatusByUid } from "../../custom-hooks/useStatusByUid";
 import { Chats } from "./Chats/Chats";
@@ -21,6 +21,19 @@ import { useHandleLastMessageModified } from "../../custom-hooks/useHandleLastMe
 import { useUnreadCount } from "../../custom-hooks/useUnreadCount";
 import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
 import { ChatDialog } from "./ChatDialog/ChatDialog";
+import { previewAccount } from "../AccountPreview";
+import { addDoc, collection } from "firebase/firestore";
+
+let openSettingsGlobal; 
+let chatFriendGlobal;
+
+export function openSettings() {
+  openSettingsGlobal?.();
+}
+
+export async function chatFriend(ownUid, uid) {
+  await chatFriendGlobal?.(ownUid, uid);
+}
 
 export function Chat() {
   const [ currentNav, setCurrentNav ] = useState("chats");
@@ -44,9 +57,7 @@ export function Chat() {
 
   const {
     chatMessagesMap,
-    chatDisplayNameMap,
-    chatUsernameMap,
-    chatPfpUrlMap,
+    chatDataMap,
     messagesAmountMap,
     setMessagesAmountMap
   } = useChat(ownData.uid, DMIds);
@@ -78,8 +89,27 @@ export function Chat() {
     });
   }
 
+  const messageFriend = async (ownUid, uid) => {
+    if (!ownUid || !uid) return;
+
+    const conversationId = getConversationId(ownUid, uid);
+    const isInDM = DMIds.includes(conversationId);
+
+    if (!isInDM) {
+      const activeDMRef = collection(db, "users", ownUid, "activeDM");
+      await addDoc(activeDMRef, { conversationId: conversationId });
+    }
+    setSelectedChatUid(uid);
+    setIsSidebarVisible(false);
+  }  
+
   useEffect(() => {
     isFirstRender.current = false;
+  }, []);
+
+  useEffect(() => {
+    openSettingsGlobal = () => setIsSettingsVisible(true);
+    chatFriendGlobal = messageFriend;
   }, []);
 
   useEffect(() => {
@@ -164,14 +194,13 @@ export function Chat() {
             <span className="display-name text-overflow-support">
               {
                 selectedChatUid === "globalChat" ? "Global Chat"
-                : chatDisplayNameMap[selectedChatUid] || "Loading..."
+                : chatDataMap[selectedChatUid]?.displayName || "Loading..."
               }
             </span>
             <span className="username text-overflow-support">
               {
-                chatUsernameMap[selectedChatUid] ?
-                  `@${chatUsernameMap[selectedChatUid]}`
-                : null
+                chatDataMap[selectedChatUid]?.username &&
+                `@${chatDataMap[selectedChatUid].username}`
               }
             </span>
           </div>
@@ -249,9 +278,7 @@ export function Chat() {
                   ownUid={ownData.uid}
                   friendDatas={friendDatas}
                   statusMap={statusMap}
-                  setSelectedChatUid={setSelectedChatUid}
-                  setIsSidebarVisible={setIsSidebarVisible}
-                  DMIds={DMIds}
+                  messageFriend={messageFriend}
                 />
             }
 
@@ -259,7 +286,19 @@ export function Chat() {
 
           <div className="bottom">
 
-            <div tabIndex={0} className="account">
+            <div
+              tabIndex={0}
+              className="account"
+              onClick={() => {
+                previewAccount({
+                  uid: ownData.uid,
+                  pfpUrl: ownData.pfpUrl,
+                  displayName: ownData.displayName,
+                  username: ownData.displayName,
+                  bio: ownData.bio
+                });
+              }}
+            >
               <div className="pfp">
                 <img src={ownData.pfpUrl || "/empty-pfp.webp"} />
                 <div className={getIndicatorClass(ownStatus)}></div>
@@ -306,8 +345,7 @@ export function Chat() {
           clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
           selectedChatMessagesAmount={selectedChatMessagesAmount}
           addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
-          chatDisplayNameMap={chatDisplayNameMap}
-          chatPfpUrlMap={chatPfpUrlMap}
+          chatDataMap={chatDataMap}
         />
 
         {

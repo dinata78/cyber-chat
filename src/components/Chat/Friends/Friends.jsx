@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { AccountPlusSVG, PlusSVG, SearchSVG } from "../../svg";
+import { PlusSVG, SearchSVG } from "../../svg";
 import { FriendCard } from "./FriendCard";
-import { getConversationId, isContentSearched } from "../../../utils";
+import { isContentSearched } from "../../../utils";
 
-export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, setIsSidebarVisible, DMIds }) {
+export function Friends({ ownUid, friendDatas, statusMap, messageFriend }) {
   const [ searchedValue, setSearchedValue ] = useState("");
 
   const filteredFriendDatas = friendDatas.filter(friendData => {
@@ -38,21 +38,17 @@ export function Friends({ ownUid, friendDatas, statusMap, setSelectedChatUid, se
         {
           filteredFriendDatas.length > 0 &&
           filteredFriendDatas.map((friendData, index) => {
-            const conversationId = getConversationId(ownUid, friendData.uid);
-
             return (
               <FriendCard
                 key={index + friendData.uid}
                 ownUid={ownUid}
                 friendUid={friendData.uid}
+                friendPfpUrl={friendData.pfpUrl}
                 friendDisplayName={friendData.displayName}
                 friendUsername={friendData.username}
+                friendBio={friendData.bio}
                 friendStatus={statusMap[friendData.uid]}
-                friendPfpUrl={friendData.pfpUrl}
-                setSelectedChatUid={setSelectedChatUid}
-                setIsSidebarVisible={setIsSidebarVisible}
-                conversationId={conversationId}
-                isInDM={DMIds.includes(conversationId)}
+                messageFriend={messageFriend}
               />
             )
           })

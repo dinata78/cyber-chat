@@ -5,8 +5,9 @@ import { EditInput } from "./EditInput";
 import { EditedMark } from "./EditedMark";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
+import { previewAccount } from "../../AccountPreview";
 
-export function MessageCard({ focusMessageInput, conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderPfpUrl, senderDisplayName, timeCreated, type, content }) {
+export function MessageCard({ focusMessageInput, conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderData, timeCreated, type, content }) {
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
   const [ cursorYPos, setCursorYPos ] = useState(null);
@@ -51,8 +52,8 @@ export function MessageCard({ focusMessageInput, conversationId, messageId, isHo
     setIsReporting(true);
     setReportingData({
       messageId: messageId,
-      pfpUrl: senderPfpUrl,
-      displayName: senderDisplayName,
+      pfpUrl: senderData?.pfpUrl,
+      displayName: senderData?.displayName,
       timeCreated: timeCreated,
       type: type,
       content: content,
@@ -61,6 +62,15 @@ export function MessageCard({ focusMessageInput, conversationId, messageId, isHo
     setHoveredId(null);
   }
 
+  const handlePreviewAccount = () => {
+    previewAccount({
+      uid: senderData?.uid,
+      pfpUrl: senderData?.pfpUrl,
+      displayName: senderData?.displayName,
+      username: senderData?.username,
+      bio: senderData?.bio
+    });
+  }
 
   return (
     <div
@@ -81,12 +91,21 @@ export function MessageCard({ focusMessageInput, conversationId, messageId, isHo
       {
         !isSubset || isReplyingId ?
           <>
-            <img className="pfp" src={senderPfpUrl || "/empty-pfp.webp"} />
+            <img
+              className="pfp"
+              src={senderData?.pfpUrl || "/empty-pfp.webp"}
+              onClick={handlePreviewAccount}
+            />
 
             <div className="right">
 
               <div className="top">
-                <span className="name text-overflow-support">{senderDisplayName}</span>
+                <span
+                  className="name text-overflow-support"
+                  onClick={handlePreviewAccount}
+                >
+                  {senderData?.displayName}
+                </span>
                 <span className="time">{timeCreated}</span>
               </div>
 
