@@ -2343,13 +2343,14 @@ button {
     font-size: 14px;
   }
 
+  #account-preview > .container,
   #account-removal > .container {
     align-self: flex-end;
     width: 100vw;
-    height: max-content;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
+
 
   #message-modal > .container {
     align-self: flex-end;
