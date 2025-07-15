@@ -526,6 +526,7 @@ button {
   align-items: end;
 
   img {
+    cursor: pointer;
     position: relative;
     bottom: -36px;
     width: 84px;

@@ -6,13 +6,15 @@ import { chatFriend, openSettings } from "./Chat/Chat";
 
 let previewAccountGlobal;
 
-export function previewAccount(accountData) {
+export function previewAccount(data) {
   previewAccountGlobal?.(
-    accountData.uid,
-    accountData.pfpUrl,
-    accountData.displayName,
-    accountData.username,
-    accountData.bio
+    data.uid,
+    data.pfpUrl,
+    data.displayName,
+    data.username,
+    data.bio,
+    data.DMIds,
+    data.isDMIdsLoading
   );
 }
 
@@ -21,7 +23,14 @@ export function AccountPreview() {
   const [ pfpUrl, setPfpUrl ]= useState("");
   const [ displayName, setDisplayName ] = useState("");
   const [ username, setUsername ] = useState("");
-  const [ bio, setBio ]= useState("");
+  const [ bio, setBio ] = useState("");
+  const [ DMIds, setDMIds ] = useState(undefined);
+  const [ isDMIdsLoading, setIsDMIdsLoading ] = useState(undefined);
+
+  useEffect(() => {
+    console.log(DMIds)
+    console.log(isDMIdsLoading)
+  }, [DMIds, isDMIdsLoading])
 
   const ownUid = auth.currentUser?.uid;
 
@@ -38,6 +47,8 @@ export function AccountPreview() {
     setDisplayName("");
     setUsername("");
     setBio("");
+    setDMIds(undefined);
+    setIsDMIdsLoading(undefined);
   }
 
   const handleEditProfile = () => {
@@ -46,17 +57,19 @@ export function AccountPreview() {
   }
 
   const handleMessageFriend = async () => {
-    await chatFriend(ownUid, uid);
+    await chatFriend(ownUid, uid, DMIds, isDMIdsLoading);
     closeAccountPreview();
   }
 
   useEffect(() => {
-    previewAccountGlobal = (uid, pfpUrl, displayName, username, bio) => {
+    previewAccountGlobal = (uid, pfpUrl, displayName, username, bio, DMIds, isDMIdsLoading) => {
       setUid(uid);
       setPfpUrl(pfpUrl);
       setDisplayName(displayName);
       setUsername(username);
       setBio(bio);
+      setDMIds(DMIds);
+      setIsDMIdsLoading(isDMIdsLoading);
     }
   }, []);
 

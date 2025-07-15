@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { useOwnData } from "../../custom-hooks/useOwnData";
 import { useSetOwnStatus } from "../../custom-hooks/useSetOwnStatus";
 import { AccountArrowDownSVG, ChatsNavSVG, CloseSVG, FriendsNavSVG, InboxSVG, MenuSVG, SettingSVG, ThemeSVG } from "../svg";
@@ -31,9 +31,11 @@ export function openSettings() {
   openSettingsGlobal?.();
 }
 
-export async function chatFriend(ownUid, uid) {
-  await chatFriendGlobal?.(ownUid, uid);
+export async function chatFriend(ownUid, uid, DMIds, isDMIdsLoading) {
+  await chatFriendGlobal?.(ownUid, uid, DMIds, isDMIdsLoading);
 }
+
+export const DMContext = createContext(null);
 
 export function Chat() {
   const [ currentNav, setCurrentNav ] = useState("chats");
@@ -50,7 +52,7 @@ export function Chat() {
   const { ownData } = useOwnData();
   const [ ownStatus ] = useStatusByUid(ownData.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
-  const { DMIds, DMDatas } = useDM(ownData.uid);
+  const { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading } = useDM(ownData.uid);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);
 
   const { statusMap } = useStatus(friendUids);
@@ -89,11 +91,14 @@ export function Chat() {
     });
   }
 
-  const messageFriend = async (ownUid, uid) => {
-    if (!ownUid || !uid) return;
+  const messageFriend = async (ownUid, uid, DMIds, isDMIdsLoading) => {
+    if (!ownUid || !uid || isDMIdsLoading) return;
 
     const conversationId = getConversationId(ownUid, uid);
-    const isInDM = DMIds.includes(conversationId);
+    const isInDM = DMIds?.includes(conversationId);
+
+    console.log(DMIds)
+    console.log(isDMIdsLoading)
 
     if (!isInDM) {
       const activeDMRef = collection(db, "users", ownUid, "activeDM");
@@ -274,12 +279,14 @@ export function Chat() {
                   setSelectedChatUid={setSelectedChatUid}
                   setIsSidebarVisible={setIsSidebarVisible}
                 />
-              : <Friends
-                  ownUid={ownData.uid}
-                  friendDatas={friendDatas}
-                  statusMap={statusMap}
-                  messageFriend={messageFriend}
-                />
+              : <DMContext.Provider value={{ DMIds, isDMIdsLoading }}>
+                  <Friends
+                    ownUid={ownData.uid}
+                    friendDatas={friendDatas}
+                    statusMap={statusMap}
+                    messageFriend={messageFriend}
+                  />
+                </DMContext.Provider>
             }
 
           </div>
@@ -334,19 +341,21 @@ export function Chat() {
 
         </aside>
         
-        <Message
-          ownData={ownData}
-          isSidebarVisible={isSidebarVisible}
-          selectedChatUid={selectedChatUid}
-          messagesRef={messagesRef}
-          messageInputRef={messageInputRef}
-          selectedChatMessages={selectedChatMessages}
-          selectedChatUnreadCount={selectedChatUnreadCount}
-          clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
-          selectedChatMessagesAmount={selectedChatMessagesAmount}
-          addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
-          chatDataMap={chatDataMap}
-        />
+        <DMContext.Provider value={{ DMIds, isDMIdsLoading }}>
+          <Message
+            ownData={ownData}
+            isSidebarVisible={isSidebarVisible}
+            selectedChatUid={selectedChatUid}
+            messagesRef={messagesRef}
+            messageInputRef={messageInputRef}
+            selectedChatMessages={selectedChatMessages}
+            selectedChatUnreadCount={selectedChatUnreadCount}
+            clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
+            selectedChatMessagesAmount={selectedChatMessagesAmount}
+            addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
+            chatDataMap={chatDataMap}
+          />
+        </DMContext.Provider>
 
         {
           currentDialogNav &&

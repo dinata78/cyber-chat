@@ -1,8 +1,11 @@
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
 import { previewAccount } from "../../AccountPreview";
+import { useContext } from "react";
+import { DMContext } from "../Chat";
 
 export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend }) {
+  const { DMIds, isDMIdsLoading } = useContext(DMContext);
 
   const handleRemoveFriend = async () => {
 
@@ -38,7 +41,7 @@ export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName,
       <div className="buttons">
         <button onClick={(e) => {
           e.stopPropagation();
-          messageFriend(ownUid, friendUid);
+          messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading);
         }}>
           <ChatSVG />
         </button>

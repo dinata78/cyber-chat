@@ -6,6 +6,8 @@ import { getOtherUid } from "../utils";
 export function useDM(uid) {
   const [DMIds, setDMIds] = useState([]);
   const [DMDatas, setDMDatas] = useState([]);
+  const [isDMIdsLoading, setIsDMIdsLoading] = useState(true);
+  const [isDMDatasLoading, setIsDMDatasLoading] = useState(true);
 
   const otherUids = DMIds.map(DMId => getOtherUid(DMId, uid));
 
@@ -22,13 +24,14 @@ export function useDM(uid) {
         const fetchedDMIds = snapshot.docs.map(doc => doc.data().conversationId);
         setDMIds(fetchedDMIds);
       }
+      setIsDMIdsLoading(false);
     });
 
     return () => unsubscribe();
   }, [uid]);
 
   useEffect(() => {
-    if (!DMIds.length) {
+    if (isDMIdsLoading || !DMIds.length) {
       setDMDatas([]);
       return;
     }
@@ -54,6 +57,7 @@ export function useDM(uid) {
 
           return previousDatas.filter(data => otherUids.includes(data.uid));
         });
+        setIsDMDatasLoading(false);
       });
 
       unsubscribeList.push(unsubscribe);
@@ -70,5 +74,5 @@ export function useDM(uid) {
 
   }, [DMIds]);
 
-  return { DMIds, DMDatas };
+  return { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading };
 }
