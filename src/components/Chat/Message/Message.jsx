@@ -4,7 +4,7 @@ import { MessageInput } from "./MessageInput";
 import { ArrowDownSVG } from "../../svg";
 import { loadImagesAndScrollTo } from "../../../utils";
 
-export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
+export function Message({ ownData, isSidebarVisible, closeSidebar, selectedChatUid, messagesRef, messageInputRef, selectedChatMessages, selectedChatUnreadCount, clearSelectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
   
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
@@ -118,7 +118,7 @@ export function Message({ ownData, isSidebarVisible, selectedChatUid, messagesRe
 
       {
         isSidebarVisible &&
-        <div className="dark-overlay"></div>
+        <div className="dark-overlay" onClick={closeSidebar}></div>
       }
 
     </div>

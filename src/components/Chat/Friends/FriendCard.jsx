@@ -7,21 +7,30 @@ import { DMContext } from "../Chat";
 export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend }) {
   const { DMIds, isDMIdsLoading } = useContext(DMContext);
 
-  const handleRemoveFriend = async () => {
+  const handlePreviewAccount = () => previewAccount({
+    uid: friendUid,
+    pfpUrl: friendPfpUrl,
+    displayName: friendDisplayName,
+    username: friendUsername,
+    bio: friendBio,
+    DMIds: DMIds,
+    isDMIdsLoading: isDMIdsLoading
+  });
 
+  const handleRemoveFriend = async () => {
+    return;
   }
 
   return (
     <div
       tabIndex={0}
       className="friend-card"
-      onClick={() => previewAccount({
-        uid: friendUid,
-        pfpUrl: friendPfpUrl,
-        displayName: friendDisplayName,
-        username: friendUsername,
-        bio: friendBio
-      })}
+      onClick={handlePreviewAccount}
+      onKeyDown={(e) => {
+        if (e.key === " " || e.key === "Enter") {
+          handlePreviewAccount();
+        }
+      }}
     >
 
       <div className="pfp">
@@ -39,16 +48,22 @@ export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName,
       </div>
 
       <div className="buttons">
-        <button onClick={(e) => {
-          e.stopPropagation();
-          messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading);
-        }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading);
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <ChatSVG />
         </button>
-        <button onClick={(e) => {
-          e.stopPropagation();
-          handleRemoveFriend();
-        }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRemoveFriend();
+          }}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <AccountMinusSVG />
         </button>
       </div>

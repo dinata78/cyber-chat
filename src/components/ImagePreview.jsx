@@ -3,6 +3,7 @@ import { CloseSVG, DownloadSVG, FileQuestionSVG, LinkCopiedSVG, LinkSVG, OpenInN
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 import { notify } from "./Notification";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "./modalStack";
 
 let previewImageGlobal = null;
 
@@ -134,19 +135,25 @@ export function ImagePreview() {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
-        closeImagePreview();
+        if (getTopModalFromStack() === "image-preview") {
+          closeImagePreview();
+          removeModalFromStack("image-preview");
+        }
       }
     }
 
     if (url) {
       document.addEventListener("keydown", handleEscape);
+      addModalToStack("image-preview");
     }
     else {
       document.removeEventListener("keydown", handleEscape);
+      removeModalFromStack("image-preview");
     }
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
+      removeModalFromStack("image-preview");
     }
   }, [url]);
 

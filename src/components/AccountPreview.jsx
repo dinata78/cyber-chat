@@ -3,6 +3,7 @@ import { auth } from "../../firebase";
 import { previewImage } from "./ImagePreview";
 import { useFriendList } from "../custom-hooks/useFriendList";
 import { chatFriend, openSettings } from "./Chat/Chat";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "./modalStack";
 
 let previewAccountGlobal;
 
@@ -20,17 +21,12 @@ export function previewAccount(data) {
 
 export function AccountPreview() {
   const [ uid, setUid ] = useState("");
-  const [ pfpUrl, setPfpUrl ]= useState("");
+  const [ pfpUrl, setPfpUrl ] = useState("");
   const [ displayName, setDisplayName ] = useState("");
   const [ username, setUsername ] = useState("");
   const [ bio, setBio ] = useState("");
   const [ DMIds, setDMIds ] = useState(undefined);
   const [ isDMIdsLoading, setIsDMIdsLoading ] = useState(undefined);
-
-  useEffect(() => {
-    console.log(DMIds)
-    console.log(isDMIdsLoading)
-  }, [DMIds, isDMIdsLoading])
 
   const ownUid = auth.currentUser?.uid;
 
@@ -76,18 +72,26 @@ export function AccountPreview() {
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
-        closeAccountPreview();
+        if (getTopModalFromStack() === "account-preview") {
+          closeAccountPreview();
+          removeModalFromStack();
+        }
       }
     }
 
     if (uid) {
       document.addEventListener("keydown", handleEscape);
+      addModalToStack("account-preview");
     }
     else {
       document.addEventListener("keydown", handleEscape);
+      removeModalFromStack("account-preview");
     }
 
-    return () => document.removeEventListener("keydown", handleEscape)
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      removeModalFromStack("account-preview");
+    }
   }, [uid])
 
   if (!uid) return null;

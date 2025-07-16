@@ -4,6 +4,7 @@ import { EmailAuthProvider } from "firebase/auth/web-extension";
 import { deleteUser, reauthenticateWithCredential } from "firebase/auth";
 import { EyeOffSVG, EyeSVG } from "../../svg";
 import { deleteOwnConversations, deleteOwnData, deleteOwnStatusFromRtdb } from "../../../utils";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../../modalStack";
 
 
 export function AccountRemovalModal({ closeModal, inputRef }) {
@@ -41,6 +42,25 @@ export function AccountRemovalModal({ closeModal, inputRef }) {
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus()
   }, [isPasswordVisible]);
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        if (getTopModalFromStack() === "account-removal") {
+          closeModal();
+          removeModalFromStack("account-removal");
+        }
+      }
+    }
+
+    addModalToStack("account-removal");
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      removeModalFromStack("account-removal");
+      document.removeEventListener("keydown", handleEscape);
+    }
+  }, []);
 
   return (
     <div id="account-removal" onClick={closeModal}>

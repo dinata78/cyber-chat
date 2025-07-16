@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AccountNavSVG, CloseSVG, PrivacyNavSVG, ProfileNavSVG } from "../../svg";
 import { ProfilePicture } from "./ProfilePicture";
 import { Username } from "./Username";
@@ -10,13 +10,32 @@ import { SignOut } from "./SignOut";
 import { PasswordReset } from "./PasswordReset";
 import { AccountRemoval } from "./AccountRemoval";
 import { UID } from "./UID";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../../modalStack";
 
-export function Settings({ ownData, ownStatus, setIsSettingsVisible }) {
+export function Settings({ ownData, ownStatus, closeSettings }) {
   const [ currentNav, setCurrentNav ] = useState("profile");
 
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        if (getTopModalFromStack() === "settings") {
+          closeSettings();
+          removeModalFromStack("settings");
+        }
+      }
+    }
+     
+    addModalToStack("settings");
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      removeModalFromStack("settings");
+      document.removeEventListener("keydown", handleEscape);
+    }
+  }, []);
+
   return (
-    <div id="chat-settings" onClick={() => setIsSettingsVisible(false)}
-    >
+    <div id="chat-settings" onClick={closeSettings}>
       <div
         className="container"
         onClick={(e) => e.stopPropagation()}
@@ -24,7 +43,7 @@ export function Settings({ ownData, ownStatus, setIsSettingsVisible }) {
         
         <div id="settings-top">
           <h1>Settings</h1>
-          <button onClick={() => setIsSettingsVisible(false)}>
+          <button onClick={closeSettings}>
             <CloseSVG />
           </button>
         </div>

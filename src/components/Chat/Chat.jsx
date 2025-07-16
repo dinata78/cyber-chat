@@ -23,6 +23,9 @@ import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
 import { ChatDialog } from "./ChatDialog/ChatDialog";
 import { previewAccount } from "../AccountPreview";
 import { addDoc, collection } from "firebase/firestore";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
+
+export const DMContext = createContext(null);
 
 let openSettingsGlobal; 
 let chatFriendGlobal;
@@ -34,8 +37,6 @@ export function openSettings() {
 export async function chatFriend(ownUid, uid, DMIds, isDMIdsLoading) {
   await chatFriendGlobal?.(ownUid, uid, DMIds, isDMIdsLoading);
 }
-
-export const DMContext = createContext(null);
 
 export function Chat() {
   const [ currentNav, setCurrentNav ] = useState("chats");
@@ -70,7 +71,6 @@ export function Chat() {
 
   const isFirstRender = useRef(true);
 
-  const toggleSidebarRef = useRef(null);
   const sidebarRef = useRef(null);
 
   const requestsButtonRef = useRef(null);
@@ -82,6 +82,16 @@ export function Chat() {
   const conversationId = getConversationId(ownData.uid, selectedChatUid);
   const selectedChatMessages = chatMessagesMap[conversationId] || [];
   const selectedChatMessagesAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
+
+  const previewOwnAccount = () => {
+    previewAccount({
+      uid: ownData.uid,
+      pfpUrl: ownData.pfpUrl,
+      displayName: ownData.displayName,
+      username: ownData.displayName,
+      bio: ownData.bio,
+    });
+  }
 
   const addSelectedChatMessagesAmount = (amount) => {
     setMessagesAmountMap(prev => {
@@ -97,16 +107,13 @@ export function Chat() {
     const conversationId = getConversationId(ownUid, uid);
     const isInDM = DMIds?.includes(conversationId);
 
-    console.log(DMIds)
-    console.log(isDMIdsLoading)
-
     if (!isInDM) {
       const activeDMRef = collection(db, "users", ownUid, "activeDM");
       await addDoc(activeDMRef, { conversationId: conversationId });
     }
     setSelectedChatUid(uid);
     setIsSidebarVisible(false);
-  }  
+  }
 
   useEffect(() => {
     isFirstRender.current = false;
@@ -118,26 +125,32 @@ export function Chat() {
   }, []);
 
   useEffect(() => {
-    const handleClick = (e) => {
-      if (
-        isSidebarVisible &&
-        toggleSidebarRef.current &&
-        sidebarRef.current &&
-        !toggleSidebarRef.current.contains(e.target) &&
-        !sidebarRef.current.contains(e.target)
-      ) {
-        setIsSidebarVisible(false);
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+        if (getTopModalFromStack() === "sidebar") {
+          setIsSidebarVisible(false);
+          removeModalFromStack("sidebar");
+        }
       }
     }
 
     if (isSidebarVisible) {
-      document.addEventListener("click", handleClick);      
+      addModalToStack("sidebar");
+      document.addEventListener("keydown", handleEscape);
     }
     else {
-      document.removeEventListener("click", handleClick);
+      removeModalFromStack("sidebar");
+      document.removeEventListener("keydown", handleEscape);
     }
 
-    return () => document.removeEventListener("click", handleClick);
+    return () => {
+      removeModalFromStack("sidebar");
+      document.removeEventListener("keydown", handleEscape);
+    }
   }, [isSidebarVisible]);
 
   useEffect(() => {
@@ -183,12 +196,15 @@ export function Chat() {
           <img src="./cyberchat-logo.webp" alt="CyberChat Logo" />
         </div>
 
-        <div id="chat-header">
+        <div id="chat-header" onClick={() => setIsSidebarVisible(false)}>
 
           <button
-            ref={toggleSidebarRef}
             className="toggle-sidebar"
-            onClick={() => setIsSidebarVisible(prev => !prev)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentDialogNav(null);
+              setIsSidebarVisible(prev => !prev);
+            }}
           >
             <div className="wrapper">
               {!isSidebarVisible ? <MenuSVG /> : <CloseSVG />}
@@ -296,14 +312,11 @@ export function Chat() {
             <div
               tabIndex={0}
               className="account"
-              onClick={() => {
-                previewAccount({
-                  uid: ownData.uid,
-                  pfpUrl: ownData.pfpUrl,
-                  displayName: ownData.displayName,
-                  username: ownData.displayName,
-                  bio: ownData.bio
-                });
+              onClick={previewOwnAccount}
+              onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Enter") {
+                  previewOwnAccount();
+                }
               }}
             >
               <div className="pfp">
@@ -328,7 +341,9 @@ export function Chat() {
 
             <div className="buttons">
               <button 
-                onClick={() => theme === "light" ? setTheme("dark") : setTheme("light")}
+                onClick={() => {
+                  setTheme(prev => prev === "light" ? "dark" : "light");
+                }}
               >
                 <ThemeSVG theme={theme} />
               </button>
@@ -345,6 +360,7 @@ export function Chat() {
           <Message
             ownData={ownData}
             isSidebarVisible={isSidebarVisible}
+            closeSidebar={() => setIsSidebarVisible(false)}
             selectedChatUid={selectedChatUid}
             messagesRef={messagesRef}
             messageInputRef={messageInputRef}
@@ -374,7 +390,7 @@ export function Chat() {
         <Settings
           ownData={ownData}
           ownStatus={ownStatus}
-          setIsSettingsVisible={setIsSettingsVisible}
+          closeSettings={() => setIsSettingsVisible(false)}
         />
       }
 

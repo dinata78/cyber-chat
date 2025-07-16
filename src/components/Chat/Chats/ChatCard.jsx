@@ -21,7 +21,7 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
       className={isSelected ? "chat-card selected" : "chat-card"}
       onClick={handleChatCardOnClick}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === " " || e.key === "Enter") {
           e.preventDefault();
           handleChatCardOnClick();
         }
@@ -63,7 +63,16 @@ export function ChatCard({ ownUid, uid, displayName, username, status, pfpUrl, u
 
       {
         isSelected && isDM &&
-        <button className="hide-dm" onClick={hideDM}>
+        <button
+          className="hide-dm"
+          onClick={hideDM}
+          onKeyDown={(e) => {
+            if (e.key === " " || e.key === "Enter") {
+              e.stopPropagation();
+              hideDM();
+            }
+          }}
+        >
           <CloseSVG />
         </button>
       }
