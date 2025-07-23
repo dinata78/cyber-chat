@@ -20,5 +20,5 @@ export function useStatusByUid(uid) {
     
   }, [uid]);
 
-  return [ status ];
+  return status;
 }

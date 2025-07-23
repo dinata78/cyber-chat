@@ -51,7 +51,7 @@ export function Chat() {
 
   const { isAuth } = useIsAuth();
   const { ownData } = useOwnData();
-  const [ ownStatus ] = useStatusByUid(ownData.uid);
+  const ownStatus = useStatusByUid(ownData.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
   const { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading } = useDM(ownData.uid);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);
@@ -102,12 +102,12 @@ export function Chat() {
   }
 
   const messageFriend = async (ownUid, uid, DMIds, isDMIdsLoading) => {
-    if (!ownUid || !uid || isDMIdsLoading) return;
+    if (!ownUid || !uid || isDMIdsLoading || ownUid === uid) return;
 
     const conversationId = getConversationId(ownUid, uid);
     const isInDM = DMIds?.includes(conversationId);
 
-    if (!isInDM) {
+    if (!isInDM && uid !== import.meta.env.VITE_DEV_UID) {
       const activeDMRef = collection(db, "users", ownUid, "activeDM");
       await addDoc(activeDMRef, { conversationId: conversationId });
     }
@@ -298,6 +298,7 @@ export function Chat() {
               : <DMContext.Provider value={{ DMIds, isDMIdsLoading }}>
                   <Friends
                     ownUid={ownData.uid}
+                    friendUids={friendUids}
                     friendDatas={friendDatas}
                     statusMap={statusMap}
                     messageFriend={messageFriend}

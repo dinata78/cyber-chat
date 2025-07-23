@@ -1,11 +1,8 @@
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
 import { previewAccount } from "../../AccountPreview";
-import { useContext } from "react";
-import { DMContext } from "../Chat";
 
-export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend }) {
-  const { DMIds, isDMIdsLoading } = useContext(DMContext);
+export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend, DMIds, isDMIdsLoading }) {
 
   const handlePreviewAccount = () => previewAccount({
     uid: friendUid,

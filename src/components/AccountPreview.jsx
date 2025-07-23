@@ -33,8 +33,10 @@ export function AccountPreview() {
   const { friendUids } = useFriendList(ownUid);
 
   const profileType = 
-    uid === ownUid ? "own"
-    : friendUids.includes(uid) ? "friend"
+    uid === ownUid ?
+      "own"
+    : friendUids.includes(uid) || uid == import.meta.env.VITE_DEV_UID  ?
+      "friend"
     : "new"
 
   const closeAccountPreview = () => {

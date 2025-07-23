@@ -1,6 +1,5 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where, writeBatch } from "firebase/firestore";
 import { auth, db, realtimeDb } from "../firebase";
-import { removeFriend } from "./components/Chat/_Friends/modifyFriendList";
 import { ref, remove } from "firebase/database";
 
 export function getConversationId(uid1, uid2) {
@@ -131,17 +130,6 @@ export function getIndicatorClass(status) {
   else if (status === "hidden") return "indicator hidden";
 }
 
-export function capitalizeFirstLetter(str) {
-  return (
-    str?.charAt(0).toUpperCase()
-    + str?.slice(1)
-  )
-}
-
-export function normalizeSpaces(str) {
-  return str?.replace(/\s+/g, ' ').trim();
-}
-
 export function processDate(dateObject) {
   if (!(dateObject instanceof Date)) return null;
 
@@ -178,11 +166,7 @@ export async function deleteOwnConversations() {
   
       let conversationParticipants = data.participants;
       conversationParticipants.splice(conversationParticipants.indexOf(auth.currentUser.uid), 1)
-    
-      if (conversationParticipants.length && conversationParticipants[0] !== import.meta.env.VITE_DEV_UID) {
-        await removeFriend(auth.currentUser.uid, conversationParticipants[0]);
-      }
-  
+      
       await removeConversationFromDb(conversationDoc.id);
     });
   }
@@ -232,32 +216,6 @@ export async function deleteOwnStatusFromRtdb() {
   catch (error) {
     throw new Error("Error occured while deleting user status path from realtime database: " + error.message);
   }
-}
-
-export function setCursorPosition(elementRef, offset) {
-  const selection = window.getSelection();
-  const newRange = document.createRange();
-
-  if (offset === "end") {
-    offset = elementRef.current.childNodes[0]?.length;
-  }
-
-  if (elementRef.current.childNodes.length > 0) {
-    newRange.setStart(
-      elementRef.current.childNodes[0],
-      Math.min(offset, elementRef.current.childNodes[0].length)
-    );
-    newRange.setEnd(
-      elementRef.current.childNodes[0],
-      Math.min(offset, elementRef.current.childNodes[0].length)
-    );
-    selection.removeAllRanges();
-    selection.addRange(newRange);  
-  }
-  else {
-    elementRef.current.focus();
-  }
-
 }
 
 export const isContentSearched = (contentArray, searchedValue) => {

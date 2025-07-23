@@ -1000,7 +1000,7 @@ button {
     fill: #ffffff99;
   }
 
-  button.add-friend {
+  button.toggle-add-friend {
     background-color: #8800dd;
     height: 32px;
     margin-inline: 6px;
@@ -1015,7 +1015,7 @@ button {
     font-size: 14px;
   }
 
-  button.add-friend svg {
+  button.toggle-add-friend svg {
     fill: white;
     width: 18px;
     height: 18px;
