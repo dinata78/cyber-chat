@@ -1,32 +1,198 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onDocumentUpdated } = require("firebase-functions/v2/firestore");
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+initializeApp();
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+function getConversationId(uid1, uid2) {
+  if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
+  if (uid1 === "globalChat" || uid2 === "globalChat") return "globalChat";
+  if (uid1 === uid2) return uid1;
+  if (uid1.length !== uid2.length) return null;
+  
+  let i = 0;
+  while (true) {
+    const uid1Charcode = uid1.charCodeAt(i);
+    const uid2Charcode = uid2.charCodeAt(i);
+
+    if (uid1Charcode < uid2Charcode) return uid1 + uid2;
+    else if (uid1Charcode > uid2Charcode) return uid2 + uid1;
+    else i++;
+  }
+};
+
+
+exports.testFunc = onCall(async (request) => {
+  return {
+    ok: true,
+    uid: request.auth?.uid,
+    args: request.data,
+    currentTime: new Date().getTime(),
+  };
+});
+
+exports.sendFriendRequest = onCall(async (request) => {
+  let ok;
+
+  const senderUid = request.auth?.uid;
+  const targetUid = request.data?.uid;
+
+  if (!senderUid || !targetUid) return;
+
+  try {
+    await getFirestore()
+    .collection("requests")
+    .doc(senderUid + targetUid)
+    .create({
+      from: senderUid,
+      to: targetUid,
+      status: "pending",
+      timeCreated: FieldValue.serverTimestamp()
+    })
+
+    ok = true;
+  }
+  catch {
+    ok = false;
+  }
+
+  return { ok }
+});
+
+exports.acceptFriendRequest = onCall(async (request) => {
+  let ok;
+
+  const ownUid = request.auth?.uid;
+  const requestId = request.data?.requestId;
+
+  if (!ownUid || !requestId) return;
+
+  const requestRef = getFirestore()
+    .collection("requests")
+    .doc(requestId);
+  
+  const requestData = await requestRef.get();
+
+  if (requestData.data()?.to === ownUid) {
+    try {
+      await requestRef.update({ status: "accepted" });
+      ok = true;
+    }
+    catch {
+      ok = false;
+    }
+  }
+  else {
+    ok = false;
+  }
+
+  return { ok }
+});
+
+exports.rejectFriendRequest = onCall(async (request) => {
+  let ok;
+
+  const ownUid = request.auth?.uid;
+  const requestId = request.data?.requestId;
+
+  if (!ownUid || !requestId) return;
+
+  const requestRef = getFirestore()
+    .collection("requests")
+    .doc(requestId);
+  
+  const requestData = await requestRef.get();
+
+  if (requestData.data()?.to === ownUid) {
+    try {
+      await requestRef.update({ status: "rejected" });
+      ok = true;
+    }
+    catch {
+      ok = false;      
+    }    
+  }
+  else {
+    ok = false;
+  }
+
+  return { ok }
+});
+
+exports.cancelFriendRequest = onCall(async (request) => {
+  let ok;
+
+  const ownUid = request.auth?.uid;
+  const requestId = request.data?.requestId;
+
+  if (!ownUid || !requestId) return;
+
+  const requestRef = getFirestore()
+    .collection("requests")
+    .doc(requestId);
+  
+  const requestData = await requestRef.get();
+
+  if (requestData.data()?.from === ownUid) {
+    try {
+      await requestRef.delete();
+      ok = true;
+    }
+    catch {
+      ok = false;      
+    }
+  }
+  else {
+    ok = false;
+  }
+
+  return { ok }
+});
+
+exports.handleRequest = onDocumentUpdated("requests/{requestId}", async (event) => {
+  const requestId = event.params.requestId;
+
+  if (!requestId) return;
+
+  const requestRef = getFirestore()
+  .collection("requests")
+  .doc(requestId);
+
+  const requestData = await requestRef.get();
+
+  if (!requestData.exists) return;
+
+  const fromUid = requestData.data().from;
+  const toUid = requestData.data().to;
+  const status = requestData.data().status;
+
+  if (status === "accepted") {
+    await getFirestore()
+    .collection("users")
+    .doc(fromUid)
+    .collection("friendList")
+    .add({ uid: toUid });
+
+    await getFirestore()
+    .collection("users")
+    .doc(toUid)
+    .collection("friendList")
+    .add({ uid: fromUid });
+
+    await getFirestore()
+    .collection("conversations")
+    .doc(getConversationId(fromUid, toUid))
+    .create({ participants: [fromUid, toUid] });
+
+    await requestRef.delete();
+  }
+  else if (status === "rejected") {
+    await requestRef.delete();
+  }
+  else {
+    await requestRef.delete();
+  }
+});

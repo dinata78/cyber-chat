@@ -1,6 +1,10 @@
 
 const modalStack = [];
 
+export function getModalStack() {
+  return modalStack;
+}
+
 export function getTopModalFromStack() {
   return modalStack[modalStack.length - 1];
 }

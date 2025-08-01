@@ -1,6 +1,7 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where, writeBatch } from "firebase/firestore";
-import { auth, db, realtimeDb } from "../firebase";
+import { auth, db, functions, realtimeDb } from "../firebase";
 import { ref, remove } from "firebase/database";
+import { httpsCallable } from "firebase/functions";
 
 export function getConversationId(uid1, uid2) {
   if (typeof uid1 !== "string" || typeof uid2 !== "string") return null;
@@ -250,4 +251,64 @@ export const loadImagesAndScrollTo = async (container, { top, behavior }) => {
     top: scrollTop,
     behavior: behavior,
   });
+}
+
+export const sendFriendRequest = async (uid) => {
+  const sendRequest = httpsCallable(functions, "sendFriendRequest");
+
+  console.log("Adding: " + uid)
+  
+  const response = await sendRequest({ uid });
+
+  if (response.data?.ok) {
+    console.log("Sent friend request.");
+  }
+  else {
+    console.log("Failed to send friend request");
+  }
+}
+
+export const acceptFriendRequest = async (requestId) => {
+  const acceptRequest = httpsCallable(functions, "acceptFriendRequest");
+
+  console.log("Accepting: " + requestId);
+
+  const response = await acceptRequest({ requestId });
+
+  if (response.data?.ok) {
+    console.log("Accepted friend request.");
+  }
+  else {
+    console.log("Failed to accept friend request.");
+  }
+}
+
+export const rejectFriendRequest = async (requestId) => {
+  const rejectRequest = httpsCallable(functions, "rejectFriendRequest");
+
+  console.log("Rejecting: " + requestId);
+
+  const response = await rejectRequest({ requestId });
+
+  if (response.data?.ok) {
+    console.log("Rejected friend request.");
+  }
+  else {
+    console.log("Failed to reject friend request.");
+  }
+}
+
+export const cancelFriendRequest = async (requestId) => {
+  const cancelRequest = httpsCallable(functions, "cancelFriendRequest");
+
+  console.log("Canceling request: " + requestId);
+
+  const response = await cancelRequest({ requestId });
+
+  if (response.data?.ok) {
+    console.log("Canceled friend request.");
+  }
+  else {
+    console.log("Failed to cancel friend request.");
+  }
 }

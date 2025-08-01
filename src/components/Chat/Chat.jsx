@@ -23,7 +23,10 @@ import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
 import { ChatDialog } from "./ChatDialog/ChatDialog";
 import { previewAccount } from "../AccountPreview";
 import { addDoc, collection } from "firebase/firestore";
-import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
+import { addModalToStack, getModalStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
+import { functions } from "../../../firebase";
+import { httpsCallable } from "firebase/functions";
+import { useRequests } from "../../custom-hooks/useRequests";
 
 export const DMContext = createContext(null);
 
@@ -54,6 +57,7 @@ export function Chat() {
   const ownStatus = useStatusByUid(ownData.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
   const { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading } = useDM(ownData.uid);
+  const { requests } = useRequests(ownData.uid);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);
 
   const { statusMap } = useStatus(friendUids);
@@ -72,10 +76,8 @@ export function Chat() {
   const isFirstRender = useRef(true);
 
   const sidebarRef = useRef(null);
-
   const requestsButtonRef = useRef(null);
   const inboxButtonRef = useRef(null);
-  
   const messagesRef = useRef(null);
   const messageInputRef = useRef(null);
 
@@ -114,6 +116,22 @@ export function Chat() {
     setSelectedChatUid(uid);
     setIsSidebarVisible(false);
   }
+
+  useEffect(() => {
+    const testFunc = httpsCallable(functions, "testFunc");
+
+    const asf = async () => {
+      console.log("sta")
+      const response = await testFunc({id: 1, od: 3});
+      const data = response.data;
+
+      console.log(response)
+      console.log(data)
+      console.log("end")
+    }
+
+    asf();
+  }, []);
 
   useEffect(() => {
     isFirstRender.current = false;
@@ -377,10 +395,12 @@ export function Chat() {
         {
           currentDialogNav &&
           <ChatDialog
+            ownUid={ownData.uid}
             currentDialogNav={currentDialogNav}
             closeDialog={() => setCurrentDialogNav(null)}
             requestsButtonRef={requestsButtonRef}
             inboxButtonRef={inboxButtonRef}
+            requests={requests}
           />
         }
 

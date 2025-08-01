@@ -47,10 +47,6 @@ export function Friends({ ownUid, friendUids, friendDatas, statusMap, messageFri
     }
   }, [debouncedAddValue])
 
-  useEffect(() => {
-    console.log(addFriendDatas);
-  }, [addFriendDatas])
-
   return (
     <>
       <div className="search-input">

@@ -1,4 +1,4 @@
-import { getIndicatorClass } from "../../../utils";
+import { getIndicatorClass, sendFriendRequest } from "../../../utils";
 import { AccountPlusSVG, ChatSVG, SearchSVG } from "../../svg";
 import { previewAccount } from "../../AccountPreview";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
@@ -17,10 +17,6 @@ export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayNa
     isDMIdsLoading: isDMIdsLoading
   });
 
-  const handleAddFriend = () => {
-    return;
-  }
-
   return (
     <div className="friend-card" style={{cursor: "auto"}}>
 
@@ -38,10 +34,7 @@ export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayNa
         </span>
       </div>
 
-      {
-        
-      }
-      <div className="buttons">
+       <div className="buttons">
         <button onClick={handlePreviewAccount}>
           <SearchSVG />
         </button>
@@ -51,7 +44,7 @@ export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayNa
             <button onClick={() => messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading)}>
               <ChatSVG />
             </button>
-          : <button onClick={handleAddFriend}>
+          : <button onClick={() => sendFriendRequest(friendUid)}>
               <AccountPlusSVG />
             </button>
         }

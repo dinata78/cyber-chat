@@ -121,7 +121,7 @@ export function ProfilePicture({ ownUid, ownPfpUrl }) {
               onClick={() => previewImage(chosenPfpUrl || "/empty-pfp.webp")}
             />
             <button
-              style={{backgroundColor: "#363", color: "lime"}}
+              style={{backgroundColor: "#242", color: "lime"}}
               onClick={isRemovingPfp ? deletePfp : uploadPfp}
             >
               Save

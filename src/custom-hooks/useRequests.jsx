@@ -1,48 +1,56 @@
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { and, collection, getDocs, onSnapshot, or, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
-export function useRequests(uid) {
-  const [requests, setRequests] = useState([]);
+export function useRequests(ownUid) {
+  const [ requests, setRequests ] = useState([]);
 
   useEffect(() => {
-    if (!uid) return;
+    let unsubscribeSnapshot = null;
 
-    let unsubscribe = null;
-    
-    const fetchAndSetRequests = async () => {
+    const getAndSetRequests = async () => {
+      if (!ownUid) return;
+
       const requestsQuery = query(
-        collection(db, "users", uid, "requests"),
-        orderBy("timeCreated", "desc"),
-      )
-  
-      unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
-        if (snapshot.empty) {
-          setRequests([]);
-        }
-        else {
-          const requests = snapshot.docs.map(request => (
+        collection(db, "requests"),
+        and(
+          where("status", "==", "pending"),
+          or(
+            where("from", "==", ownUid),
+            where("to", "==", ownUid)
+          )
+        )
+      );
+
+      const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
+        if (snapshot.docs.length > 0) {
+          const requests = snapshot.docs.map(doc => (
             {
-              ...request.data(),
-              id: request.id,
+              id: doc.id,
+              from: doc.data().from,
+              to: doc.data().to,
+              timeCreated: doc.data().timeCreated
             }
           ));
-
           setRequests(requests);
         }
-      });        
+        else {
+          setRequests([]);
+        }
+      });
+
+      unsubscribeSnapshot = unsubscribe;
     }
 
-    fetchAndSetRequests();
+    getAndSetRequests();
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-        unsubscribe = null;
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
       }
     }
+  }, [ownUid]);
 
-  }, [uid]);
-
-  return { requests }
+  return { requests };
 }

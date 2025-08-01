@@ -21,14 +21,14 @@ export const realtimeDb = getDatabase(app, import.meta.env.VITE_FIREBASE_RTDB_RE
 export const functions = getFunctions(app);
 
 if (location.hostname === "localhost") {
-  connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
-  connectFirestoreEmulator(db, "localhost", 8081);
-  connectDatabaseEmulator(realtimeDb, "localhost", 9001);
-  connectFunctionsEmulator(functions, "localhost", 5001)
+  connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+  connectFirestoreEmulator(db, "127.0.0.1", 8081);
+  connectDatabaseEmulator(realtimeDb, "127.0.0.1", 9001);
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 }
 else if (location.hostname.startsWith("192.168")) {
   connectAuthEmulator(auth, "http://192.168.1.12:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "192.168.1.12", 8081);
   connectDatabaseEmulator(realtimeDb, "192.168.1.12", 9001);
-  connectFunctionsEmulator(functions, "192.168.1.12", 5001)  
+  connectFunctionsEmulator(functions, "192.168.1.12", 5001);  
 }

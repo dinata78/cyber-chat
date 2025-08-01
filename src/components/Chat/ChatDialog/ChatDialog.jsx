@@ -1,31 +1,52 @@
 import { useEffect, useRef } from "react";
-import { AccountArrowDownSVG, CheckDecagramSVG, InboxSVG } from "../../svg";
+import { AccountArrowDownSVG, InboxSVG } from "../../svg";
+import { RequestsDialog } from "./RequestsDialog";
+import { InboxDialog } from "./InboxDialog";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../../modalStack";
 
-export function ChatDialog({ currentDialogNav, closeDialog, requestsButtonRef, inboxButtonRef }) {
+export function ChatDialog({ ownUid, currentDialogNav, closeDialog, requestsButtonRef, inboxButtonRef, requests }) {
+
   const chatDialogRef = useRef(null);
 
   useEffect(() => {
-    const handleClick = (e) => {
-      if (
-        currentDialogNav &&
-        requestsButtonRef.current &&
-        inboxButtonRef.current &&
-        chatDialogRef.current &&
-        !requestsButtonRef.current.contains(e.target) &&
-        !inboxButtonRef.current.contains(e.target) &&
-        !chatDialogRef.current.contains(e.target)
-      ) {
-        closeDialog();
-      };
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        if (getTopModalFromStack() === "chat-dialog") {
+          closeDialog();
+          removeModalFromStack("chat-dialog");
+        }
+      }
     }
 
-    document.addEventListener("click", handleClick);
+    const handleClick = (e) => {
+      const dialogEl = chatDialogRef.current;
+      const isOutsideClick =
+        dialogEl && !dialogEl.contains(e.target) &&
+        !requestsButtonRef.current?.contains(e.target) &&
+        !inboxButtonRef.current?.contains(e.target);
 
-    return () => document.removeEventListener("click", handleClick);
-  }, [currentDialogNav]);
+      if (isOutsideClick && getTopModalFromStack() === "chat-dialog") {
+        closeDialog();
+        removeModalFromStack();
+      }
+    }
+
+    addModalToStack("chat-dialog");
+    document.addEventListener("keydown", handleEscape);
+    document.addEventListener("mousedown", handleClick);
+
+    return () => {
+      removeModalFromStack("chat-dialog");
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("mousedown", handleClick);
+    }
+  }, []);
 
   return (
-    <div ref={chatDialogRef} id="chat-dialog">
+    <div
+      ref={chatDialogRef}
+      id="chat-dialog"
+    >
       <div className="top">
         {
           currentDialogNav === "requests" ?
@@ -40,12 +61,14 @@ export function ChatDialog({ currentDialogNav, closeDialog, requestsButtonRef, i
         }
       </div>
       <div className="bottom">
-        <div className="empty-dialog">
-          <CheckDecagramSVG />
+        <div className="cards-container overflow-y-support">
           {
             currentDialogNav === "requests" ?
-              "No pending friend requests."
-            : "No notifications."
+              <RequestsDialog
+                ownUid={ownUid}
+                requests={requests}
+              />
+            : <InboxDialog />
           }
         </div>
       </div>
