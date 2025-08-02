@@ -24,8 +24,6 @@ import { ChatDialog } from "./ChatDialog/ChatDialog";
 import { previewAccount } from "../AccountPreview";
 import { addDoc, collection } from "firebase/firestore";
 import { addModalToStack, getModalStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
-import { functions } from "../../../firebase";
-import { httpsCallable } from "firebase/functions";
 import { useRequests } from "../../custom-hooks/useRequests";
 
 export const DMContext = createContext(null);
@@ -85,6 +83,11 @@ export function Chat() {
   const selectedChatMessages = chatMessagesMap[conversationId] || [];
   const selectedChatMessagesAmount = messagesAmountMap[conversationId] || messagesAmountMap["default"];
 
+  const requestIds = requests.map(request => {
+    if (request.from === ownData.uid) return request.to;
+    else if (request.to === ownData.uid) return request.from;
+  });
+
   const previewOwnAccount = () => {
     previewAccount({
       uid: ownData.uid,
@@ -116,22 +119,6 @@ export function Chat() {
     setSelectedChatUid(uid);
     setIsSidebarVisible(false);
   }
-
-  useEffect(() => {
-    const testFunc = httpsCallable(functions, "testFunc");
-
-    const asf = async () => {
-      console.log("sta")
-      const response = await testFunc({id: 1, od: 3});
-      const data = response.data;
-
-      console.log(response)
-      console.log(data)
-      console.log("end")
-    }
-
-    asf();
-  }, []);
 
   useEffect(() => {
     isFirstRender.current = false;
@@ -320,6 +307,7 @@ export function Chat() {
                     friendDatas={friendDatas}
                     statusMap={statusMap}
                     messageFriend={messageFriend}
+                    requestIds={requestIds}
                   />
                 </DMContext.Provider>
             }
@@ -375,22 +363,20 @@ export function Chat() {
 
         </aside>
         
-        <DMContext.Provider value={{ DMIds, isDMIdsLoading }}>
-          <Message
-            ownData={ownData}
-            isSidebarVisible={isSidebarVisible}
-            closeSidebar={() => setIsSidebarVisible(false)}
-            selectedChatUid={selectedChatUid}
-            messagesRef={messagesRef}
-            messageInputRef={messageInputRef}
-            selectedChatMessages={selectedChatMessages}
-            selectedChatUnreadCount={selectedChatUnreadCount}
-            clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
-            selectedChatMessagesAmount={selectedChatMessagesAmount}
-            addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
-            chatDataMap={chatDataMap}
-          />
-        </DMContext.Provider>
+        <Message
+          ownData={ownData}
+          isSidebarVisible={isSidebarVisible}
+          closeSidebar={() => setIsSidebarVisible(false)}
+          selectedChatUid={selectedChatUid}
+          messagesRef={messagesRef}
+          messageInputRef={messageInputRef}
+          selectedChatMessages={selectedChatMessages}
+          selectedChatUnreadCount={selectedChatUnreadCount}
+          clearSelectedChatUnreadCount={() => setSelectedChatUnreadCount(0)}
+          selectedChatMessagesAmount={selectedChatMessagesAmount}
+          addSelectedChatMessagesAmount={addSelectedChatMessagesAmount}
+          chatDataMap={chatDataMap}
+        />
 
         {
           currentDialogNav &&

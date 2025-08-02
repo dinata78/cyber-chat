@@ -24,16 +24,6 @@ function getConversationId(uid1, uid2) {
   }
 };
 
-
-exports.testFunc = onCall(async (request) => {
-  return {
-    ok: true,
-    uid: request.auth?.uid,
-    args: request.data,
-    currentTime: new Date().getTime(),
-  };
-});
-
 exports.sendFriendRequest = onCall(async (request) => {
   let ok;
 

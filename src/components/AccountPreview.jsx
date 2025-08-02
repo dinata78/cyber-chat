@@ -4,6 +4,9 @@ import { previewImage } from "./ImagePreview";
 import { useFriendList } from "../custom-hooks/useFriendList";
 import { chatFriend, openSettings } from "./Chat/Chat";
 import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "./modalStack";
+import { useRequests } from "../custom-hooks/useRequests";
+import { sendFriendRequest } from "../utils";
+import { useDM } from "../custom-hooks/useDM";
 
 let previewAccountGlobal;
 
@@ -14,8 +17,6 @@ export function previewAccount(data) {
     data.displayName,
     data.username,
     data.bio,
-    data.DMIds,
-    data.isDMIdsLoading
   );
 }
 
@@ -25,19 +26,28 @@ export function AccountPreview() {
   const [ displayName, setDisplayName ] = useState("");
   const [ username, setUsername ] = useState("");
   const [ bio, setBio ] = useState("");
-  const [ DMIds, setDMIds ] = useState(undefined);
-  const [ isDMIdsLoading, setIsDMIdsLoading ] = useState(undefined);
 
   const ownUid = auth.currentUser?.uid;
 
+  const { DMIds, isDMIdsLoading } = useDM(ownUid);
   const { friendUids } = useFriendList(ownUid);
+  const { requests } = useRequests(ownUid);
+
+  const sentRequestsUids = requests.filter(request => request.from === ownUid).map(sentRequest => sentRequest.to);
+  const receivedRequestsUids = requests.filter(request => request.to === ownUid).map(receivedRequest => receivedRequest.from);
 
   const profileType = 
     uid === ownUid ?
       "own"
     : friendUids.includes(uid) || uid == import.meta.env.VITE_DEV_UID  ?
       "friend"
+    : sentRequestsUids.includes(uid) ?
+      "friend-pending-sent"
+    : receivedRequestsUids.includes(uid) ?
+      "friend-pending-received"
     : "new"
+
+  const isPending = profileType.startsWith("friend-pending");
 
   const closeAccountPreview = () => {
     setUid("");
@@ -45,8 +55,6 @@ export function AccountPreview() {
     setDisplayName("");
     setUsername("");
     setBio("");
-    setDMIds(undefined);
-    setIsDMIdsLoading(undefined);
   }
 
   const handleEditProfile = () => {
@@ -60,14 +68,12 @@ export function AccountPreview() {
   }
 
   useEffect(() => {
-    previewAccountGlobal = (uid, pfpUrl, displayName, username, bio, DMIds, isDMIdsLoading) => {
+    previewAccountGlobal = (uid, pfpUrl, displayName, username, bio) => {
       setUid(uid);
       setPfpUrl(pfpUrl);
       setDisplayName(displayName);
       setUsername(username);
       setBio(bio);
-      setDMIds(DMIds);
-      setIsDMIdsLoading(isDMIdsLoading);
     }
   }, []);
 
@@ -144,15 +150,27 @@ export function AccountPreview() {
             </span>
             <hr />
             <button
+              style={{
+                cursor: isPending && "auto",
+                backgroundColor: isPending && "#80d9",
+                color: isPending && "#bbc"
+              }}
               onClick={
                 profileType === "own" ? handleEditProfile
                 : profileType === "friend" ? handleMessageFriend
+                : profileType === "new" ? () => sendFriendRequest(uid)
                 : null
               }
             >
               {
-                profileType === "own" ? "Edit Profile"
-                : profileType === "friend" ? "Message Friend"
+                profileType === "own" ?
+                  "Edit Profile"
+                : profileType === "friend" ?
+                  "Message Friend"
+                : profileType === "friend-pending-sent" ?
+                  "Friend Request Sent"
+                : profileType === "friend-pending-received" ?
+                  "Friend Request Received"
                 : "Add Friend"
               }
             </button>

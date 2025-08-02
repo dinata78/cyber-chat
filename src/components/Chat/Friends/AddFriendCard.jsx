@@ -3,7 +3,7 @@ import { AccountPlusSVG, ChatSVG, SearchSVG } from "../../svg";
 import { previewAccount } from "../../AccountPreview";
 import { useStatusByUid } from "../../../custom-hooks/useStatusByUid";
 
-export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, messageFriend, DMIds, isDMIdsLoading, friendUids }) {
+export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, messageFriend, DMIds, isDMIdsLoading, friendUids, requestIds }) {
 
   const friendStatus = useStatusByUid(friendUid);
 
@@ -13,8 +13,6 @@ export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayNa
     displayName: friendDisplayName,
     username: friendUsername,
     bio: friendBio,
-    DMIds: DMIds,
-    isDMIdsLoading: isDMIdsLoading
   });
 
   return (
@@ -39,9 +37,13 @@ export function AddFriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayNa
           <SearchSVG />
         </button>
         {
-          friendUid === ownUid ? null
+          friendUid === ownUid ||
+          requestIds.includes(friendUid) ?
+            null
           : [...friendUids, import.meta.env.VITE_DEV_UID].includes(friendUid) ?
-            <button onClick={() => messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading)}>
+            <button
+              onClick={() => messageFriend(ownUid, friendUid, DMIds, isDMIdsLoading)}
+            >
               <ChatSVG />
             </button>
           : <button onClick={() => sendFriendRequest(friendUid)}>

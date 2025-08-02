@@ -10,8 +10,6 @@ export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName,
     displayName: friendDisplayName,
     username: friendUsername,
     bio: friendBio,
-    DMIds: DMIds,
-    isDMIdsLoading: isDMIdsLoading
   });
 
   const handleRemoveFriend = async () => {

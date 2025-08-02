@@ -20,7 +20,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadC
 
     if (activeDMDocs.docs.length) {
       await deleteDoc(activeDMDocs.docs[0].ref);
-      setSelectedChatUid("")
+      setSelectedChatUid("");
     }
   }
 

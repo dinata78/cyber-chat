@@ -8,7 +8,7 @@ import { db } from "../../../../firebase";
 import { DMContext } from "../Chat";
 import { AddFriendCard } from "./AddFriendCard";
 
-export function Friends({ ownUid, friendUids, friendDatas, statusMap, messageFriend }) {
+export function Friends({ ownUid, friendUids, friendDatas, statusMap, messageFriend, requestIds }) {
   const [ searchedFriendValue, setSearchedFriendValue ] = useState("");
   const [ isAddFriend, setIsAddFriend ] = useState(false);
   const [ addFriendDatas, setAddFriendDatas ] = useState({});
@@ -123,6 +123,7 @@ export function Friends({ ownUid, friendUids, friendDatas, statusMap, messageFri
                 DMIds={DMIds}
                 isDMIdsLoading={isDMIdsLoading}
                 friendUids={friendUids}
+                requestIds={requestIds}
               />
             }
           </div>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { ThreeDotsSVG } from "../../svg";
 import { MessageFeatures } from "./MessageFeatures";
 import { EditInput } from "./EditInput";
@@ -6,11 +6,8 @@ import { EditedMark } from "./EditedMark";
 import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { previewAccount } from "../../AccountPreview";
-import { DMContext } from "../Chat";
 
 export function MessageCard({ focusMessageInput, conversationId, messageId, isHovered, setHoveredId, setReplyingId, isEditing, setEditingId, setIsDeleting, setDeletingData, setIsReporting, setReportingData, isOwn, isSubset, isReplyingId, isDeleted, isEdited, isSending, senderData, timeCreated, type, content }) {
-
-  const { DMIds, isDMIdsLoading } = useContext(DMContext);
 
   const [ isFeaturesVisible, setIsFeaturesVisible ] = useState(false);
   const [ cursorYPos, setCursorYPos ] = useState(null);
@@ -72,8 +69,6 @@ export function MessageCard({ focusMessageInput, conversationId, messageId, isHo
       displayName: senderData?.displayName,
       username: senderData?.username,
       bio: senderData?.bio,
-      DMIds: DMIds,
-      isDMIdsLoading: isDMIdsLoading,
     });
   }
 
