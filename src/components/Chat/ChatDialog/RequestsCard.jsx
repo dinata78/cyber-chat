@@ -1,8 +1,8 @@
 import { useUserData } from "../../../custom-hooks/useUserData"
-import { acceptFriendRequest, cancelFriendRequest, processDate, rejectFriendRequest } from "../../../utils";
+import { acceptFriendRequest, cancelFriendRequest, processDateWithSeconds, rejectFriendRequest } from "../../../utils";
 import { previewAccount } from "../../AccountPreview";
 
-export function RequestsCard({ type, id, from, to, timeCreated }) {
+export function RequestsCard({ id, type, from, to, timeCreated }) {
   const [ userData ] = useUserData(type === "sent" ? to : from);
 
   if (!userData.displayName) return;
@@ -20,7 +20,7 @@ export function RequestsCard({ type, id, from, to, timeCreated }) {
   return (
     <div className="requests-card">
       <span className="time">
-        {processDate(timeCreated.toDate())}
+        {processDateWithSeconds(timeCreated.toDate())}
         {" "}
       </span>
       {
@@ -29,7 +29,7 @@ export function RequestsCard({ type, id, from, to, timeCreated }) {
              {"You sent "}
             <span
               tabIndex={0}
-              className="display-name"
+              className="name"
               onClick={handlePreviewAccount}
               onKeyDown={(e) => {
                 if (e.key === " " || e.key === "Enter") {
@@ -38,14 +38,14 @@ export function RequestsCard({ type, id, from, to, timeCreated }) {
                 }
               }}
             >
-              {userData.displayName}
+              {userData.displayName} (@{userData.username})
             </span>
-            {" a friend request."}
+            {" a friend request. "}
           </>
         : <>
             <span
               tabIndex={0}
-              className="display-name"
+              className="name"
               onClick={handlePreviewAccount}
               onKeyDown={(e) => {
                 if (e.key === " " || e.key === "Enter") {
@@ -54,9 +54,9 @@ export function RequestsCard({ type, id, from, to, timeCreated }) {
                 }
               }}
             >
-              {userData.displayName}
+              {userData.displayName} (@{userData.username})
             </span>
-            {" sent you a friend request."}
+            {" sent you a friend request. "}
           </>
       }
       {

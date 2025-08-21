@@ -151,6 +151,16 @@ export function processDate(dateObject) {
   return `${year}/${month}/${date} ${hour}:${minute}`;
 }
 
+export function processDateWithSeconds(dateObject) {
+  if (!(dateObject instanceof Date)) return null;
+
+  const processedDate = processDate(dateObject);
+
+  const second = dateObject.getSeconds().toString().padStart(2, "0");
+
+  return `${processedDate}:${second}`;
+}
+
 export async function deleteOwnConversations() {
   try {
     const conversationsRef = collection(db, "conversations");

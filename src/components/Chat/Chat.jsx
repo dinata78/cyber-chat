@@ -23,8 +23,9 @@ import { useClearUnreadCount } from "../../custom-hooks/useClearUnreadCount";
 import { ChatDialog } from "./ChatDialog/ChatDialog";
 import { previewAccount } from "../AccountPreview";
 import { addDoc, collection } from "firebase/firestore";
-import { addModalToStack, getModalStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
+import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../modalStack";
 import { useRequests } from "../../custom-hooks/useRequests";
+import { useInbox } from "../../custom-hooks/useInbox";
 
 export const DMContext = createContext(null);
 
@@ -56,6 +57,7 @@ export function Chat() {
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
   const { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading } = useDM(ownData.uid);
   const { requests } = useRequests(ownData.uid);
+  const { inbox } = useInbox(ownData.uid);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);
 
   const { statusMap } = useStatus(friendUids);
@@ -244,6 +246,10 @@ export function Chat() {
             onClick={() => setCurrentDialogNav("requests")}
           >
             <AccountArrowDownSVG />
+            {
+              requests.length > 0 &&
+              <div className="amount">{requests.length}</div>
+            }
           </button>
 
           <button
@@ -257,6 +263,10 @@ export function Chat() {
             onClick={() => setCurrentDialogNav("inbox")}
           >
             <InboxSVG />
+            {
+              inbox.length > 0 &&
+              <div className="amount">{inbox.length}</div>
+            }
           </button>
 
         </div>
@@ -387,6 +397,7 @@ export function Chat() {
             requestsButtonRef={requestsButtonRef}
             inboxButtonRef={inboxButtonRef}
             requests={requests}
+            inbox={inbox}
           />
         }
 

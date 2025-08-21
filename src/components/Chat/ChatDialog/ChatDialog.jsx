@@ -4,7 +4,7 @@ import { RequestsDialog } from "./RequestsDialog";
 import { InboxDialog } from "./InboxDialog";
 import { addModalToStack, getTopModalFromStack, removeModalFromStack } from "../../modalStack";
 
-export function ChatDialog({ ownUid, currentDialogNav, closeDialog, requestsButtonRef, inboxButtonRef, requests }) {
+export function ChatDialog({ ownUid, currentDialogNav, closeDialog, requestsButtonRef, inboxButtonRef, requests, inbox }) {
 
   const chatDialogRef = useRef(null);
 
@@ -68,7 +68,10 @@ export function ChatDialog({ ownUid, currentDialogNav, closeDialog, requestsButt
                 ownUid={ownUid}
                 requests={requests}
               />
-            : <InboxDialog />
+            : <InboxDialog
+                ownUid={ownUid}
+                inbox={inbox}
+              />
           }
         </div>
       </div>

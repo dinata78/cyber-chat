@@ -768,6 +768,7 @@ button {
   }
 
   button.dialog {
+    position: relative;
     background-color: transparent;
     width: 36px;
     height: 36px;
@@ -781,6 +782,23 @@ button {
   button.dialog:hover, button.dialog:focus-visible {
     background-color: #fff2;
     fill: white;
+  }
+
+  button.dialog .amount {
+    position: absolute;
+    top: -2px;
+    right: -6px;
+    background-color: #900;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-family: monospace;
+    line-height: 1;
+    font-size: 10px;
   }
 }
 
@@ -2279,48 +2297,59 @@ button {
     height: 20px;
   }
 
-  .requests-card {
+  .requests-card, .inbox-card {
     user-select: none;
     padding-inline: 12px;
     font-size: 14px;
     line-height: 1.8;
   }
 
-  .requests-card span.time {
+  .requests-card span.time, .inbox-card span.time {
     color: #bbb;
     font-family: monospace;
   }
 
-  .requests-card span.display-name {
+  .requests-card span.name, .inbox-card span.name {
     color: #ccf;
+    white-space: nowrap;
   }
 
-  .requests-card span.display-name:hover {
+  .requests-card span.name:hover {
     cursor: pointer;
     text-decoration: underline;
   }
 
-  .requests-card span.display-name:focus {
+  .requests-card span.name:focus {
     outline: none;
   }
 
-  .requests-card span.display-name:focus-visible {
+  .requests-card span.name:focus-visible {
     outline: 1px solid #ccf;
     outline-offset: 2px;
   }
 
   .requests-card button {
     background-color: #422;
-    margin-left: 8px;
+    margin-right: 6px;
     padding-block: 4px;
     padding-inline: 10px;
     border: none;
     border-radius: 4px;
     color: #f00;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 12px;    
   }
 
+  .inbox-card button {
+    background-color: #121216;
+    padding-block: 4px;
+    padding-inline: 10px;
+    border: none;
+    border-radius: 4px;
+    color: #bbd;
+    font-family: inherit;
+    font-size: 12px;
+  }
 }
 
 @media screen and (max-width: 1024px) {

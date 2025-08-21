@@ -2,7 +2,7 @@ import { EmptyDialog } from "./EmptyDialog";
 import { RequestsCard } from "./RequestsCard";
 
 export function RequestsDialog({ ownUid, requests }) {
-  const orderedRequests = requests.sort((a, b) => a.timeCreated - b.timeCreated);
+  const orderedRequests = requests.sort((a, b) => b.timeCreated - a.timeCreated);
 
   return (
     requests.length > 0 ?
@@ -12,12 +12,12 @@ export function RequestsDialog({ ownUid, requests }) {
             return (
               <RequestsCard
                 key={request.id}
+                id={request.id}
                 type={
                   request.from === ownUid ?
                     "sent"
                   : "received"
                 }
-                id={request.id}
                 from={request.from}
                 to={request.to}
                 timeCreated={request.timeCreated}

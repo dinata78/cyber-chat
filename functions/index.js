@@ -24,6 +24,60 @@ function getConversationId(uid1, uid2) {
   }
 };
 
+const sendNotification = async (type, data) => {
+  if (type === "new-friend") {
+    const fromUserData = await getFirestore()
+      .collection("users")
+      .doc(data.fromUid)
+      .get();
+
+    const toUserData = await getFirestore()
+      .collection("users")
+      .doc(data.toUid)
+      .get();
+
+    if (!fromUserData.exists || !toUserData.exists) return;
+
+    await getFirestore()
+    .collection("users")
+    .doc(data.fromUid)
+    .collection("inbox")
+    .add({
+      type: "new-friend",
+      name: `${toUserData.data().displayName} (${toUserData.data().username})`,
+      timeCreated: FieldValue.serverTimestamp()
+    });
+
+    await getFirestore()
+    .collection("users")
+    .doc(data.toUid)
+    .collection("inbox")
+    .add({
+      type: "new-friend",
+      name: `${fromUserData.data().displayName} (@${fromUserData.data().username})`,
+      timeCreated: FieldValue.serverTimestamp()
+    });
+  }
+  else if (type === "request-rejected") {
+    const toUidData = await getFirestore()
+      .collection("users")
+      .doc(data.toUid)
+      .get();
+
+    if (!toUidData.exists) return;
+
+    await getFirestore()
+    .collection("users")
+    .doc(data.fromUid)
+    .collection("inbox")
+    .add({
+      type: "request-rejected",
+      name: `${toUidData.data().displayName} (@${toUidData.data().username})`,
+      timeCreated: FieldValue.serverTimestamp()
+    });
+  }
+}
+
 exports.sendFriendRequest = onCall(async (request) => {
   let ok;
 
@@ -41,7 +95,7 @@ exports.sendFriendRequest = onCall(async (request) => {
       to: targetUid,
       status: "pending",
       timeCreated: FieldValue.serverTimestamp()
-    })
+    });
 
     ok = true;
   }
@@ -132,7 +186,7 @@ exports.cancelFriendRequest = onCall(async (request) => {
       ok = true;
     }
     catch {
-      ok = false;      
+      ok = false;
     }
   }
   else {
@@ -178,9 +232,13 @@ exports.handleRequest = onDocumentUpdated("requests/{requestId}", async (event) 
     .create({ participants: [fromUid, toUid] });
 
     await requestRef.delete();
+
+    await sendNotification("new-friend", { fromUid, toUid });
   }
   else if (status === "rejected") {
     await requestRef.delete();
+
+    await sendNotification("request-rejected", { fromUid, toUid });
   }
   else {
     await requestRef.delete();

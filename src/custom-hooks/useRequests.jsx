@@ -1,4 +1,4 @@
-import { and, collection, getDocs, onSnapshot, or, query, where } from "firebase/firestore";
+import { and, collection, onSnapshot, or, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
@@ -6,7 +6,7 @@ export function useRequests(ownUid) {
   const [ requests, setRequests ] = useState([]);
 
   useEffect(() => {
-    let unsubscribeSnapshot = null;
+    let unsubscribe = null;
 
     const getAndSetRequests = async () => {
       if (!ownUid) return;
@@ -22,7 +22,7 @@ export function useRequests(ownUid) {
         )
       );
 
-      const unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
+      unsubscribe = onSnapshot(requestsQuery, (snapshot) => {
         if (snapshot.docs.length > 0) {
           const requests = snapshot.docs.map(doc => (
             {
@@ -38,16 +38,14 @@ export function useRequests(ownUid) {
           setRequests([]);
         }
       });
-
-      unsubscribeSnapshot = unsubscribe;
     }
 
     getAndSetRequests();
 
     return () => {
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-        unsubscribeSnapshot = null;
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
       }
     }
   }, [ownUid]);

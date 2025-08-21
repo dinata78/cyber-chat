@@ -1,42 +1,35 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 
-export function useInbox(uid) {
-  const [ inboxItems, setInboxItems ] = useState([]);
-  
+export function useInbox(ownUid) {
+  const [inbox, setInbox] = useState([]);
+
   useEffect(() => {
-    if (!uid) return;
-
     let unsubscribe = null;
 
-    const fetchAndSetInbox = async () => {
-      const inboxQuery = query(
-        collection(db, "users", uid, "inbox"),
-        orderBy("timeCreated", "desc"),
-      )
-      
-      unsubscribe = onSnapshot(inboxQuery, (snapshot) => {
-        if (snapshot.empty) {
-          setInboxItems([]);
-        }
-        else {
-          const inboxItems = snapshot.docs.map(item => (
+    const getAndSetInbox = async () => {
+      if (!ownUid) return;
+
+      const inboxRef = collection(db, "users", ownUid, "inbox");
+
+      unsubscribe = onSnapshot(inboxRef, (snapshot) => {
+        if (snapshot.docs.length > 0) {
+          const inbox = snapshot.docs.map(doc => (
             {
-              id: item.id,
-              content: item.data().content,
-              timeCreated: item.data().timeCreated,
-              isUnread: item.data().isUnread,
+              id: doc.id,
+              ...doc.data()
             }
           ));
-
-          setInboxItems(inboxItems);
+          setInbox(inbox);
+        }
+        else {
+          setInbox([]);
         }
       });
     }
 
-    fetchAndSetInbox();
-    
+    getAndSetInbox();
 
     return () => {
       if (unsubscribe) {
@@ -44,8 +37,7 @@ export function useInbox(uid) {
         unsubscribe = null;
       }
     }
+  }, [ownUid]);
 
-  }, [uid]);
-
-  return { inboxItems }
+  return { inbox };
 }
