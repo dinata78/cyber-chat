@@ -9,7 +9,7 @@ export function Message({ ownData, isSidebarVisible, closeSidebar, selectedChatU
   const [ messagesScrollBottom, setMessagesScrollBottom ] = useState(0);
   const [ messageValueMap, setMessageValueMap ] = useState({});
   const [ replyingId, setReplyingId ] = useState(null);
-  const [ isLastMessageEditing, setIsLastMessageEditing ] = useState(false);
+  const [ isOwnLastMessageEditing, setIsOwnLastMessageEditing ] = useState(false);
 
   const inputContainerRef = useRef(null);
 
@@ -77,8 +77,8 @@ export function Message({ ownData, isSidebarVisible, closeSidebar, selectedChatU
         focusMessageInput={focusMessageInput}
         setReplyingId={setReplyingId}
         isReplying={replyingMessage ? true : false}
-        isLastMessageEditing={isLastMessageEditing}
-        setIsLastMessageEditing={setIsLastMessageEditing}
+        isOwnLastMessageEditing={isOwnLastMessageEditing}
+        setIsOwnLastMessageEditing={setIsOwnLastMessageEditing}
         selectedChatUid={selectedChatUid}
         selectedChatMessages={selectedChatMessages}
         selectedChatUnreadCount={selectedChatUnreadCount}
@@ -108,7 +108,7 @@ export function Message({ ownData, isSidebarVisible, closeSidebar, selectedChatU
         replyingMessage={replyingMessage}
         replyingMessageSenderName={replyingMessageSenderName}
         stopReplying={() => setReplyingId(null)}
-        editLastMessage={() => setIsLastMessageEditing(true)}
+        editOwnLastMessage={() => setIsOwnLastMessageEditing(true)}
         ownUid={ownData.uid}
         selectedChatUid={selectedChatUid}
         clearSelectedChatUnreadCount={clearSelectedChatUnreadCount}

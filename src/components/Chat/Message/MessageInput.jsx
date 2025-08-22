@@ -8,7 +8,7 @@ import { notify } from "../../Notification";
 import { previewImage } from "../../ImagePreview";
 import { ReplyingMessagePopup } from "./ReplyingMessagePopup";
 
-export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editLastMessage, ownUid, selectedChatUid, clearSelectedChatUnreadCount, isMessagesAmountMax, incrementMessagesAmount }) {
+export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, focusMessageInput, resizeMessageInput, messageValueMap, setMessageValueMap, replyingId, replyingMessage, replyingMessageSenderName, stopReplying, editOwnLastMessage, ownUid, selectedChatUid, clearSelectedChatUnreadCount, isMessagesAmountMax, incrementMessagesAmount }) {
 
   const [ chosenImageFile, setChosenImageFile ] = useState(null);
   const [ chosenImageData, setChosenImageData ] = useState({ url: "", name: ""});
@@ -181,7 +181,7 @@ export function MessageInput({ messagesRef, messageInputRef, inputContainerRef, 
               }
               if (e.key === "ArrowUp") {
                 if (!messageValue.length) {
-                  editLastMessage();
+                  editOwnLastMessage();
                 } 
               }
             }}

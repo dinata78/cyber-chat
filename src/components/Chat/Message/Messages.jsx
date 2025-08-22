@@ -5,7 +5,7 @@ import { MessageDelete } from "./MessageDelete";
 import { ReplyingMessage } from "./ReplyingMessage";
 import { MessageReport } from "./MessageReport";
 
-export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isLastMessageEditing, setIsLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
+export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingId, isReplying, isOwnLastMessageEditing, setIsOwnLastMessageEditing, selectedChatUid, selectedChatMessages, selectedChatUnreadCount, selectedChatMessagesAmount, addSelectedChatMessagesAmount, chatDataMap }) {
 
   const [ hoveredId, setHoveredId ] = useState(null);
   const [ editingId, setEditingId ] = useState(null);
@@ -16,9 +16,12 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
 
   const hasMoreMessages = selectedChatMessages?.length === selectedChatMessagesAmount;
 
-  const lastMessageIndex = selectedChatMessages?.length - 1;
-  const lastMessageId = selectedChatMessages?.[lastMessageIndex]?.id;
-  const isLastMessageEditable = selectedChatMessages?.[lastMessageIndex]?.type === "text" && !selectedChatMessages?.[lastMessageIndex].isDeleted;
+  const ownLastMessage = selectedChatMessages?.filter((message) => (
+    message.senderUid === ownData.uid &&
+    message.type === "text" &&
+    !message.isDeleted
+  )).pop();
+  const ownLastMessageId = ownLastMessage?.id;
   
   const renderedMessages = () => {
     let previousUid;
@@ -97,17 +100,15 @@ export function Messages({ ownData, messagesRef, focusMessageInput, setReplyingI
   };
 
   useEffect(() => {
-    if (isLastMessageEditing) {
-      if (isLastMessageEditable) setEditingId(lastMessageId);
-      setIsLastMessageEditing(false);
+    if (isOwnLastMessageEditing) {
+      setEditingId(ownLastMessageId);
+      setIsOwnLastMessageEditing(false);
     }
-  }, [isLastMessageEditing]);
+  }, [isOwnLastMessageEditing]);
 
   useEffect(() => {
-    if (editingId === lastMessageId) {
-      messagesRef.current.scrollTo({
-        top: messagesRef.current.scrollHeight - messagesRef.current.clientHeight,
-      });
+    if (editingId === ownLastMessageId) {
+      document.activeElement?.scrollTo();
     }
   }, [editingId]);
 
