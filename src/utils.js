@@ -322,3 +322,18 @@ export const cancelFriendRequest = async (requestId) => {
     console.log("Failed to cancel friend request.");
   }
 }
+
+export const removeFriend = async (friendUid) => {
+  const removeFriend = httpsCallable(functions, "removeFriend");
+  
+  console.log("Removing friend: " + friendUid);
+
+  const response = await removeFriend({ uid: friendUid });
+
+  if (response.data?.ok) {
+    console.log("Initiated friend deletion.");
+  }
+  else {
+    console.log("Failed to remove friend.");
+  }
+}

@@ -1,6 +1,7 @@
 import { getIndicatorClass } from "../../../utils";
 import { AccountMinusSVG, ChatSVG } from "../../svg";
 import { previewAccount } from "../../AccountPreview";
+import { removeFriend } from "../../../utils";
 
 export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName, friendUsername, friendBio, friendStatus, messageFriend, DMIds, isDMIdsLoading }) {
 
@@ -11,10 +12,6 @@ export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName,
     username: friendUsername,
     bio: friendBio,
   });
-
-  const handleRemoveFriend = async () => {
-    return;
-  }
 
   return (
     <div
@@ -55,7 +52,7 @@ export function FriendCard({ ownUid, friendUid, friendPfpUrl, friendDisplayName,
         <button
           onClick={(e) => {
             e.stopPropagation();
-            handleRemoveFriend();
+            removeFriend(friendUid);
           }}
           onKeyDown={(e) => e.stopPropagation()}
         >

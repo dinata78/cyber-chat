@@ -23,12 +23,21 @@ export function InboxCard({ ownUid, id, type, name, timeCreated }) {
             </span>
             {" is now your friend. "}
           </>
-        : <>
+        : type === "friend-removed" ?
+          <>
+            <span className="name">
+              {name}
+            </span>
+            {" is no longer your friend."}
+          </>
+        : type === "request-rejected" ? 
+          <>
             <span className="name">
               {name}
             </span>
             {" rejected your friend request. "}
           </>
+        : null
       }
       <button onClick={dismissInbox}>
         Dismiss

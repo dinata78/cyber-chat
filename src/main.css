@@ -2341,12 +2341,12 @@ button {
   }
 
   .inbox-card button {
-    background-color: #121216;
+    background-color: #422;
     padding-block: 4px;
     padding-inline: 10px;
     border: none;
     border-radius: 4px;
-    color: #bbd;
+    color: #f00;
     font-family: inherit;
     font-size: 12px;
   }
