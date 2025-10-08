@@ -883,6 +883,26 @@ button {
     height: 0;
   }
 
+  .chat-cards #empty-dm {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    svg {
+      width: 140px;
+      fill: #50505f;
+    }
+
+    span {
+      margin-inline: 8px;
+      color: #50505f;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+
   .chat-card {
     position: relative;
     height: 50px;
@@ -1052,6 +1072,26 @@ button {
   .friend-cards {
     flex-grow: 1;
     height: 0;
+  }
+
+  .friend-cards .empty-search {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    svg {
+      width: 150px;
+      fill: #50505f;
+    }
+
+    span {
+      margin-inline: 8px;
+      color: #50505f;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
   }
 
   .friend-card {

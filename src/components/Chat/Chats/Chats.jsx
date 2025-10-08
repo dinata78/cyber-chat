@@ -2,6 +2,7 @@ import { collection, deleteDoc, getDocs, limit, query, where } from "firebase/fi
 import { getConversationId } from "../../../utils"
 import { ChatCard } from "./ChatCard"
 import { db } from "../../../../firebase";
+import { MailboxSVG } from "../../svg";
 
 export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadCountMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
 
@@ -76,26 +77,33 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadC
 
       <div className="chat-cards overflow-y-support">
         {
-          DMDatas.map((dm, index) => {
-            const conversationId = getConversationId(ownData.uid, dm.uid);
-            return (
-              <ChatCard
-                key={dm.uid + index}
-                ownUid={ownData.uid}
-                uid={dm.uid}
-                displayName={dm.displayName}
-                username={dm.username}
-                status={statusMap[dm.uid]}
-                pfpUrl={dm.pfpUrl}
-                unreadMessagesCount={unreadCountMap[conversationId]}
-                selectedChatUid={selectedChatUid}
-                setSelectedChatUid={setSelectedChatUid}
-                setIsSidebarVisible={setIsSidebarVisible}
-                isDM={true}
-                hideDM={hideDM}
-              />
-            )
-          })
+          DMDatas.length > 0 ?
+            DMDatas.map((dm, index) => {
+              const conversationId = getConversationId(ownData.uid, dm.uid);
+              return (
+                <ChatCard
+                  key={dm.uid + index}
+                  ownUid={ownData.uid}
+                  uid={dm.uid}
+                  displayName={dm.displayName}
+                  username={dm.username}
+                  status={statusMap[dm.uid]}
+                  pfpUrl={dm.pfpUrl}
+                  unreadMessagesCount={unreadCountMap[conversationId]}
+                  selectedChatUid={selectedChatUid}
+                  setSelectedChatUid={setSelectedChatUid}
+                  setIsSidebarVisible={setIsSidebarVisible}
+                  isDM={true}
+                  hideDM={hideDM}
+                />
+              )
+            })
+          : <div id="empty-dm">
+              <MailboxSVG />
+              <span>
+                No messages yet. Maybe start a new conversation?
+              </span>
+            </div>
         }
       </div>                
     </>

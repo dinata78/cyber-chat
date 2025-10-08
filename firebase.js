@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const realtimeDb = getDatabase(app, import.meta.env.VITE_FIREBASE_RTDB_REF_URL);
-export const functions = getFunctions(app);
+export const functions = getFunctions(app, "asia-east1");
 
 if (location.hostname === "localhost") {
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
@@ -30,5 +30,5 @@ else if (location.hostname.startsWith("192.168")) {
   connectAuthEmulator(auth, "http://192.168.1.12:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "192.168.1.12", 8081);
   connectDatabaseEmulator(realtimeDb, "192.168.1.12", 9001);
-  connectFunctionsEmulator(functions, "192.168.1.12", 5001);  
+  connectFunctionsEmulator(functions, "192.168.1.12", 5001);
 }

@@ -164,7 +164,7 @@ const deleteConversation = async (conversationId) => {
 
 // Https Callable
 
-exports.sendFriendRequest = onCall(async (request) => {
+exports.sendFriendRequest = onCall({region: "asia-east1"}, async (request) => {
   let ok;
 
   const senderUid = request.auth?.uid;
@@ -192,7 +192,7 @@ exports.sendFriendRequest = onCall(async (request) => {
   return { ok }
 });
 
-exports.acceptFriendRequest = onCall(async (request) => {
+exports.acceptFriendRequest = onCall({region: "asia-east1"}, async (request) => {
   let ok;
 
   const ownUid = request.auth?.uid;
@@ -222,7 +222,7 @@ exports.acceptFriendRequest = onCall(async (request) => {
   return { ok }
 });
 
-exports.rejectFriendRequest = onCall(async (request) => {
+exports.rejectFriendRequest = onCall({region: "asia-east1"}, async (request) => {
   let ok;
 
   const ownUid = request.auth?.uid;
@@ -252,7 +252,7 @@ exports.rejectFriendRequest = onCall(async (request) => {
   return { ok }
 });
 
-exports.cancelFriendRequest = onCall(async (request) => {
+exports.cancelFriendRequest = onCall({region: "asia-east1"}, async (request) => {
   let ok;
 
   const ownUid = request.auth?.uid;
@@ -282,7 +282,7 @@ exports.cancelFriendRequest = onCall(async (request) => {
   return { ok }
 });
 
-exports.removeFriend = onCall(async (request) => {
+exports.removeFriend = onCall({region: "asia-east1"}, async (request) => {
   let ok;
 
   const ownUid = request.auth?.uid;
@@ -310,132 +310,144 @@ exports.removeFriend = onCall(async (request) => {
 
 // Background Triggers
 
-exports.handleRequests = onDocumentUpdated("requests/{requestId}", async (event) => {
-  const requestId = event.params.requestId;
+exports.handleRequests = onDocumentUpdated(
+  {
+    document: "requests/{requestId}",
+    region: "asia-east1",
+  },
+  async (event) => {
+    const requestId = event.params.requestId;
 
-  if (!requestId) return;
+    if (!requestId) return;
 
-  const requestRef = getFirestore()
-  .collection("requests")
-  .doc(requestId);
+    const requestRef = getFirestore()
+    .collection("requests")
+    .doc(requestId);
 
-  const requestData = await requestRef.get();
+    const requestData = await requestRef.get();
 
-  if (!requestData.exists) return;
+    if (!requestData.exists) return;
 
-  const fromUid = requestData.data().from;
-  const toUid = requestData.data().to;
-  const status = requestData.data().status;
+    const fromUid = requestData.data().from;
+    const toUid = requestData.data().to;
+    const status = requestData.data().status;
 
-  if (status === "accepted") {
+    if (status === "accepted") {
+      await getFirestore()
+      .collection("users")
+      .doc(fromUid)
+      .collection("friendList")
+      .add({ uid: toUid });
+
+      await getFirestore()
+      .collection("users")
+      .doc(toUid)
+      .collection("friendList")
+      .add({ uid: fromUid });
+
+      await getFirestore()
+      .collection("conversations")
+      .doc(getConversationId(fromUid, toUid))
+      .create({ participants: [fromUid, toUid] });
+
+      await requestRef.delete();
+
+      await sendNotification("new-friend", { fromUid, toUid });
+    }
+    else if (status === "rejected") {
+      await requestRef.delete();
+
+      await sendNotification("request-rejected", { fromUid, toUid });
+    }
+    else {
+      await requestRef.delete();
+    }
+  }
+);
+
+exports.handleDeletions = onDocumentCreated(
+  {
+    document: "deletions/{deletionId}",
+    region: "asia-east1",
+  }, 
+  async (event) => {
+    const deletionId = event.params.deletionId;
+
+    if (!deletionId) return;
+
+    const deletionDocRef = getFirestore()
+    .collection("deletions")
+    .doc(deletionId);
+
+    const deletionDocData = await deletionDocRef.get();
+
+    if (!deletionDocData.exists) return;
+
+    const type = deletionDocData.data().type;
+
+    if (type === "friend-deletion") {
+      const uids = deletionDocData.data().uids;
+      const firstUserUid = uids[0];
+      const secondUserUid = uids[1];
+
+      const conversationId = getConversationId(firstUserUid, secondUserUid);
+
+      // Remove each other's activeDM doc
+
+      const firstUserActiveDMQuery = await getFirestore()
+      .collection("users")
+      .doc(firstUserUid)
+      .collection("activeDM")
+      .where("conversationId", "==", conversationId)
+      .limit(1)
+      .get();
+
+      const secondUserActiveDMQuery = await getFirestore()
+      .collection("users")
+      .doc(secondUserUid)
+      .collection("activeDM")
+      .where("conversationId", "==", conversationId)
+      .limit(1)
+      .get();
+
+      await firstUserActiveDMQuery.docs[0]?.ref.delete();
+      await secondUserActiveDMQuery.docs[0]?.ref.delete();
+
+      // Remove each user from their friend's friendList
+
+      const firstUserFriendListQuery = await getFirestore()
+      .collection("users")
+      .doc(firstUserUid)
+      .collection("friendList")
+      .where("uid", "==", secondUserUid)
+      .limit(1)
+      .get();
+
+      const secondUserFriendListQuery = await getFirestore()
+      .collection("users")
+      .doc(secondUserUid)
+      .collection("friendList")
+      .where("uid", "==", firstUserUid)
+      .limit(1)
+      .get();
+
+      await firstUserFriendListQuery.docs[0]?.ref.delete();
+      await secondUserFriendListQuery.docs[0]?.ref.delete();
+
+      // Delete all of their conversation's data
+    
+      await deleteConversation(conversationId);
+
+      // Send friend removed notifications
+
+      await sendNotification("friend-removed", { firstUserUid, secondUserUid });
+    }
+
+    // Delete deletion doc
+
     await getFirestore()
-    .collection("users")
-    .doc(fromUid)
-    .collection("friendList")
-    .add({ uid: toUid });
-
-    await getFirestore()
-    .collection("users")
-    .doc(toUid)
-    .collection("friendList")
-    .add({ uid: fromUid });
-
-    await getFirestore()
-    .collection("conversations")
-    .doc(getConversationId(fromUid, toUid))
-    .create({ participants: [fromUid, toUid] });
-
-    await requestRef.delete();
-
-    await sendNotification("new-friend", { fromUid, toUid });
+    .collection("deletions")
+    .doc(deletionId)
+    .delete();
   }
-  else if (status === "rejected") {
-    await requestRef.delete();
-
-    await sendNotification("request-rejected", { fromUid, toUid });
-  }
-  else {
-    await requestRef.delete();
-  }
-});
-
-exports.handleDeletions = onDocumentCreated("deletions/{deletionId}", async (event) => {
-  const deletionId = event.params.deletionId;
-
-  if (!deletionId) return;
-
-  const deletionDocRef = getFirestore()
-  .collection("deletions")
-  .doc(deletionId);
-
-  const deletionDocData = await deletionDocRef.get();
-
-  if (!deletionDocData.exists) return;
-
-  const type = deletionDocData.data().type;
-
-  if (type === "friend-deletion") {
-    const uids = deletionDocData.data().uids;
-    const firstUserUid = uids[0];
-    const secondUserUid = uids[1];
-
-    const conversationId = getConversationId(firstUserUid, secondUserUid);
-
-    // Remove each other's activeDM doc
-
-    const firstUserActiveDMQuery = await getFirestore()
-    .collection("users")
-    .doc(firstUserUid)
-    .collection("activeDM")
-    .where("conversationId", "==", conversationId)
-    .limit(1)
-    .get();
-
-    const secondUserActiveDMQuery = await getFirestore()
-    .collection("users")
-    .doc(secondUserUid)
-    .collection("activeDM")
-    .where("conversationId", "==", conversationId)
-    .limit(1)
-    .get();
-
-    await firstUserActiveDMQuery.docs[0]?.ref.delete();
-    await secondUserActiveDMQuery.docs[0]?.ref.delete();
-
-    // Remove each user from their friend's friendList
-
-    const firstUserFriendListQuery = await getFirestore()
-    .collection("users")
-    .doc(firstUserUid)
-    .collection("friendList")
-    .where("uid", "==", secondUserUid)
-    .limit(1)
-    .get();
-
-    const secondUserFriendListQuery = await getFirestore()
-    .collection("users")
-    .doc(secondUserUid)
-    .collection("friendList")
-    .where("uid", "==", firstUserUid)
-    .limit(1)
-    .get();
-
-    await firstUserFriendListQuery.docs[0]?.ref.delete();
-    await secondUserFriendListQuery.docs[0]?.ref.delete();
-
-    // Delete all of their conversation's data
-  
-    await deleteConversation(conversationId);
-
-    // Send friend removed notifications
-
-    await sendNotification("friend-removed", { firstUserUid, secondUserUid });
-  }
-
-  // Delete deletion doc
-
-  await getFirestore()
-  .collection("deletions")
-  .doc(deletionId)
-  .delete();
-});
+);
