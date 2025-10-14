@@ -24,6 +24,15 @@ const getConversationId = (uid1, uid2) => {
   }
 };
 
+const getUidsFromConversationId = (conversationId) => {
+  if (conversationId.length !== 56) return null;
+
+  return [
+    conversationId.slice(0, 28),
+    conversationId.slice(28, 56)
+  ]
+}
+
 const sendNotification = async (type, data) => {
   if (type === "new-friend") {
     const fromUserData = await getFirestore()
@@ -451,3 +460,72 @@ exports.handleDeletions = onDocumentCreated(
     .delete();
   }
 );
+
+exports.handleShowActiveDM = onDocumentCreated(
+  {
+    document: "conversations/{conversationId}/messages/{messageId}",
+    region: "asia-east1",
+  },
+  async (event) => {
+    const conversationId = event.params.conversationId;
+
+    if (conversationId.length !== 56) return;
+
+    const uids = getUidsFromConversationId(conversationId);
+    
+    const firstUserRef = getFirestore()
+    .collection("users")
+    .doc(uids[0]);
+
+    const secondUserRef = getFirestore()
+    .collection("users")
+    .doc(uids[1]);
+
+    //update each user's activeDM collection
+
+    const firstUserActiveDMQuery = await firstUserRef
+    .collection("activeDM")
+    .where("conversationId", "==", conversationId)
+    .limit(1)
+    .get();
+
+    const secondUserActiveDMQuery = await secondUserRef
+    .collection("activeDM")
+    .where("conversationId", "==", conversationId)
+    .limit(1)
+    .get();
+
+    const firstUserActiveDMRef = firstUserActiveDMQuery.docs[0]?.ref;
+    const secondUserActiveDMRef = secondUserActiveDMQuery.docs[0]?.ref;
+
+    if (firstUserActiveDMRef) {
+      await firstUserActiveDMRef
+      .update({
+        lastActive: FieldValue.serverTimestamp(),
+      })
+    }
+    else {
+      await firstUserRef
+      .collection("activeDM")
+      .add({
+        conversationId: conversationId,
+        lastActive: FieldValue.serverTimestamp(),
+      })
+    }
+
+    if (secondUserActiveDMRef) {
+      await secondUserActiveDMRef
+      .update({
+        lastActive: FieldValue.serverTimestamp(),
+      })
+    }
+    else {
+      await secondUserRef
+      .collection("activeDM")
+      .add({
+        conversationId: conversationId,
+        lastActive: FieldValue.serverTimestamp(),
+      })
+    }
+  }
+)

@@ -55,7 +55,7 @@ export function Chat() {
   const { ownData } = useOwnData();
   const ownStatus = useStatusByUid(ownData.uid);
   const [ devData ] = useUserData(import.meta.env.VITE_DEV_UID);
-  const { DMIds, DMDatas, isDMIdsLoading, isDMDatasLoading } = useDM(ownData.uid);
+  const { DMIds, DMDatas, isDMIdsLoading } = useDM(ownData.uid);
   const { requests } = useRequests(ownData.uid);
   const { inbox } = useInbox(ownData.uid);
   const { friendUids, friendDatas } = useFriendList(ownData.uid);

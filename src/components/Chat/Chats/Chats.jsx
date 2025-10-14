@@ -6,7 +6,9 @@ import { MailboxSVG } from "../../svg";
 
 export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadCountMap, selectedChatUid, setSelectedChatUid, setIsSidebarVisible }) {
 
-  const conversationId = getConversationId(ownData.uid, selectedChatUid);
+  const orderedDMDatas = DMDatas.sort((a, b) => b.lastActive - a.lastActive);
+
+  const conversationId = getConversationId(ownData.uid, selectedChatUid); 
 
   const hideDM = async () => {
     if (!ownData.uid || !conversationId) return;
@@ -78,7 +80,7 @@ export function Chats({ ownData, ownStatus, devData, DMDatas, statusMap, unreadC
       <div className="chat-cards overflow-y-support">
         {
           DMDatas.length > 0 ?
-            DMDatas.map((dm, index) => {
+            orderedDMDatas.map((dm, index) => {
               const conversationId = getConversationId(ownData.uid, dm.uid);
               return (
                 <ChatCard

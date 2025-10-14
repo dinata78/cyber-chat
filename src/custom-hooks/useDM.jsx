@@ -5,6 +5,7 @@ import { getOtherUid } from "../utils";
 
 export function useDM(uid) {
   const [DMIds, setDMIds] = useState([]);
+  const [DMLastActivesMap, setDMLastActivesMap] = useState({});
   const [DMDatas, setDMDatas] = useState([]);
   const [isDMIdsLoading, setIsDMIdsLoading] = useState(true);
   const [isDMDatasLoading, setIsDMDatasLoading] = useState(true);
@@ -19,10 +20,18 @@ export function useDM(uid) {
     const unsubscribe = onSnapshot(ownDMRef, (snapshot) => {
       if (snapshot.empty) {
         setDMIds([]);
+        setDMLastActivesMap({});
       }
       else {
         const fetchedDMIds = snapshot.docs.map(doc => doc.data().conversationId);
+        let fetchedDMLastActivesMap = {};
+
+        snapshot.docs.forEach(doc => {
+          fetchedDMLastActivesMap[doc.data().conversationId] = doc.data().lastActive;
+        });
+
         setDMIds(fetchedDMIds);
+        setDMLastActivesMap(fetchedDMLastActivesMap);
       }
       setIsDMIdsLoading(false);
     });
@@ -49,10 +58,16 @@ export function useDM(uid) {
           const currentDataIndex = previousDatas.findIndex(data => data.uid === snapshot.data().uid);
 
           if (currentDataIndex >= 0) {
-            previousDatas[currentDataIndex] = snapshot.data();
+            previousDatas[currentDataIndex] = {
+              ...snapshot.data(),
+              lastActive: DMLastActivesMap[DMId],
+            }
           }
           else {
-            previousDatas.push(snapshot.data());
+            previousDatas.push({
+              ...snapshot.data(),
+              lastActive: DMLastActivesMap[DMId],
+            });
           }
 
           return previousDatas.filter(data => otherUids.includes(data.uid));
